@@ -517,13 +517,6 @@ export type TextPage = {
 
 /** Short pages rendered by the catch-all route. Key = path without leading slash. */
 export const TEXT_PAGES: Record<string, TextPage> = {
-  "sign-in": {
-    title: "Sign in",
-    noindex: true,
-    lead: "Accounts open soon. You'll be able to save your cases and see them in one place.",
-    body: ["Until then you can check any receipt number on the homepage. Nothing you type there is stored."],
-    action: { label: "Check a receipt number", href: "/#track" },
-  },
   alerts: {
     title: "Case alerts",
     noindex: true,

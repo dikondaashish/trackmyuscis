@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { AccountLink } from "@/components/AccountLink";
 import { MobileMenu } from "@/components/MobileMenu";
 import { PrimaryNav } from "@/components/PrimaryNav";
 import { HEADER_NAV } from "@/lib/nav";
@@ -27,6 +28,9 @@ export function SiteHeader() {
         <PrimaryNav entries={HEADER_NAV} />
 
         <div className="flex items-center gap-2">
+          <AccountLink
+            className={`hidden min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-small font-semibold text-midnight transition-colors duration-200 hover:bg-ice lg:inline-flex ${focusRing}`}
+          />
           <Link
             href="/search"
             aria-label="Search"
