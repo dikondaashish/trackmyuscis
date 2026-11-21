@@ -1,0 +1,14 @@
+TrackMyUSCIS - American Journey Logo Concept
+
+Symbol: One star and three abstract flag-inspired stripes, with the final stripe forming a forward arrow to represent immigration case tracking. This is a stylized brand symbol, not a depiction of the official U.S. flag or a government seal.
+
+Colors:
+Midnight Navy #10223D (primary brand)
+Trust Blue #285AC7 (accent)
+Heritage Red #BB4350 (American flag-inspired limited accent)
+White #FFFFFF (background and star)
+Existing site palette Calm Teal #087F79 (positive interface status only)
+
+Wordmark: Inter Display Semibold; outlined as paths in SVG, no font required.
+
+Important: Display 'Independent immigration tracking platform. Not affiliated with USCIS or the U.S. government' clearly on the website. Do not use official seals, DHS emblems or U.S. flag assets that imply government sponsorship. Commission trademark review before production.
