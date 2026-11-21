@@ -44,3 +44,4 @@ next-env.d.ts
 /.impeccable/
 /.taste-skill/
 /.claude/settings.local.json
+/docs/REA-findings.md
