@@ -27,9 +27,8 @@ export const btnSecondary = `inline-flex min-h-12 cursor-pointer items-center ju
 /** Inline text link: underline draws in on hover. */
 export const textLink = `link-draw inline-flex min-h-11 items-center gap-1.5 rounded font-semibold text-blue ${focusRing}`;
 
-/** The one card style. Linked cards lift 2px on hover. */
+/** The one card style. */
 export const card = "rounded-2xl border border-border bg-white";
-export const cardLink = `${card} group block transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-blue/40 hover:shadow-[0_12px_32px_-18px_rgba(16,34,61,0.35)] motion-reduce:hover:translate-y-0 ${focusRing}`;
 
 export const display = "text-display text-midnight";
 export const h1 = "text-h1 text-midnight";

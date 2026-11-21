@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   images: {
     // AVIF first (sharper per byte), WebP fallback; one quality level.

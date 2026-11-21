@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TrackMyUSCIS
 
-## Getting Started
+Plain-English help for people waiting on a USCIS decision: what a receipt number means, what each case status means, the usual steps for each form, processing times, common questions, and where to find real legal help.
 
-First, run the development server:
+Live at [trackmyuscis.com](https://trackmyuscis.com). Independent: not affiliated with USCIS or any government agency, and not legal advice.
+
+## Stack
+
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · hosted on Vercel.
+
+## Run it locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint |
+| `npm run indexnow` | Tell search engines about new or changed pages (after a deploy) |
+| `npm run image` | Generate an image with Gemini (needs `GOOGLE_API_KEY` in `.env.local`) |
 
-## Learn More
+## Where things live
 
-To learn more about Next.js, take a look at the following resources:
+- `src/app/` – pages, share images, `sitemap.ts`, `robots.ts`, `llms.txt`
+- `src/components/` – UI components
+- `src/lib/` – all site content (`content.ts`, `answers.ts`, `legal.ts`), SEO helpers and photos
+- `src/assets/` – photos, share-card crops and the Inter font used for share images
+- `public/brand/` – logos served to browsers
+- `.claude/skills/` – project skills: brand palette, UI system, and the new-answer-page workflow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Pushes to `main` deploy to production on Vercel.

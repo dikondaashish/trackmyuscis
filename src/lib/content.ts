@@ -13,9 +13,6 @@ export const USCIS_CONTACT = "https://www.uscis.gov/about-us/contact-us";
 export const EOIR_PRO_BONO = "https://www.justice.gov/eoir/list-pro-bono-legal-service-providers";
 export const DOJ_ROSTER = "https://www.justice.gov/eoir/recognition-accreditation-roster-reports";
 export const USCIS_FIND_LEGAL = "https://www.uscis.gov/avoid-scams/find-legal-services";
-export const VISA_BULLETIN =
-  "https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html";
-export const HEALTHCARE_IMMIGRANTS = "https://www.healthcare.gov/immigrants/";
 
 /* ------------------------------------------------------------------ forms */
 
@@ -322,16 +319,6 @@ export const FORM_RELATED: Record<string, string[]> = {
 };
 export const officialFormUrl = (f: UscisForm) => `https://www.uscis.gov/${f.slug}`;
 
-/** Offices shown in the processing-time lookup, as named on the USCIS tool. */
-export const OFFICES = [
-  "California Service Center",
-  "Nebraska Service Center",
-  "Potomac Service Center",
-  "Texas Service Center",
-  "Vermont Service Center",
-  "National Benefits Center",
-  "Local field office",
-];
 
 /* --------------------------------------------------------------- statuses */
 
