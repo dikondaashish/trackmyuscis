@@ -2,13 +2,14 @@ import Link from "next/link";
 import { ArrowRight, Info } from "lucide-react";
 import { FaqList } from "@/components/FaqList";
 import { HeroTracker } from "@/components/HeroTracker";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { RichText } from "@/components/ui/RichText";
 import { ANSWERS } from "@/lib/answers";
 import { FORMS, USCIS_CASE_STATUS } from "@/lib/content";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata, webApplicationSchema, webPageSchema } from "@/lib/seo";
-import { container, display, focusRing, lead, section, textLink } from "@/lib/ui";
+import { cardLink, container, display, lead, rowArrow, section, textLink } from "@/lib/ui";
 
 export const metadata = pageMetadata({
   title: "TrackMyUSCIS: USCIS Case Tracker and Status Meanings",
@@ -28,9 +29,6 @@ const TOP_ANSWERS = [
   "uscis-case-approved-what-next",
 ].map((slug) => ANSWERS.find((a) => a.slug === slug)!);
 
-const rowLink = `group flex items-center justify-between gap-4 rounded py-4 ${focusRing}`;
-const rowArrow =
-  "size-4 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none";
 
 /**
  * Four sections, one job each: check a receipt number, pick your form, read the answer to
@@ -78,7 +76,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. Forms: a plain list, not cards */}
+      {/* 2. Forms: one small card each */}
       <section id="case-types" aria-labelledby="case-types-title" className={`bg-white ${section}`}>
         <div className={container}>
           <SectionIntro
@@ -86,22 +84,22 @@ export default function Home() {
             title="Find your form"
             description="See the steps most cases go through, from receipt notice to decision."
           />
-          <ul className="mt-10 grid border-b border-border sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-3">
+          <ul className="mt-12 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {FORMS.map((f) => (
-              <li key={f.slug} className="border-t border-border">
-                <Link href={`/forms/${f.slug}`} className={rowLink}>
+              <li key={f.slug}>
+                <Link href={`/forms/${f.slug}`} className={`group flex items-center justify-between gap-4 p-5 sm:p-6 ${cardLink}`}>
                   <span className="min-w-0">
-                    <span className="font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">
+                    <span className="block text-title text-midnight transition-colors duration-200 group-hover:text-blue">
                       {f.form}
                     </span>
-                    <span className="text-slate"> {f.label}</span>
+                    <span className="mt-0.5 block text-body text-slate">{f.label}</span>
                   </span>
                   <ArrowRight aria-hidden className={rowArrow} />
                 </Link>
               </li>
             ))}
           </ul>
-          <Link href="/status-explained" className={`mt-8 ${textLink}`}>
+          <Link href="/status-explained" className={`mt-6 ${textLink}`}>
             What each case status means
             <ArrowRight aria-hidden className="size-4" />
           </Link>
@@ -122,18 +120,7 @@ export default function Home() {
               <ArrowRight aria-hidden className="size-4" />
             </Link>
           </div>
-          <ul className="divide-y divide-border border-y border-border">
-            {TOP_ANSWERS.map((a) => (
-              <li key={a.slug}>
-                <Link href={`/answers/${a.slug}`} className={`${rowLink} py-5`}>
-                  <span className="text-title font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">
-                    {a.question}
-                  </span>
-                  <ArrowRight aria-hidden className={rowArrow} />
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <LinkRows items={TOP_ANSWERS.map((a) => ({ href: `/answers/${a.slug}`, title: a.question }))} />
         </div>
       </section>
 

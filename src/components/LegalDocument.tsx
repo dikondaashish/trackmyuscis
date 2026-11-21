@@ -1,9 +1,8 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { Prose } from "@/components/ui/Prose";
 import { LEGAL_DOCS, POLICY_ORDER, type LegalDoc } from "@/lib/legal";
-import { docContainer, focusRing, section } from "@/lib/ui";
+import { docContainer, focusRing, panel, section } from "@/lib/ui";
 
 /**
  * A policy or long-form trust page: title and summary, then an "On this page" list
@@ -48,9 +47,10 @@ export function LegalDocument({ slug, doc }: { slug: string; doc: LegalDoc }) {
             </div>
           </nav>
 
-          <article className="max-w-2xl">
+          <article className="min-w-0">
+            <div className={`${panel} sm:p-10`}>
             {doc.sections.map((s, i) => (
-              <section key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} className={`scroll-mt-28 ${i ? "mt-12" : ""}`}>
+              <section key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} className={`scroll-mt-28 ${i ? "mt-10" : ""}`}>
                 <h2 id={`${s.id}-h`} className="text-title font-semibold text-midnight">
                   {s.heading}
                 </h2>
@@ -59,26 +59,12 @@ export function LegalDocument({ slug, doc }: { slug: string; doc: LegalDoc }) {
                 </div>
               </section>
             ))}
+            </div>
 
             {related.length > 0 && (
-              <div className="mt-16 border-t border-border pt-10">
-                <h2 className="text-title font-semibold text-midnight">Other policies</h2>
-                <ul className="mt-4 grid gap-x-8 sm:grid-cols-2">
-                  {related.map((k) => (
-                    <li key={k}>
-                      <Link
-                        href={`/${k}`}
-                        className={`group inline-flex min-h-11 items-center gap-1.5 rounded text-body font-medium text-blue ${focusRing}`}
-                      >
-                        {LEGAL_DOCS[k].title}
-                        <ArrowRight
-                          aria-hidden
-                          className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-16">
+                <h2 className="text-h3 text-midnight">Other policies</h2>
+                <LinkRows compact className="mt-5" items={related.map((k) => ({ href: `/${k}`, title: LEGAL_DOCS[k].title }))} />
               </div>
             )}
           </article>

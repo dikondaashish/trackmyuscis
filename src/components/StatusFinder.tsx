@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { Search, X } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { statusId, type Tone } from "@/lib/content";
-import { field, fieldLabel, focusRing } from "@/lib/ui";
+import { field, fieldLabel, focusRing, rowPad, rows } from "@/lib/ui";
 
 const TONE_LABEL = { info: "Update", success: "Good news", warning: "Action needed", error: "Decision" } as const;
 
@@ -63,13 +63,13 @@ export function StatusFinder({ statuses }: { statuses: { name: string; tone: Ton
         </p>
       </div>
 
-      <dl className={`mt-8 divide-y divide-border border-y border-border ${shown === 0 ? "hidden" : ""}`}>
+      <dl className={`mt-8 ${rows} ${shown === 0 ? "hidden" : ""}`}>
         {statuses.map((s) => (
           <div
             key={s.name}
             id={statusId(s.name)}
             hidden={!matches(s)}
-            className="jump-target grid gap-3 py-7 sm:grid-cols-[1fr_1.3fr] sm:gap-8"
+            className={`grid scroll-mt-28 gap-3 ${rowPad} py-6 target:bg-ice sm:grid-cols-[1fr_1.3fr] sm:gap-8`}
           >
             <dt>
               <span className="block text-title font-semibold text-midnight">{s.name}</span>

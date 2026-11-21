@@ -4,12 +4,12 @@ import { breadcrumbSchema, longDate, pageMetadata, webPageSchema } from "@/lib/s
 import { OfficialSources } from "@/components/OfficialSources";
 import { RichText } from "@/components/ui/RichText";
 import { notFound } from "next/navigation";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { ExternalLink } from "@/components/ui/ExternalLink";
-import { ArrowRight } from "lucide-react";
 import { getAnswer } from "@/lib/answers";
 import { FORM_RELATED, FORMS, FORMS_UPDATED, getForm, getGuide, officialFormUrl, USCIS_FEE_SCHEDULE, USCIS_PROCESSING_TIMES } from "@/lib/content";
-import { btnPrimary, container, focusRing, section } from "@/lib/ui";
+import { btnPrimary, container, focusRing, panel, rowPad, rows, section } from "@/lib/ui";
 import Link from "next/link";
 
 const titleCase = (s: string) => s.replace(/\b[a-z]/g, (c) => c.toUpperCase());
@@ -62,66 +62,54 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
         <p className="mt-1 text-small text-slate">Updated {longDate(FORMS_UPDATED)} · Checked against uscis.gov</p>
       </PageIntro>
       <section className={section}>
-        <div className={`${container} grid gap-14 lg:grid-cols-[1.4fr_1fr] lg:gap-20`}>
+        <div className={`${container} grid gap-14 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16`}>
           <div>
-            <h2 id="know" className="text-h3 font-semibold text-midnight">What to know about Form {f.form}</h2>
-            <div className="mt-8 max-w-2xl space-y-8">
+            <h2 id="know" className="scroll-mt-28 text-h3 font-semibold text-midnight">What to know about Form {f.form}</h2>
+            <div className={`mt-6 ${rows}`}>
               {f.sections.map((s) => (
-                <div key={s.heading}>
+                <div key={s.heading} className={`${rowPad} py-6`}>
                   <h3 className="text-title font-semibold text-midnight">{s.heading}</h3>
-                  <p className="mt-2 text-body text-slate">
+                  <p className="mt-2 max-w-2xl text-body text-slate">
                     <RichText text={s.body} />
                   </p>
                 </div>
               ))}
-              <div>
+              <div className={`${rowPad} py-6`}>
                 <h3 className="text-title font-semibold text-midnight">Filing fee</h3>
-                <p className="mt-2 text-body text-slate">
+                <p className="mt-2 max-w-2xl text-body text-slate">
                   <RichText text={`Fees change, so we don't print them here. USCIS lists the current fee for Form ${f.form} on its [Fee Schedule page](${USCIS_FEE_SCHEDULE}).`} />
                 </p>
               </div>
             </div>
 
-            <h2 id="steps" className="mt-20 text-h3 font-semibold text-midnight">Steps most cases go through</h2>
-            <ol className="mt-8">
+            <h2 id="steps" className="mt-16 scroll-mt-28 text-h3 font-semibold text-midnight">Steps most cases go through</h2>
+            <ol className={`mt-6 ${panel}`}>
               {f.milestones.map((m, i) => (
-                <li key={m} className="relative flex gap-5 pb-8 last:pb-0">
+                <li key={m} className="relative flex gap-5 pb-7 last:pb-0">
                   {i < f.milestones.length - 1 && (
-                    <span aria-hidden className="absolute top-9 bottom-1 left-[17px] w-0.5 bg-border" />
+                    <span aria-hidden className="absolute top-9 bottom-0 left-[17px] w-0.5 bg-border" />
                   )}
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ice text-small font-semibold text-blue tabular-nums">
                     {i + 1}
                   </span>
-                  <span className="pt-1.5 text-lead text-midnight">{m}</span>
+                  <span className="pt-1 text-title text-midnight">{m}</span>
                 </li>
               ))}
             </ol>
-            <p className="mt-10 max-w-xl text-small text-slate">
+            <p className="mt-4 max-w-xl text-small text-slate">
               Every case is different. Your official USCIS notices always come first.
             </p>
 
             {related.length > 0 && (
-              <div className="mt-20">
-                <h2 id="questions" className="text-h3 font-semibold text-midnight">Questions about {f.form} cases</h2>
-                <ul className="mt-6 divide-y divide-border border-y border-border">
-                  {related.map((r) => (
-                    <li key={r.path}>
-                      <Link href={r.path} className={`group flex min-h-11 items-center justify-between gap-4 rounded py-4 ${focusRing}`}>
-                        <span className="font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">{r.title}</span>
-                        <ArrowRight
-                          aria-hidden
-                          className="size-4 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-16">
+                <h2 id="questions" className="scroll-mt-28 text-h3 font-semibold text-midnight">Questions about {f.form} cases</h2>
+                <LinkRows compact className="mt-6" items={related.map((r) => ({ href: r.path, title: r.title }))} />
               </div>
             )}
 
             <OfficialSources
               id="sources"
-              className="mt-16"
+              className="mt-16 scroll-mt-28"
               sources={[{ label: `USCIS: Form ${f.form}, ${f.title}`, href: officialFormUrl(f) }, ...(f.sources ?? [])]}
             />
           </div>
@@ -148,7 +136,9 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
                   ))}
                 </ul>
               </nav>
-              <div className="flex flex-col items-start gap-4 lg:mt-10">
+              <div className={`flex flex-col items-stretch gap-3 lg:mt-8 ${panel} sm:p-6`}>
+                <p className="text-title text-midnight">Have a receipt number?</p>
+                <p className="-mt-2 mb-1 text-small text-slate">Confirm it and see which USCIS office has your case.</p>
                 <Link href="/#track" className={btnPrimary}>
                   Track Case
                 </Link>

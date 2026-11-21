@@ -11,7 +11,7 @@ import { ExternalLink } from "@/components/ui/ExternalLink";
 import { TEXT_PAGE_PHOTOS } from "@/lib/photos";
 import { TEXT_PAGES } from "@/lib/content";
 import { LEGAL_DOCS } from "@/lib/legal";
-import { btnPrimary, readContainer, section } from "@/lib/ui";
+import { btnPrimary, panel, readContainer, section } from "@/lib/ui";
 
 /**
  * Short text pages (about, contact, sign-in...) and legal documents (terms, privacy...).
@@ -70,6 +70,7 @@ export default async function TextPage({ params }: PageProps<"/[...slug]">) {
       {(page.body || page.sections || page.action) && (
         <section className={section}>
           <div className={readContainer}>
+            <div className={`${panel} sm:p-10`}>
             <div className="space-y-5">
               {page.body?.map((p) => (
                 <p key={p} className="text-lead text-slate">
@@ -78,7 +79,7 @@ export default async function TextPage({ params }: PageProps<"/[...slug]">) {
               ))}
             </div>
             {page.sections?.map((s) => (
-              <section key={s.heading} className="mt-12">
+              <section key={s.heading} className="mt-10">
                 <h2 className="text-title font-semibold text-midnight">{s.heading}</h2>
                 <div className="mt-3">
                   <Prose blocks={s.body} />
@@ -95,6 +96,7 @@ export default async function TextPage({ params }: PageProps<"/[...slug]">) {
                   {page.action.label}
                 </Link>
               ))}
+            </div>
           </div>
         </section>
       )}

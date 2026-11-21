@@ -4,7 +4,7 @@ import { PageIntro } from "@/components/ui/PageIntro";
 import { Photo } from "@/components/ui/Photo";
 import { GUIDE_PHOTOS, PHOTOS } from "@/lib/photos";
 import { GUIDES } from "@/lib/content";
-import { focusRing, readContainer, section } from "@/lib/ui";
+import { readContainer, rowArrow, rowLink, rows, section } from "@/lib/ui";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, itemListSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 
@@ -40,10 +40,10 @@ export default function GuidesPage() {
       />
       <section className={section}>
         <div className={readContainer}>
-          <ul className="divide-y divide-border border-y border-border">
+          <ul className={rows}>
             {ALL.map((g) => (
               <li key={g.href}>
-                <Link href={g.href} className={`group flex items-center gap-5 rounded py-6 sm:gap-6 ${focusRing}`}>
+                <Link href={g.href} className={`${rowLink} justify-start gap-5 sm:gap-6`}>
                   <Photo
                     photo={g.photo}
                     zoomOnHover
@@ -58,7 +58,7 @@ export default function GuidesPage() {
                   </span>
                   <ArrowRight
                     aria-hidden
-                    className="size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue"
+                    className={rowArrow}
                   />
                 </Link>
               </li>

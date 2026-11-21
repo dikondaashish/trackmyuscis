@@ -1,8 +1,7 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { FaqList } from "@/components/FaqList";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
-import { focusRing, readContainer, section, textLink } from "@/lib/ui";
+import { focusRing, readContainer, section } from "@/lib/ui";
 import { COMPANY } from "@/lib/company";
 
 const inlineLink = `rounded-sm font-medium text-blue underline decoration-blue/30 underline-offset-4 hover:decoration-blue ${focusRing}`;
@@ -25,21 +24,17 @@ export default function HelpPage() {
         <div className={readContainer}>
           <div>
             <FaqList />
-            <div className="mt-12 flex flex-col items-start gap-1">
-              <Link href="/answers" className={textLink}>
-                More USCIS questions answered
-                <ArrowRight aria-hidden className="size-4" />
-              </Link>
-              <Link href="/status-explained" className={textLink}>
-                What each case status means
-                <ArrowRight aria-hidden className="size-4" />
-              </Link>
-              <Link href="/guides" className={textLink}>
-                Read the immigration guides
-                <ArrowRight aria-hidden className="size-4" />
-              </Link>
-            </div>
-            <p className="mt-10 border-t border-border pt-8 text-body text-slate">
+            <h2 className="mt-16 text-h3 text-midnight">Keep reading</h2>
+            <LinkRows
+              compact
+              className="mt-5"
+              items={[
+                { href: "/answers", title: "More USCIS questions answered" },
+                { href: "/status-explained", title: "What each case status means" },
+                { href: "/guides", title: "Read the immigration guides" },
+              ]}
+            />
+            <p className="mt-8 text-body text-slate">
               Still need help? Email{" "}
               <a href={`mailto:${COMPANY.email.support}`} className={`${inlineLink}`}>
                 {COMPANY.email.support}

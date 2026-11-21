@@ -1,9 +1,8 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { FORMS, USCIS_ALL_FORMS } from "@/lib/content";
-import { focusRing, readContainer, section } from "@/lib/ui";
+import { readContainer, section } from "@/lib/ui";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, itemListSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 
@@ -24,25 +23,18 @@ export default function FormsPage() {
       />
       <section className={section}>
         <div className={readContainer}>
-          <ul className="divide-y divide-border border-y border-border">
-            {FORMS.map((f) => (
-              <li key={f.slug}>
-                <Link href={`/forms/${f.slug}`} className={`group flex items-center justify-between gap-6 rounded-md py-5 ${focusRing}`}>
-                  <span>
-                    <span className="block text-title font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">
-                      {f.form} <span className="font-normal text-slate">{f.label}</span>
-                    </span>
-                    <span className="mt-1 block text-body text-slate">{f.title}</span>
-                  </span>
-                  <ArrowRight
-                    aria-hidden
-                    className="size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ExternalLink href={USCIS_ALL_FORMS} className="mt-12">
+          <LinkRows
+            items={FORMS.map((f) => ({
+              href: `/forms/${f.slug}`,
+              title: (
+                <>
+                  {f.form} <span className="font-normal text-slate">{f.label}</span>
+                </>
+              ),
+              note: f.title,
+            }))}
+          />
+          <ExternalLink href={USCIS_ALL_FORMS} className="mt-8">
             Browse every form on uscis.gov
           </ExternalLink>
         </div>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
-import { btnPrimary, focusRing, readContainer, section } from "@/lib/ui";
+import { btnPrimary, readContainer, section } from "@/lib/ui";
 
 export const metadata: Metadata = {
   title: { absolute: "Page not found | TrackMyUSCIS" },
@@ -32,19 +32,7 @@ export default function NotFound() {
       </PageIntro>
       <section className={section}>
         <div className={readContainer}>
-          <ul className="divide-y divide-border border-y border-border">
-            {LINKS.map((l) => (
-              <li key={l.href}>
-                <Link href={l.href} className={`group flex min-h-11 items-center justify-between gap-4 rounded py-5 ${focusRing}`}>
-                  <span className="text-title font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">{l.label}</span>
-                  <ArrowRight
-                    aria-hidden
-                    className="size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <LinkRows items={LINKS.map((l) => ({ href: l.href, title: l.label }))} />
         </div>
       </section>
     </>

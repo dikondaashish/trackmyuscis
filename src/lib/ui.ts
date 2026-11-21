@@ -38,3 +38,19 @@ export const lead = "text-lead text-slate";
 export const fieldLabel = "block text-small font-semibold text-midnight";
 export const field =
   "h-12 w-full min-w-0 rounded-[10px] border border-border bg-white px-4 text-body text-midnight transition-[border-color,box-shadow] duration-200 placeholder:text-slate/70 focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15";
+
+/** A linked card: lifts 2px and tints its border on hover. */
+export const cardLink = `${card} transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-blue/50 motion-reduce:hover:translate-y-0 ${focusRing}`;
+
+/** A white panel for a block of reading or a tool. */
+export const panel = `${card} p-6 sm:p-8`;
+
+/**
+ * A white panel of rows: every list of links, facts or steps. Rows share one inset
+ * (rowPad) so text lines up down the panel; linked rows tint on hover.
+ */
+export const rows = `${card} divide-y divide-border overflow-hidden`;
+export const rowPad = "px-5 sm:px-6";
+export const rowLink = `group flex items-center justify-between gap-6 ${rowPad} py-5 transition-colors duration-200 hover:bg-cloud focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue`;
+export const rowArrow =
+  "size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none";

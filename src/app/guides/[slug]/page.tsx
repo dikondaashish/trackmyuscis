@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { articleSchema, breadcrumbSchema, CONTENT_UPDATED, longDate, pageMetadata } from "@/lib/seo";
 import { OfficialSources } from "@/components/OfficialSources";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Info } from "lucide-react";
+import { Info } from "lucide-react";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { GUIDE_PHOTOS } from "@/lib/photos";
 import { GUIDES, getGuide } from "@/lib/content";
-import { readContainer, section, textLink } from "@/lib/ui";
+import { panel, readContainer, section } from "@/lib/ui";
 
 /** Every known page is prerendered; unknown ones return a real 404, so navigation may wait on the server. */
 export const instant = false;
@@ -44,32 +44,25 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
       <section className={section}>
         <div className={readContainer}>
           <article>
-            {g.sections.map((s) => (
-              <div key={s.heading} className="mb-12 last:mb-0">
-                <h2 className="text-h3 font-semibold text-midnight">{s.heading}</h2>
-                <p className="mt-3 text-lead text-slate">{s.body}</p>
-              </div>
-            ))}
-            <OfficialSources sources={g.sources} className="mt-12" />
-            <p className="mt-12 flex items-start gap-2 rounded-2xl bg-ice p-5 text-small text-midnight">
-              <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-blue" />
+            <div className={`${panel} sm:p-10`}>
+              {g.sections.map((s) => (
+                <div key={s.heading} className="mb-10 last:mb-0">
+                  <h2 className="text-h3 font-semibold text-midnight">{s.heading}</h2>
+                  <p className="mt-3 text-lead text-slate">{s.body}</p>
+                </div>
+              ))}
+              <OfficialSources sources={g.sources} className="mt-10 border-t border-border pt-8" />
+            </div>
+            <p className="mt-6 flex items-start gap-2 text-small text-slate">
+              <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
               General information, not legal advice. For advice about your case, talk to a licensed immigration
               attorney.
             </p>
           </article>
 
-          <div className="mt-20 border-t border-border pt-10">
-            <h2 className="text-title font-semibold text-midnight">Read next</h2>
-            <ul className="mt-2">
-              {others.map((o) => (
-                <li key={o.slug}>
-                  <Link href={`/guides/${o.slug}`} className={textLink}>
-                    {o.title}
-                    <ArrowRight aria-hidden className="size-4" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-16">
+            <h2 className="text-h3 text-midnight">Read next</h2>
+            <LinkRows compact className="mt-5" items={others.map((o) => ({ href: `/guides/${o.slug}`, title: o.title, note: o.summary }))} />
           </div>
         </div>
       </section>

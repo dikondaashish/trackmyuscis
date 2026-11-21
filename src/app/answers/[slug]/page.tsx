@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
 import { OfficialSources } from "@/components/OfficialSources";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { Prose } from "@/components/ui/Prose";
 import { ANSWERS, ANSWERS_UPDATED, getAnswer } from "@/lib/answers";
 import { breadcrumbSchema, faqSchema, pageMetadata, webPageSchema } from "@/lib/seo";
-import { focusRing, readContainer, section } from "@/lib/ui";
+import { panel, readContainer, section } from "@/lib/ui";
 
 /** Every known answer is prerendered; unknown ones return a real 404. */
 export const instant = false;
@@ -63,42 +63,28 @@ export default async function AnswerPage({ params }: PageProps<"/answers/[slug]"
               <p className="mt-2 text-lead text-midnight">{a.short}</p>
             </div>
 
-            {a.sections.map((s) => (
-              <section key={s.heading} className="mt-12">
-                <h2 className="text-title font-semibold text-midnight">{s.heading}</h2>
-                <div className="mt-3">
-                  <Prose blocks={s.body} />
-                </div>
-              </section>
-            ))}
+            <div className={`mt-6 ${panel} sm:p-10`}>
+              {a.sections.map((s, i) => (
+                <section key={s.heading} className={i ? "mt-10" : ""}>
+                  <h2 className="text-title font-semibold text-midnight">{s.heading}</h2>
+                  <div className="mt-3">
+                    <Prose blocks={s.body} />
+                  </div>
+                </section>
+              ))}
+              <OfficialSources sources={a.sources} className="mt-10 border-t border-border pt-8" />
+            </div>
 
-            <OfficialSources sources={a.sources} className="mt-12" />
-
-            <p className="mt-12 flex items-start gap-2 rounded-2xl bg-cloud p-5 text-small text-midnight">
-              <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-blue" />
+            <p className="mt-6 flex items-start gap-2 text-small text-slate">
+              <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
               General information, not legal advice. Rules and times change, so confirm with USCIS or a licensed immigration
               attorney before you act.
             </p>
 
             {related.length > 0 && (
-              <div className="mt-16 border-t border-border pt-10">
-                <h2 className="text-title font-semibold text-midnight">Related questions</h2>
-                <ul className="mt-3">
-                  {related.map((r) => (
-                    <li key={r.slug}>
-                      <Link
-                        href={`/answers/${r.slug}`}
-                        className={`group flex min-h-11 items-center justify-between gap-4 rounded py-1 text-body font-medium text-blue ${focusRing}`}
-                      >
-                        {r.question}
-                        <ArrowRight
-                          aria-hidden
-                          className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+              <div className="mt-16">
+                <h2 className="text-h3 text-midnight">Related questions</h2>
+                <LinkRows compact className="mt-5" items={related.map((r) => ({ href: `/answers/${r.slug}`, title: r.question }))} />
               </div>
             )}
           </article>

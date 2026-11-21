@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { USCIS_PROCESSING_TIMES } from "@/lib/content";
-import { btnPrimary, readContainer, section } from "@/lib/ui";
+import { btnPrimary, readContainer, rowPad, rows, section } from "@/lib/ui";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 
@@ -51,21 +51,21 @@ export default function ProcessingTimesPage() {
       <section className={section}>
         <div className={readContainer}>
           <h2 className="text-h3 font-semibold text-midnight">How to check</h2>
-          <ol className="mt-6 space-y-4">
+          <ol className={`mt-6 ${rows}`}>
             {STEPS.map((step, i) => (
-              <li key={step} className="flex gap-4">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ice text-small font-semibold text-blue tabular-nums">
+              <li key={step} className={`flex items-center gap-4 ${rowPad} py-4`}>
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ice text-small font-semibold text-blue tabular-nums">
                   {i + 1}
                 </span>
-                <span className="pt-1 text-body text-midnight">{step}</span>
+                <span className="text-body text-midnight">{step}</span>
               </li>
             ))}
           </ol>
 
           <h2 className="mt-16 text-h3 font-semibold text-midnight">How to read the number</h2>
-          <ul className="mt-6 divide-y divide-border border-y border-border">
+          <ul className={`mt-6 ${rows}`}>
             {TIPS.map((t) => (
-              <li key={t.title} className="py-5">
+              <li key={t.title} className={`${rowPad} py-6`}>
                 <h3 className="text-title font-semibold text-midnight">{t.title}</h3>
                 <p className="mt-1 text-body text-slate">{t.body}</p>
               </li>

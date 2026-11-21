@@ -1,10 +1,11 @@
 import { Suspense } from "react";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { LawyerSearch, LawyerSearchWithResult } from "@/components/LawyerSearch";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { RichText } from "@/components/ui/RichText";
 import { DOJ_ROSTER, EOIR_PRO_BONO, USCIS_FIND_LEGAL } from "@/lib/content";
-import { card, readContainer, section, textLink } from "@/lib/ui";
+import { panel, readContainer, rowPad, rows, section, textLink } from "@/lib/ui";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 
@@ -52,9 +53,9 @@ export default function LawyersPage() {
       <section className={section}>
         <div className={readContainer}>
           <h2 className="text-h3 font-semibold text-midnight">Where to look</h2>
-          <ul className="mt-6 divide-y divide-border border-y border-border">
+          <ul className={`mt-6 ${rows}`}>
             {WHERE.map((w) => (
-              <li key={w.title} className="py-5">
+              <li key={w.title} className={`${rowPad} py-6`}>
                 <h3 className="text-title font-semibold text-midnight">{w.title}</h3>
                 <p className="mt-1 text-body text-slate">
                   <RichText text={w.body} />
@@ -67,9 +68,10 @@ export default function LawyersPage() {
           </p>
 
           <h2 className="mt-16 text-h3 font-semibold text-midnight">Before you pay anyone</h2>
-          <ul className="mt-6 list-disc space-y-2 pl-5 text-body text-slate marker:text-border">
+          <ul className={`mt-6 ${rows}`}>
             {CHECKS.map((c) => (
-              <li key={c} className="pl-1">
+              <li key={c} className={`flex items-start gap-3 ${rowPad} py-4 text-body text-midnight`}>
+                <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" strokeWidth={2.5} />
                 {c}
               </li>
             ))}
@@ -82,7 +84,7 @@ export default function LawyersPage() {
           <p className="mt-4 text-body text-slate">
             <RichText text="The directory is not open yet, so a search returns no listings today. When it opens, every attorney's state bar license is checked before they appear, and paid placements carry a Sponsored label. See [how listings work](/advertising)." />
           </p>
-          <div className={`mt-8 ${card} p-6 sm:p-8`}>
+          <div className={`mt-6 ${panel}`}>
             <Suspense fallback={<LawyerSearch />}>
               <LawyerSearchWithResult />
             </Suspense>

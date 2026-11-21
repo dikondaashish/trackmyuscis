@@ -5,7 +5,7 @@ import { useId, useMemo, useState } from "react";
 import { ArrowRight, Search, X } from "lucide-react";
 import { normalizeReceipt } from "@/lib/receipt";
 import type { SearchEntry } from "@/lib/search";
-import { btnPrimary, field, fieldLabel, focusRing } from "@/lib/ui";
+import { btnPrimary, field, fieldLabel, focusRing, panel, rowArrow, rowLink, rows } from "@/lib/ui";
 
 /** Lowercase, no punctuation, and form codes joined so "I-485", "i 485" and "i485" all match. */
 const normalize = (s: string) =>
@@ -25,9 +25,8 @@ const BROWSE = [
   { href: "/guides", label: "Immigration guides" },
 ];
 
-const row = `group flex min-h-11 items-start justify-between gap-4 rounded py-5 ${focusRing}`;
-const arrow =
-  "mt-1 size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none";
+const row = `${rowLink} items-start`;
+const arrow = `${rowArrow} mt-1`;
 
 /**
  * One field over everything on the site. The index is small, so matching runs in the
@@ -107,7 +106,7 @@ export function SiteSearch({ index }: { index: SearchEntry[] }) {
       </p>
 
       {looksLikeReceipt ? (
-        <div className="mt-8 rounded-2xl border border-border bg-white p-6">
+        <div className={`mt-8 ${panel}`}>
           <h2 className="text-title font-semibold text-midnight">Search covers this site&apos;s pages, not cases</h2>
           <p className="mt-2 text-body text-slate">
             To check a receipt number and see which office issued it, use the receipt check on the homepage.
@@ -119,7 +118,7 @@ export function SiteSearch({ index }: { index: SearchEntry[] }) {
       ) : words.length === 0 ? (
         <>
           <h2 className="mt-12 text-title font-semibold text-midnight">Or browse</h2>
-          <ul className="mt-2 divide-y divide-border border-y border-border">
+          <ul className={`mt-4 ${rows}`}>
             {BROWSE.map((b) => (
               <li key={b.href}>
                 <Link href={b.href} className={`${row} items-center`}>
@@ -132,7 +131,7 @@ export function SiteSearch({ index }: { index: SearchEntry[] }) {
         </>
       ) : (
         results.length > 0 && (
-          <ul className="mt-8 divide-y divide-border border-y border-border">
+          <ul className={`mt-8 ${rows}`}>
             {results.map(({ entry }) => (
               <li key={`${entry.kind}:${entry.href}:${entry.title}`}>
                 <Link href={entry.href} className={row}>

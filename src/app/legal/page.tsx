@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { COMPANY, LEGAL_UPDATED } from "@/lib/company";
 import { LEGAL_DOCS, POLICY_ORDER } from "@/lib/legal";
@@ -27,31 +26,8 @@ export default function LegalPage() {
       </PageIntro>
       <section className={section}>
         <div className={readContainer}>
-          <ul className="divide-y divide-border border-y border-border">
-            {POLICY_ORDER.map((key) => {
-              const doc = LEGAL_DOCS[key];
-              return (
-                <li key={key}>
-                  <Link
-                    href={`/${key}`}
-                    className={`group flex items-center justify-between gap-6 rounded-md py-5 transition-colors duration-200 ${focusRing}`}
-                  >
-                    <span>
-                      <span className="block text-title font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">
-                        {doc.title}
-                      </span>
-                      <span className="mt-1 block text-body text-slate">{doc.summary}</span>
-                    </span>
-                    <ArrowRight
-                      aria-hidden
-                      className="size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none"
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          <p className="mt-10 text-body text-slate">
+          <LinkRows items={POLICY_ORDER.map((key) => ({ href: `/${key}`, title: LEGAL_DOCS[key].title, note: LEGAL_DOCS[key].summary }))} />
+          <p className="mt-8 text-body text-slate">
             Questions about these policies? Email{" "}
             <a
               href={`mailto:${COMPANY.email.legal}`}

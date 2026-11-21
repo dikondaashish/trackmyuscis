@@ -1,6 +1,5 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
+import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { ANSWERS, ANSWERS_UPDATED, TOPICS } from "@/lib/answers";
 import { breadcrumbSchema, itemListSchema, pageMetadata, webPageSchema } from "@/lib/seo";
@@ -50,29 +49,12 @@ export default function AnswersPage() {
         <div className={readContainer}>
           <div>
             {TOPICS.map((topic, i) => (
-              <div key={topic} id={topicId(topic)} className={i ? "mt-16" : ""}>
+              <div key={topic} id={topicId(topic)} className={`scroll-mt-28 ${i ? "mt-16" : ""}`}>
                 <h2 className="text-h3 text-midnight">{topic}</h2>
-                <ul className="mt-4 divide-y divide-border border-y border-border">
-                  {ANSWERS.filter((a) => a.topic === topic).map((a) => (
-                    <li key={a.slug}>
-                      <Link
-                        href={`/answers/${a.slug}`}
-                        className={`group flex items-center justify-between gap-6 rounded-md py-5 ${focusRing}`}
-                      >
-                        <span>
-                          <span className="block text-title font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">
-                            {a.question}
-                          </span>
-                          <span className="mt-1 block text-body text-slate">{a.short}</span>
-                        </span>
-                        <ArrowRight
-                          aria-hidden
-                          className="size-5 shrink-0 text-slate transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <LinkRows
+                  className="mt-5"
+                  items={ANSWERS.filter((a) => a.topic === topic).map((a) => ({ href: `/answers/${a.slug}`, title: a.question, note: a.short }))}
+                />
               </div>
             ))}
           </div>
