@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { PrimaryNav } from "@/components/PrimaryNav";
+import { HEADER_NAV } from "@/lib/nav";
 import { TRACK_CASE_HREF } from "@/lib/site";
 
 const focusRing =
@@ -23,7 +24,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <PrimaryNav />
+        <PrimaryNav entries={HEADER_NAV} />
 
         <div className="flex items-center gap-2">
           <Link
@@ -39,7 +40,7 @@ export function SiteHeader() {
           >
             Track Case
           </Link>
-          <MobileMenu />
+          <MobileMenu entries={HEADER_NAV} />
         </div>
       </div>
     </header>

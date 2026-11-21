@@ -2,25 +2,31 @@
 
 export type NavLink = { href: string; label: string };
 
-/** What people come for, in the order they need it. Four items, no more. */
-export const PRIMARY_NAV: NavLink[] = [
-  { href: "/status-explained", label: "Case Statuses" },
-  { href: "/processing-times", label: "Processing Times" },
-  { href: "/answers", label: "Answers" },
-  { href: "/lawyers", label: "Find a Lawyer" },
-];
+/** A link inside a header menu: label plus one short line saying what the page is for. */
+export type MenuItem = NavLink & { note?: string };
 
-/** Quieter links for the phone menu, where the footer is a long scroll away. */
-export const SECONDARY_NAV: NavLink[] = [
-  { href: "/forms", label: "USCIS Forms" },
-  { href: "/guides", label: "Guides" },
-  { href: "/help", label: "Help Center" },
-];
+/** One header entry: a plain link, or a menu that opens a dropdown. Built in nav.ts. */
+export type NavEntry =
+  | { kind: "link"; label: string; href: string }
+  | { kind: "menu"; label: string; items: MenuItem[]; columns?: 1 | 2; footer?: NavLink };
 
 export const TRACK_CASE_HREF = "/#track";
 
 /** True when `pathname` is the nav item's page or a page under it (e.g. /answers/x under /answers). */
-export const isCurrent = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
+export const isCurrent = (pathname: string, href: string) =>
+  !href.includes("#") && (pathname === href || pathname.startsWith(`${href}/`));
+
+/** The one link in a list that matches the page best (the longest match), so /forms/i-485 marks I-485, not "All forms". */
+export const bestMatch = (pathname: string, links: NavLink[]) =>
+  links
+    .filter((l) => isCurrent(pathname, l.href))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
+
+/** True when the page is one of the menu's links (or its footer link). */
+export const menuIsCurrent = (pathname: string, entry: NavEntry) =>
+  entry.kind === "link"
+    ? isCurrent(pathname, entry.href)
+    : [...entry.items, ...(entry.footer ? [entry.footer] : [])].some((i) => isCurrent(pathname, i.href));
 
 export const FOOTER_GROUPS: { title: string; links: NavLink[] }[] = [
   {

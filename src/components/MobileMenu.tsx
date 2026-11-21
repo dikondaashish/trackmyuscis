@@ -3,10 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { Menu, Search, X } from "lucide-react";
-import { isCurrent, PRIMARY_NAV, SECONDARY_NAV } from "@/lib/site";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { bestMatch, isCurrent, menuIsCurrent, type MenuItem, type NavEntry } from "@/lib/site";
 
-export function MobileMenu() {
+const row =
+  "flex min-h-12 items-center rounded-lg px-3 text-body text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue";
+
+/** Phone and tablet menu: the same groups as the desktop header, each one a section that opens on tap. */
+export function MobileMenu({ entries }: { entries: NavEntry[] }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const panelId = useId();
@@ -41,7 +45,7 @@ export function MobileMenu() {
       <div
         id={panelId}
         hidden={!open}
-        className="absolute inset-x-0 top-full border-b border-border bg-white shadow-[0_16px_32px_-16px_rgba(16,34,61,0.2)]"
+        className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-b border-border bg-white shadow-[0_16px_32px_-16px_rgba(16,34,61,0.2)]"
       >
         <nav aria-label="Mobile" className="mx-auto max-w-7xl px-2 py-3 sm:px-5">
           <Link
@@ -54,30 +58,49 @@ export function MobileMenu() {
             Search the site
           </Link>
           <ul className="flex flex-col">
-            {PRIMARY_NAV.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
-                  className="flex min-h-12 items-center rounded-lg px-3 text-body text-midnight transition-colors duration-200 hover:bg-ice aria-[current=page]:bg-ice aria-[current=page]:font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ul className="mt-2 flex flex-col border-t border-border pt-2">
-            {SECONDARY_NAV.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
-                  className="flex min-h-11 items-center rounded-lg px-3 text-small text-slate transition-colors duration-200 hover:bg-ice hover:text-midnight aria-[current=page]:font-semibold aria-[current=page]:text-midnight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
-                >
-                  {item.label}
-                </Link>
+            {entries.map((entry) => (
+              <li key={entry.label}>
+                {entry.kind === "link" ? (
+                  <Link
+                    href={entry.href}
+                    onClick={() => setOpen(false)}
+                    aria-current={isCurrent(pathname, entry.href) ? "page" : undefined}
+                    className={`${row} aria-[current=page]:bg-ice aria-[current=page]:font-semibold`}
+                  >
+                    {entry.label}
+                  </Link>
+                ) : (
+                  <details className="group" open={menuIsCurrent(pathname, entry) || undefined}>
+                    <summary className={`${row} cursor-pointer list-none justify-between [&::-webkit-details-marker]:hidden`}>
+                      {entry.label}
+                      <ChevronDown
+                        aria-hidden
+                        className="size-5 text-slate transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+                      />
+                    </summary>
+                    <ul className={`mb-2 ml-3 border-l border-border pl-2 ${entry.columns === 2 ? "grid grid-cols-2" : "flex flex-col"}`}>
+                      {([...entry.items, ...(entry.footer ? [entry.footer] : [])] as MenuItem[]).map((item, _i, all) => (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            onClick={() => setOpen(false)}
+                            aria-current={item.href === bestMatch(pathname, all) ? "page" : undefined}
+                            className="flex min-h-11 flex-col justify-center rounded-lg px-3 py-1.5 text-small text-slate transition-colors duration-200 hover:bg-ice hover:text-midnight aria-[current=page]:bg-ice aria-[current=page]:font-semibold aria-[current=page]:text-midnight focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue"
+                          >
+                            {item.note && entry.columns === 2 ? (
+                              <>
+                                <span className="font-semibold text-midnight">{item.label}</span>
+                                <span>{item.note}</span>
+                              </>
+                            ) : (
+                              item.label
+                            )}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
               </li>
             ))}
           </ul>
