@@ -68,7 +68,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "links to the official USCIS processing times",
             "publishes immigration guides",
           ],
-          "Some features are on their way and are labeled as such on the site, including saved cases, status alerts and the lawyer directory. When they launch, these Terms apply to them too.",
+          "Some features are on their way and are labeled as such on the site, including automatic case status checks, status alerts and the lawyer directory. When they launch, these Terms apply to them too.",
         ],
       },
       {
@@ -212,7 +212,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
   privacy: {
     title: "Privacy Policy",
     description:
-      "What TrackMyUSCIS collects, why, who sees it and your choices. Receipt numbers you check are not stored, and we never sell personal information.",
+      "What TrackMyUSCIS collects, including from Google sign-in, why, who sees it and your choices. We never sell personal information or use it for ads.",
     summary: "What we collect, why, who sees it and the choices you have.",
     updated: LEGAL_UPDATED,
     policy: true,
@@ -223,6 +223,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         body: [
           [
             "Receipt numbers you check on the homepage are checked in your browser. They are not sent to us or stored.",
+            "If you create an account, we store your name, email address and the receipt numbers you choose to save, so you can see them when you sign in.",
+            "If you sign in with Google, we receive only your name, email address and profile picture from Google, and use them only to run your account.",
             "We don't sell your personal information or share it for targeted advertising.",
             "We don't use advertising or analytics cookies.",
             "We never ask for your A-Number, Social Security number, passport or immigration documents.",
@@ -249,7 +251,10 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           "Information you give us:",
           [
             "When you email us: your name, email address and what you write.",
-            "When accounts launch: your email address, a password (stored only as a secure hash), the receipt numbers you choose to save, the case updates we fetch for you and your alert settings.",
+            "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3.",
+            "When you use your account: the receipt numbers you save, any name you give a case (such as \"My work permit\") and the date you saved it.",
+            "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
+            "When automatic status checks and alerts launch: the case updates we fetch for you and your alert settings.",
           ],
           "Information collected automatically:",
           [
@@ -259,8 +264,25 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         ],
       },
       {
+        id: "google",
+        heading: "3. Information from Google sign-in",
+        body: [
+          "You can create an account or sign in with your Google account. If you do, Google shares only basic profile information with us, after you agree on Google's own screen:",
+          [
+            "your name",
+            "your email address and whether Google has verified it",
+            "your profile picture link",
+            "a Google account ID that lets us recognize you the next time you sign in",
+          ],
+          "We don't ask for, and can't see, your Google password, contacts, Gmail, Drive, Calendar or any other Google data.",
+          "We use this information only to create your account, sign you in, show your name in your account and contact you about your account. We don't use it for advertising, we don't sell it, and we don't use it to train AI or machine-learning models. We share it only with the service providers that run our sign-in and database (see section 6), who may use it only to provide that service to us, or when the law requires it.",
+          "We keep it for as long as your account is open and delete it as described in section 8 when you delete your account. You can also remove TrackMyUSCIS's access at any time from your [Google Account connections](https://myaccount.google.com/connections). That stops Google sign-in but doesn't delete your TrackMyUSCIS account, so email us if you want that too.",
+          "TrackMyUSCIS's use and transfer of information received from Google APIs adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements.",
+        ],
+      },
+      {
         id: "how-we-use",
-        heading: "3. How we use it",
+        heading: "4. How we use it",
         body: [
           [
             "to run the Service and show you the results you ask for",
@@ -275,17 +297,17 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
       },
       {
         id: "sensitive",
-        heading: "4. Immigration information",
+        heading: "5. Immigration information",
         body: [
           "Details about an immigration case can be sensitive. We use them only to provide the features you ask for. We never use them for advertising or profiling, and we never share them with USCIS or any government agency unless the law requires it.",
         ],
       },
       {
         id: "sharing",
-        heading: "5. Who we share it with",
+        heading: "6. Who we share it with",
         body: [
           [
-            "Service providers who help us run the Service, such as hosting, email delivery and, if we offer paid plans, payment processing. They may only use it to provide their service to us.",
+            "Service providers who help us run the Service: Vercel (website hosting), Supabase (sign-in and our database) and, as we add them, email delivery and, if we offer paid plans, payment processing. They may only use it to provide their service to us.",
             "A lawyer you choose to contact through the directory, when that feature is live. They receive what you send them.",
             "Authorities, when the law requires it or to protect someone's safety, rights or property.",
             "A buyer or successor, if our business is merged or sold. This policy would still protect your information.",
@@ -296,12 +318,12 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
       },
       {
         id: "cookies",
-        heading: "6. Cookies",
+        heading: "7. Cookies",
         body: ["We use only cookies the site needs to work. Our [Cookie Policy](/cookies) has the details."],
       },
       {
         id: "retention",
-        heading: "7. How long we keep it",
+        heading: "8. How long we keep it",
         body: [
           [
             "Server logs: up to 90 days, unless we need them longer to investigate abuse.",
@@ -312,14 +334,14 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
       },
       {
         id: "security",
-        heading: "8. Security",
+        heading: "9. Security",
         body: [
           "Every page is served over an encrypted (HTTPS) connection, access to personal information is limited to people who need it, and passwords are stored only as secure hashes. No system is perfectly secure, so we can't guarantee absolute security. Our [Security](/security) page explains more and how to report a problem.",
         ],
       },
       {
         id: "your-rights",
-        heading: "9. Your rights and choices",
+        heading: "10. Your rights and choices",
         body: [
           "Wherever you live, you can ask us to:",
           [
@@ -328,20 +350,20 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "delete your information",
             "stop sending you emails (every alert email will have an unsubscribe link)",
           ],
-          `To make a request, email ${email.privacy} from the address linked to your account, or see [Your Privacy Choices](/privacy-choices). We will confirm it's you before acting, and reply within 45 days. You may use an authorized agent. If we turn down your request, you can appeal by replying to our answer. We will never treat you differently for using these rights.`,
+          `To make a request, including deleting your account and everything in it, email ${email.privacy} from the address linked to your account, or see [Your Privacy Choices](/privacy-choices). You can also remove any saved case yourself from your dashboard at any time. We will confirm it's you before acting, and reply within 45 days. You may use an authorized agent. If we turn down your request, you can appeal by replying to our answer. We will never treat you differently for using these rights.`,
         ],
       },
       {
         id: "us-states",
-        heading: "10. California and other U.S. state rights",
+        heading: "11. California and other U.S. state rights",
         body: [
           "If you live in California or another state with a privacy law, you have the rights above plus the right to opt out of the sale or sharing of your personal information and to limit the use of sensitive personal information. We don't sell or share personal information and we already limit sensitive information to providing the Service, so there is nothing you need to switch off.",
-          `In the past 12 months we have collected these categories: identifiers (such as email and IP address), internet activity (server logs) and, for account holders, immigration case information you chose to save. We collect them for the purposes in section 3. We honor [Global Privacy Control](${GPC}) signals as a request to opt out.`,
+          `In the past 12 months we have collected these categories: identifiers (such as name, email address and IP address), internet activity (server logs) and, for account holders, immigration case information you chose to save. We collect them for the purposes in section 4. We honor [Global Privacy Control](${GPC}) signals as a request to opt out.`,
         ],
       },
       {
         id: "eea-uk",
-        heading: "11. Visitors from the EEA, UK and Switzerland",
+        heading: "12. Visitors from the EEA, UK and Switzerland",
         body: [
           "We process your information to provide the Service you ask for (contract), for our legitimate interests in running and securing it, to meet legal obligations and, where needed, with your consent. You can also object to or restrict our processing, and complain to your local data protection authority.",
           "We are based in the United States and process information there. Where the law requires it, we use approved safeguards such as standard contractual clauses for transfers.",
@@ -349,21 +371,21 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
       },
       {
         id: "children",
-        heading: "12. Children",
+        heading: "13. Children",
         body: [
           "The Service is not directed to children under 13, and accounts are for adults 18 and over. We don't knowingly collect personal information from children under 13. If you believe a child has given us information, email us and we will delete it.",
         ],
       },
       {
         id: "changes",
-        heading: "13. Changes to this policy",
+        heading: "14. Changes to this policy",
         body: [
           "We'll post any change here with a new date. If a change is important, we'll email account holders before it takes effect.",
         ],
       },
       {
         id: "contact",
-        heading: "14. Contact",
+        heading: "15. Contact",
         body: [`Privacy questions and requests: ${email.privacy}.`],
       },
     ],
@@ -389,15 +411,15 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         id: "what-we-use",
         heading: "2. What we use today",
         body: [
-          `${product} works without setting cookies of its own. Our hosting provider may set strictly necessary cookies to protect the site from attacks and abuse. These don't track you across other sites.`,
+          `If you don't sign in, ${product} works without setting cookies of its own. Our hosting provider may set strictly necessary cookies to protect the site from attacks and abuse. These don't track you across other sites.`,
           "We do not use advertising, analytics or social-media cookies.",
         ],
       },
       {
         id: "accounts",
-        heading: "3. When accounts launch",
+        heading: "3. Signing in",
         body: [
-          "We will add one strictly necessary cookie that keeps you signed in. The site can't keep you signed in without it, so it doesn't need consent. It is deleted when you sign out or when it expires.",
+          "When you sign in, we set strictly necessary cookies that keep you signed in. They hold a secure sign-in token from our sign-in provider, Supabase. The site can't keep you signed in without them, so they don't need consent. They are deleted when you sign out or when they expire, and they are never used for tracking or advertising.",
         ],
       },
       {
