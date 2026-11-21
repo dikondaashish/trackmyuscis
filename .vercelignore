@@ -1,0 +1,9 @@
+# Only ship what the build needs
+.claude
+.impeccable
+.taste-skill
+.next
+node_modules
+docs
+.env*
+*.tsbuildinfo
