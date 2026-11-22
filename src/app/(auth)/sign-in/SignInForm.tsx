@@ -10,6 +10,8 @@ import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { btnPrimary, field, fieldLabel, focusRing } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
+import { LastUsedBadge } from "@/components/auth/LastUsedBadge";
+import { rememberSignInMethod, useLastSignInMethod } from "@/lib/last-sign-in";
 
 /** Messages /auth/callback can send back here. */
 const CALLBACK_ERRORS: Record<string, string> = {
@@ -26,6 +28,7 @@ export function SignInForm({ googleClientId }: { googleClientId: string }) {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(CALLBACK_ERRORS[params.get("error") ?? ""] ?? null);
+  const lastUsed = useLastSignInMethod();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -37,6 +40,7 @@ export function SignInForm({ googleClientId }: { googleClientId: string }) {
       setBusy(false);
       return;
     }
+    rememberSignInMethod("email");
     // Full navigation so the server renders the dashboard with the new session cookie.
     window.location.assign(next);
   }
@@ -68,14 +72,17 @@ export function SignInForm({ googleClientId }: { googleClientId: string }) {
             Forgot password?
           </Link>
         </div>
-        <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
-          {busy ? (
-            <>
-              <Spinner />
-              Signing in…
-            </>
-          ) : "Sign in"}
-        </button>
+        <div className="relative">
+          <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
+            {busy ? (
+              <>
+                <Spinner />
+                Signing in…
+              </>
+            ) : "Sign in"}
+          </button>
+          {lastUsed === "email" && <LastUsedBadge />}
+        </div>
       </form>
     </>
   );

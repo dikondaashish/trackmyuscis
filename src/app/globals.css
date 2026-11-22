@@ -85,6 +85,12 @@ html {
   font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   -webkit-text-size-adjust: 100%;
+  /* No rubber-band bounce past the top or bottom of the page (trackpads, Magic Mouse). */
+  overscroll-behavior-y: none;
+}
+
+body {
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -283,6 +289,10 @@ dd {
   /* A menu panel drops in when it opens. */
   .menu-in:not([hidden]) {
     animation: drop-in 220ms var(--ease-out) both;
+  }
+
+  .menu-up:not([hidden]) {
+    animation: rise 200ms var(--ease-out) both;
   }
 
   .pop {

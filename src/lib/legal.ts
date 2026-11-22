@@ -420,6 +420,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         heading: "3. Signing in",
         body: [
           "When you sign in, we set strictly necessary cookies that keep you signed in. They hold a secure sign-in token from our sign-in provider, Supabase. The site can't keep you signed in without them, so they don't need consent. They are deleted when you sign out or when they expire, and they are never used for tracking or advertising.",
+          "We also keep one small note in your browser's local storage saying whether you last signed in with Google or with email, so the sign-in page can mark that option \"Last used\". It holds only the word \"google\" or \"email\", never your address, and stays on your device. You can clear it with your browser's site data.",
         ],
       },
       {

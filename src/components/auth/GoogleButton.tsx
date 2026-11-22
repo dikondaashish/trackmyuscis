@@ -8,6 +8,8 @@ import { authErrorMessage } from "@/lib/auth";
 import { createGoogleNonce } from "@/lib/google-identity";
 import { btnSecondary } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
+import { rememberSignInMethod, useLastSignInMethod } from "@/lib/last-sign-in";
+import { LastUsedBadge } from "./LastUsedBadge";
 
 type Props = { clientId: string; next: string; context?: "signin" | "signup"; onError: (message: string) => void };
 
@@ -18,8 +20,17 @@ type Props = { clientId: string; next: string; context?: "signin" | "signup"; on
  */
 export function GoogleButton(props: Props) {
   const [failed, setFailed] = useState(false);
-  if (!props.clientId || failed) return <GoogleRedirectButton {...props} />;
-  return <GoogleIdentityButton {...props} onLoadFailed={() => setFailed(true)} />;
+  const lastUsed = useLastSignInMethod() === "google" && props.context !== "signup";
+  return (
+    <div className="relative">
+      {!props.clientId || failed ? (
+        <GoogleRedirectButton {...props} />
+      ) : (
+        <GoogleIdentityButton {...props} onLoadFailed={() => setFailed(true)} />
+      )}
+      {lastUsed && <LastUsedBadge />}
+    </div>
+  );
 }
 
 function GoogleIdentityButton({ clientId, next, context = "signin", onError, onLoadFailed }: Props & { onLoadFailed: () => void }) {
@@ -50,6 +61,7 @@ function GoogleIdentityButton({ clientId, next, context = "signin", onError, onL
             setFinishing(false);
             return;
           }
+          rememberSignInMethod("google");
           // The server records consent for a new account, then redirects with the new session cookie.
           formRef.current?.requestSubmit();
         },
@@ -105,6 +117,7 @@ function GoogleRedirectButton({ next, onError }: Props) {
 
   async function signIn() {
     setBusy(true);
+    rememberSignInMethod("google");
     const callback = new URL("/auth/callback", window.location.origin);
     callback.searchParams.set("next", next);
     const { error } = await createClient().auth.signInWithOAuth({

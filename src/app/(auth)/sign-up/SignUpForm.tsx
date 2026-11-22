@@ -10,6 +10,7 @@ import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { btnPrimary, field, fieldLabel, focusRing } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
+import { rememberSignInMethod } from "@/lib/last-sign-in";
 
 const inlineLink = `rounded font-semibold text-blue underline-offset-2 hover:underline ${focusRing}`;
 const RESEND_AFTER = 60;
@@ -70,6 +71,7 @@ export function SignUpForm({ googleClientId }: { googleClientId: string }) {
     if (data.session) {
       // Email confirmation is off: signed in already.
       await recordConsent();
+      rememberSignInMethod("email");
       return window.location.assign(AFTER_SIGN_IN);
     }
     setStep("code");
@@ -87,6 +89,7 @@ export function SignUpForm({ googleClientId }: { googleClientId: string }) {
       return setError(authErrorMessage(error));
     }
     await recordConsent();
+    rememberSignInMethod("email");
     window.location.assign(AFTER_SIGN_IN);
   }
 

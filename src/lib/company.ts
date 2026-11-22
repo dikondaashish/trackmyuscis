@@ -22,6 +22,6 @@ export const COMPANY = {
 } as const;
 
 /** Date shown as "Last updated" on every legal document. Change it whenever a policy changes. */
-export const LEGAL_UPDATED = "November 21, 2026";
+export const LEGAL_UPDATED = "November 22, 2026";
 
 export const COPYRIGHT = `© 2026 ${COMPANY.product}`;
