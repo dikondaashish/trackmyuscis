@@ -5,8 +5,9 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CopyButton } from "@/components/app/CaseActions";
 import { TimelineList } from "@/components/app/StatusTimeline";
 import { appCard, focusRing } from "@/lib/ui";
-import { asksFilingCategory, categoryFor } from "@/lib/filing-category";
-import { asksBiometrics } from "@/lib/biometrics";
+import { asksFilingCategory, categoryFor, suggestCategory } from "@/lib/filing-category";
+import { asksBiometrics, biometricsScheduledOn } from "@/lib/biometrics";
+import { BiometricsQuestion, WorkPermitQuestion } from "@/components/app/CaseRowQuestions";
 
 const biometricsDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
@@ -60,22 +61,12 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                     Biometrics completed {biometricsDate.format(Date.parse(`${c.biometrics_attended_date}T00:00:00Z`))}
                   </div>
                 )}
-                {confirmBiometrics && (
-                  <Link
-                    href={`/dashboard/cases/${c.id}#biometrics`}
-                    className={`relative z-10 -ml-1 mr-2 inline-flex min-h-7 items-center rounded px-1 text-caption font-medium text-blue underline-offset-2 hover:underline ${focusRing}`}
-                  >
-                    Confirm biometrics
-                  </Link>
-                )}
+                {confirmBiometrics && <BiometricsQuestion caseId={c.id} scheduledOn={biometricsScheduledOn(c.status_history)} />}
                 {asksCategory && !category && (
-                  // Above the row's link, like the history toggle.
-                  <Link
-                    href={`/dashboard/cases/${c.id}#work-permit`}
-                    className={`relative z-10 -ml-1 inline-flex min-h-7 items-center rounded px-1 text-caption font-medium text-blue underline-offset-2 hover:underline ${focusRing}`}
-                  >
-                    Add work permit type
-                  </Link>
+                  <WorkPermitQuestion
+                    caseId={c.id}
+                    suggested={suggestCategory(cases.filter((o) => o.id !== c.id).map((o) => o.form_type))}
+                  />
                 )}
               </div>
               <div className="mt-1 flex items-center gap-0.5 sm:mt-0">
