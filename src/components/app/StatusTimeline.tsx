@@ -3,7 +3,7 @@ import type { TimelineEntry } from "@/lib/cases";
 /**
  * A case's USCIS status history as a vertical timeline, newest first. Every step is a filled
  * teal dot on one teal line, so it reads as the journey so far from the bottom (received)
- * up to the current status, which gets a soft ring.
+ * up to the current status, which gets a soft ring and a gentle pulse.
  */
 export function StatusTimeline({
   entries,
@@ -44,12 +44,11 @@ export function TimelineList({
               className="absolute top-4 bottom-0 left-[4.5px] w-0.5 rounded-full bg-teal/70"
             />
           )}
-          <span
-            aria-hidden
-            className={`mt-1 size-[11px] shrink-0 rounded-full bg-teal ${
-              entry.current ? "ring-4 ring-teal/15" : ""
-            }`}
-          />
+          <span aria-hidden className="relative mt-1 flex size-[11px] shrink-0">
+            {/* The current status pulses softly: this is where the case is now. Off with reduced motion. */}
+            {entry.current && <span className="ping absolute inset-0 rounded-full bg-teal" />}
+            <span className={`relative size-[11px] rounded-full bg-teal ${entry.current ? "ring-4 ring-teal/15" : ""}`} />
+          </span>
           <div className="min-w-0">
             <p
               className={`text-small text-midnight ${entry.current ? "font-semibold" : ""}`}
