@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronUp, CircleHelp, LogOut, Settings, ShieldCheck } from "lucide-react";
+import { ChevronUp, CircleHelp, LogOut, Settings } from "lucide-react";
 import type { Account } from "@/lib/account";
 import { focusRing } from "@/lib/ui";
 
@@ -111,12 +111,6 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
             <Link href="/dashboard/help" onClick={close} className={menuItem}>
               <CircleHelp aria-hidden className="size-4 text-slate" />
               Help &amp; Support
-            </Link>
-          </li>
-          <li>
-            <Link href="/privacy-choices" onClick={close} className={menuItem}>
-              <ShieldCheck aria-hidden className="size-4 text-slate" />
-              Your Privacy Choices
             </Link>
           </li>
         </ul>

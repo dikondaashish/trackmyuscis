@@ -17,6 +17,7 @@ export const metadata = pageMetadata({
 
 const ABOUT = [
   { href: "/privacy", label: "Privacy Policy" },
+  { href: "/cookies", label: "Cookie Policy" },
   { href: "/terms", label: "Terms of Service" },
   { href: "/contact", label: "Contact us" },
 ];
@@ -78,6 +79,21 @@ async function Preferences() {
             description="Let other users see when you were last active."
             initial={showActivityStatus}
           />
+          <Link
+            href="/privacy-choices"
+            className={`group flex min-h-11 items-center justify-between gap-3 rounded py-3 ${focusRing}`}
+          >
+            <span className="min-w-0">
+              <span className="block text-small font-medium text-midnight group-hover:text-blue">Your Privacy Choices</span>
+              <span className="block text-small text-slate">
+                We don&apos;t sell your information. See, correct or delete it.
+              </span>
+            </span>
+            <ChevronRight
+              aria-hidden
+              className="size-4 shrink-0 text-slate transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
+            />
+          </Link>
         </div>
       </section>
 
