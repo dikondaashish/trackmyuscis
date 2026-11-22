@@ -2,6 +2,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { communityPhotoUrl } from "@/lib/community";
 
 export type Account = {
   id: string;
@@ -17,6 +18,11 @@ export type Account = {
   usernameLockedUntil: string | null;
   /** Profile photo from Google, or null (then the avatar shows initials). */
   photoUrl: string | null;
+  /**
+   * The community profile: a display name, bio and photo kept apart from the real name and
+   * Google photo above. The username belongs to it too. Not shown to anyone yet.
+   */
+  community: { name: string | null; bio: string | null; photoUrl: string | null; photoPath: string | null };
   /** True when the account signs in with Google (no password to manage here). */
   google: boolean;
   /**
@@ -40,7 +46,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, email, username, username_changed_at")
+    .select("first_name, last_name, email, username, username_changed_at, community_name, community_bio, community_avatar_path")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -62,6 +68,12 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
     username: profile?.username ?? null,
     usernameLockedUntil: lockedUntil(profile?.username_changed_at),
     photoUrl: googlePhoto(meta.avatar_url ?? meta.picture),
+    community: {
+      name: profile?.community_name ?? null,
+      bio: profile?.community_bio ?? null,
+      photoUrl: communityPhotoUrl(profile?.community_avatar_path),
+      photoPath: profile?.community_avatar_path ?? null,
+    },
     google: user.app_metadata?.provider === "google",
     plan: user.app_metadata?.plan === "premium" ? "premium" : "free",
   };
@@ -86,3 +98,4 @@ function lockedUntil(changedAt: string | null | undefined): string | null {
   const until = new Date(changedAt).getTime() + USERNAME_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
   return until > Date.now() ? new Date(until).toISOString() : null;
 }
+

@@ -251,7 +251,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           "Information you give us:",
           [
             "When you email us: your name, email address and what you write.",
-            "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3. We also give every account a random username, such as Calm-River-4821, so it doesn't reveal your name.",
+            "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3. We also give every account a random username, such as Calm-River-4821, so it doesn't reveal your name. You can add an optional community profile (a display name, short bio and photo you upload), kept separate from your real name and email. Nobody else can see it today; it's for community features when they launch, and you can change or remove it at any time in Settings.",
             "When you use your account: the receipt numbers you save, any name you give a case (such as \"My work permit\") and the date you saved it.",
             "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
             "When automatic status checks and alerts launch: the case updates we fetch for you and your alert settings.",
