@@ -1,7 +1,7 @@
 /**
  * What a case is for. USCIS's case status names the form ("I-140") but not the
  * classification (EB-2 NIW, H-1B transfer, OPT…), and each has its own processing time, so
- * the owner tells us once. Forms with one main purpose (I-90, N-400, I-751…) aren't asked.
+ * the owner tells us once. Forms with one main purpose (N-565, I-829, I-526…) aren't asked.
  *
  * Codes are unique across forms: I-765 uses its short eligibility codes (saved before other
  * forms were added), the rest start with the form ("i140-eb1a"). Every code must also be in
@@ -213,6 +213,98 @@ export const FORM_PURPOSES: Record<string, FormPurpose> = {
     options: [
       { value: "i821d-initial", label: "First (initial) request", code: null, short: "DACA request" },
       { value: "i821d-renewal", label: "Renewal", code: null, short: "DACA renewal" },
+    ],
+  },
+  // The forms below have one row in USCIS's processing times, but the form itself asks which
+  // case it is (a checkbox near the start), and that changes how the case is handled.
+  "I-751": {
+    question: "How are you filing to remove conditions?",
+    field: "Filing type",
+    why: "USCIS reviews a joint filing and a waiver differently, and it doesn't say which one this is. It's the box you checked in Part 1 of the form.",
+    prompt: "Add filing type",
+    options: [
+      { value: "i751-joint", label: "Together with my spouse (joint filing)", code: null, short: "Joint I-751" },
+      { value: "i751-waiver-divorce", label: "Waiver: the marriage ended in divorce or annulment", code: null, short: "I-751 waiver" },
+      { value: "i751-waiver-death", label: "Waiver: my spouse died", code: null, short: "I-751 waiver" },
+      { value: "i751-waiver-abuse", label: "Waiver: abuse or extreme cruelty", code: null, short: "I-751 waiver" },
+      { value: "i751-waiver-hardship", label: "Waiver: extreme hardship", code: null, short: "I-751 waiver" },
+      { value: "i751-child", label: "A child filing alone", code: null, short: "I-751 for a child" },
+    ],
+  },
+  "N-400": {
+    question: "How are you applying for citizenship?",
+    field: "Eligibility",
+    why: "Some groups are processed on their own track, and USCIS doesn't say which one this is. It's the reason you checked in Part 1 of the form.",
+    prompt: "Add eligibility",
+    options: [
+      { value: "n400-5year", label: "Green card holder for 5 years", code: null, short: "Citizenship application" },
+      { value: "n400-3year", label: "Green card holder for 3 years, married to a U.S. citizen", code: null, short: "Citizenship application" },
+      { value: "n400-military", label: "Military service", code: null, short: "Military citizenship application" },
+      { value: "n400-spouse-abroad", label: "Spouse of a U.S. citizen working abroad", code: null, short: "Citizenship application" },
+      other("N-400", "Citizenship application"),
+    ],
+  },
+  "I-90": {
+    question: "Why are you filing for a new green card?",
+    field: "Reason",
+    why: "USCIS doesn't say why this card was requested. It's the reason you checked in Part 2 of the form.",
+    prompt: "Add reason",
+    options: [
+      { value: "i90-renewal", label: "Renew a card that has expired or expires soon", code: null, short: "Green card renewal" },
+      { value: "i90-replacement", label: "Replace a lost, stolen or damaged card", code: null, short: "Green card replacement" },
+      { value: "i90-never-received", label: "I never received my card", code: null, short: "Green card replacement" },
+      { value: "i90-correction", label: "Fix a mistake or update my name or details", code: null, short: "Green card correction" },
+      { value: "i90-age-14", label: "Turned 14 (new card required)", code: null, short: "Green card at 14" },
+      other("I-90", "Green card replacement"),
+    ],
+  },
+  "I-821": {
+    question: "Is this your first TPS application or a re-registration?",
+    field: "Application type",
+    why: "USCIS handles first applications and re-registrations differently, and it doesn't say which one this is. It's the box you checked in Part 1 of the form.",
+    prompt: "Add application type",
+    options: [
+      { value: "i821-initial", label: "First (initial) application", code: null, short: "TPS application" },
+      { value: "i821-reregistration", label: "Re-registration", code: null, short: "TPS re-registration" },
+      { value: "i821-late-initial", label: "Late initial application", code: null, short: "TPS application" },
+    ],
+  },
+  "I-730": {
+    question: "Who is this petition for?",
+    field: "Petition type",
+    why: "Relatives of asylees and refugees, in the U.S. or abroad, follow different paths, and USCIS doesn't say which one this is.",
+    prompt: "Add petition type",
+    options: [
+      { value: "i730-asylee-spouse", label: "Spouse of an asylee", code: null, short: "Asylee relative petition" },
+      { value: "i730-asylee-child", label: "Child of an asylee", code: null, short: "Asylee relative petition" },
+      { value: "i730-refugee-spouse", label: "Spouse of a refugee", code: null, short: "Refugee relative petition" },
+      { value: "i730-refugee-child", label: "Child of a refugee", code: null, short: "Refugee relative petition" },
+    ],
+  },
+  "I-601": {
+    question: "What is this waiver for?",
+    field: "Waiver for",
+    why: "USCIS handles waivers differently depending on what you're applying for, and the case status doesn't say which one this is.",
+    prompt: "Add waiver type",
+    options: [
+      { value: "i601-immigrant-visa", label: "Green card through a U.S. consulate abroad", code: null, short: "Waiver application" },
+      { value: "i601-adjustment", label: "Green card inside the U.S. (with Form I-485)", code: null, short: "Waiver application" },
+      { value: "i601-k-v", label: "Fiancé(e) or spouse visa (K or V)", code: null, short: "Waiver application" },
+      { value: "i601-tps", label: "Temporary Protected Status (TPS)", code: null, short: "TPS waiver" },
+      { value: "i601-asylee-refugee", label: "Green card as an asylee or refugee", code: null, short: "Waiver application" },
+      other("I-601", "Waiver application"),
+    ],
+  },
+  "I-290B": {
+    question: "Is this an appeal or a motion?",
+    field: "Filing type",
+    why: "An appeal goes to the Administrative Appeals Office, while a motion goes back to the office that decided, so the wait is different. It's the box you checked in Part 2 of the form.",
+    prompt: "Add filing type",
+    options: [
+      { value: "i290b-appeal", label: "Appeal", code: null, short: "Appeal" },
+      { value: "i290b-motion-reopen", label: "Motion to reopen", code: null, short: "Motion to reopen" },
+      { value: "i290b-motion-reconsider", label: "Motion to reconsider", code: null, short: "Motion to reconsider" },
+      { value: "i290b-motion-both", label: "Motion to reopen and reconsider", code: null, short: "Motion to reopen and reconsider" },
     ],
   },
 };

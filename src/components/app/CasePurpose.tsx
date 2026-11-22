@@ -130,6 +130,13 @@ const answeredLabel: Record<string, string> = {
   "I-360": "Petition for",
   "I-129F": "Petition for",
   "I-821D": "Request",
+  "I-751": "Filing type",
+  "N-400": "Eligibility",
+  "I-90": "Reason",
+  "I-821": "Application",
+  "I-730": "Petition for",
+  "I-601": "Waiver for",
+  "I-290B": "Filing type",
 };
 
 /**
