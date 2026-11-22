@@ -108,7 +108,7 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
             </Link>
           </li>
           <li>
-            <Link href="/help" onClick={close} className={menuItem}>
+            <Link href="/dashboard/help" onClick={close} className={menuItem}>
               <CircleHelp aria-hidden className="size-4 text-slate" />
               Help &amp; Support
             </Link>

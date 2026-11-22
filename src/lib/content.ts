@@ -7,6 +7,30 @@ import { COMPANY } from "@/lib/company";
 import { DISCLAIMER } from "@/lib/site";
 
 export const USCIS_PROCESSING_TIMES = "https://egov.uscis.gov/processing-times/";
+
+/** How to read the official processing-times tool (public page and dashboard). */
+export const PROCESSING_STEPS = [
+  "Open the official USCIS processing times page.",
+  "Choose your form, then the category on your receipt notice.",
+  "Choose the office named on your receipt notice (Form I-797C).",
+  "Read the time shown: most cases at that office finish within it.",
+];
+
+export const PROCESSING_TIPS = [
+  {
+    title: "It is a range, not a promise",
+    body: "USCIS shows how long it took to finish most recent cases. Yours can be faster or slower.",
+  },
+  {
+    title: "Your office matters",
+    body: "The same form can take very different times at different offices. Your receipt notice names yours.",
+  },
+  {
+    title: "Past the normal time?",
+    body: "If your receipt date is earlier than the date USCIS lists for inquiries, you can submit a case inquiry.",
+  },
+];
+
 export const USCIS_CASE_STATUS = "https://egov.uscis.gov/";
 export const USCIS_ALL_FORMS = "https://www.uscis.gov/forms/all-forms";
 export const USCIS_CONTACT = "https://www.uscis.gov/about-us/contact-us";

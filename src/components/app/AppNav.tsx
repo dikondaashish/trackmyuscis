@@ -2,17 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Clock, FileText, LayoutList } from "lucide-react";
+import { BookOpen, Clock, FileSearch, FileText, LayoutList } from "lucide-react";
 import { focusRing } from "@/lib/ui";
 
 const MAIN = [
   { href: "/dashboard", label: "Cases", icon: LayoutList, match: (p: string) => p === "/dashboard" || p.startsWith("/dashboard/cases") },
 ];
 
+const under = (base: string) => (p: string) => p === base || p.startsWith(`${base}/`);
+
+// Statuses, times, questions and help open inside the dashboard; forms is still the public page.
 const GUIDES = [
-  { href: "/status-explained", label: "Case statuses", icon: BookOpen },
-  { href: "/processing-times", label: "Processing times", icon: Clock },
-  { href: "/forms", label: "USCIS forms", icon: FileText },
+  { href: "/dashboard/statuses", label: "Case statuses", icon: BookOpen, match: under("/dashboard/statuses") },
+  { href: "/dashboard/processing-times", label: "Processing times", icon: Clock, match: under("/dashboard/processing-times") },
+  { href: "/dashboard/answers", label: "Common questions", icon: FileSearch, match: under("/dashboard/answers") },
+  { href: "/forms", label: "USCIS forms", icon: FileText, match: () => false },
 ];
 
 type NavLink = (typeof MAIN)[number];
@@ -54,16 +58,9 @@ export function AppNavView({ pathname, onNavigate }: { pathname: string; onNavig
       <NavList links={MAIN} pathname={pathname} onNavigate={onNavigate} />
       <div>
         <p className="px-2.5 text-caption font-medium text-slate">Guides</p>
-        <ul className="mt-1 flex flex-col gap-0.5">
-          {GUIDES.map(({ href, label, icon: Icon }) => (
-            <li key={href}>
-              <Link href={href} onClick={onNavigate} className={`${item} text-slate hover:bg-cloud hover:text-midnight`}>
-                <Icon aria-hidden className="size-4" />
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="mt-1">
+          <NavList links={GUIDES} pathname={pathname} onNavigate={onNavigate} />
+        </div>
       </div>
     </nav>
   );

@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getAccount } from "@/lib/account";
 import { caseEngineEnabled } from "@/lib/case-engine/client";
-import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
+import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, lastStatusChange, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
 import { USCIS_PROCESSING_TIMES, officialFormUrl, statusId } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -52,6 +52,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
   const status = caseStatus(c);
   const autoChecks = caseEngineEnabled();
   const timeline = c.status_history?.length ? statusTimeline(c) : [];
+  const changed = lastStatusChange(c);
 
   return (
     <>
@@ -87,17 +88,17 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                     {c.status_description}
                   </p>
                 )}
-                {(c.status_changed_at || c.last_checked_at) && (
+                {(changed || c.last_checked_at) && (
                   <p className="mt-1.5 text-caption text-slate">
                     {[
-                      c.status_changed_at && `Changed ${shortDate.format(new Date(c.status_changed_at))}`,
+                      changed && `Changed ${changed}`,
                       c.last_checked_at && `Last checked ${shortDate.format(new Date(c.last_checked_at))}`,
                     ]
                       .filter(Boolean)
                       .join(" · ")}
                   </p>
                 )}
-                <Link href={`/status-explained#${statusId(status.name)}`} className={`${link} mt-2`}>
+                <Link href={`/dashboard/statuses#${statusId(status.name)}`} className={`${link} mt-2`}>
                   What this status means
                   <ArrowRight aria-hidden className="size-3.5" />
                 </Link>
@@ -182,7 +183,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                 <dd className="font-medium text-midnight">{shortDate.format(new Date(c.created_at))}</dd>
               </div>
             </dl>
-            <Link href="/answers/uscis-receipt-number-letters" className={`${link} mt-2`}>
+            <Link href="/dashboard/answers/uscis-receipt-number-letters" className={`${link} mt-2`}>
               What the letters mean
               <ArrowRight aria-hidden className="size-3.5" />
             </Link>

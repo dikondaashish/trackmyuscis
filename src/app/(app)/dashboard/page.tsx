@@ -96,7 +96,7 @@ function EmptyState() {
         <AddCaseButton label="Add your first case" />
       </div>
       <Link
-        href="/answers/what-is-a-uscis-receipt-number"
+        href="/dashboard/answers/what-is-a-uscis-receipt-number"
         className={`${appLink} mt-2`}
       >
         Where do I find my receipt number?
@@ -106,9 +106,9 @@ function EmptyState() {
 }
 
 const GUIDES = [
-  { href: "/status-explained", icon: BookOpen, title: "What your status means", text: "Every USCIS case status in plain English." },
-  { href: "/processing-times", icon: Clock, title: "How long it takes", text: "Official processing times by form and office." },
-  { href: "/answers", icon: FileSearch, title: "Common questions", text: "Receipt notices, biometrics, delays and more." },
+  { href: "/dashboard/statuses", icon: BookOpen, title: "What your status means", text: "Every USCIS case status in plain English." },
+  { href: "/dashboard/processing-times", icon: Clock, title: "How long it takes", text: "Official processing times by form and office." },
+  { href: "/dashboard/answers", icon: FileSearch, title: "Common questions", text: "Receipt notices, biometrics, delays and more." },
 ];
 
 function Guides() {
