@@ -18,7 +18,9 @@ export function StatusTimeline({
         Status history
       </h2>
       <TimelineList entries={entries} className="mt-3" />
-      <p className="mt-4 text-caption text-slate">From USCIS, newest first.</p>
+      <p className="mt-4 text-caption text-slate">
+        From USCIS, newest first{entries.some((e) => e.byYou) ? ", with the dates you confirmed" : ""}.
+      </p>
     </section>
   );
 }
@@ -62,6 +64,7 @@ export function TimelineList({
               {entry.date ??
                 (entry.current ? "Current status" : "Date not shared by USCIS")}
               {entry.current && entry.date && " · Current"}
+              {entry.byYou && " · Confirmed by you"}
             </p>
           </div>
         </li>

@@ -13,6 +13,8 @@ import { CheckOnUscisButton, CopyButton, EditRemoveButtons, RecheckButton } from
 import { CaseSkeleton } from "@/components/app/Skeletons";
 import { StatusTimeline } from "@/components/app/StatusTimeline";
 import { WorkPermitCategory } from "@/components/app/WorkPermitCategory";
+import { BiometricsAttendance } from "@/components/app/BiometricsAttendance";
+import { asksBiometrics, biometricsScheduledOn } from "@/lib/biometrics";
 import { asksFilingCategory, suggestCategory } from "@/lib/filing-category";
 import { appLink, appPage, appPanel, appTitle, focusRing } from "@/lib/ui";
 
@@ -149,6 +151,13 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
           {asksCategory && (
             <WorkPermitCategory caseId={c.id} saved={c.filing_category} premiumSince={premiumSince(c)} suggested={suggested} />
           )}
+
+          <BiometricsAttendance
+            caseId={c.id}
+            saved={c.biometrics_attended_date}
+            scheduledOn={biometricsScheduledOn(c.status_history)}
+            asking={asksBiometrics(c.current_status, c.status_history)}
+          />
 
           {timeline.length > 0 && <StatusTimeline entries={timeline} className={panel} />}
 

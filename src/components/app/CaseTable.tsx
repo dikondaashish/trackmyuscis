@@ -6,6 +6,9 @@ import { CopyButton } from "@/components/app/CaseActions";
 import { TimelineList } from "@/components/app/StatusTimeline";
 import { appCard, focusRing } from "@/lib/ui";
 import { asksFilingCategory, categoryFor } from "@/lib/filing-category";
+import { asksBiometrics } from "@/lib/biometrics";
+
+const biometricsDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
 const cols = "sm:grid sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_6rem_1rem] sm:items-center sm:gap-x-5 sm:gap-y-1";
 
@@ -30,6 +33,7 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
           const category = asksCategory ? categoryFor(c.filing_category) : undefined;
           // Any form can be premium (I-765, I-129, I-140…); USCIS gives the date in the history.
           const premium = premiumSince(c);
+          const confirmBiometrics = !c.biometrics_attended_date && asksBiometrics(c.current_status, c.status_history);
           return (
             <li key={c.id} className={`group relative py-3 pr-10 pl-4 sm:py-2.5 sm:pr-4 transition-colors duration-200 hover:bg-cloud/70 ${cols}`}>
               <div className="min-w-0">
@@ -50,6 +54,19 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                   <div className="truncate text-caption font-medium text-teal tabular-nums">
                     {premium ? `Premium processing since ${premium}` : "Premium processing"}
                   </div>
+                )}
+                {c.biometrics_attended_date && (
+                  <div className="truncate text-caption text-slate tabular-nums">
+                    Biometrics completed {biometricsDate.format(Date.parse(`${c.biometrics_attended_date}T00:00:00Z`))}
+                  </div>
+                )}
+                {confirmBiometrics && (
+                  <Link
+                    href={`/dashboard/cases/${c.id}#biometrics`}
+                    className={`relative z-10 -ml-1 mr-2 inline-flex min-h-7 items-center rounded px-1 text-caption font-medium text-blue underline-offset-2 hover:underline ${focusRing}`}
+                  >
+                    Confirm biometrics
+                  </Link>
                 )}
                 {asksCategory && !category && (
                   // Above the row's link, like the history toggle.

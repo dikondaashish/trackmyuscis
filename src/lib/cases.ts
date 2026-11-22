@@ -21,11 +21,13 @@ export type CaseRow = {
   /** USCIS doesn't recognize the receipt number; checks_stopped once retries ended. */
   uscis_not_found: boolean;
   checks_stopped: boolean;
+  /** YYYY-MM-DD the owner says they completed biometrics; their own record. */
+  biometrics_attended_date: string | null;
   created_at: string;
 };
 
 export const CASE_COLUMNS =
-  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, uscis_not_found, checks_stopped, created_at";
+  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, uscis_not_found, checks_stopped, biometrics_attended_date, created_at";
 
 export const formFor = (code: string | null) => (code ? FORMS.find((f) => f.form === code) : undefined);
 
@@ -73,13 +75,21 @@ function readUscisDate(value: string): number | null {
   return Number.isFinite(t) ? t : null;
 }
 
-export type TimelineEntry = { status: string; date: string | null; current: boolean };
+export type TimelineEntry = {
+  status: string;
+  date: string | null;
+  current: boolean;
+  /** Added by the person (biometrics attendance), not from USCIS. */
+  byYou?: boolean;
+};
 
 /**
  * A case's status history for the timeline, newest first. Adds the current status on top
  * when USCIS hasn't put it in the history yet (its date is then unknown).
  */
-export function statusTimeline(c: Pick<CaseRow, "current_status" | "status_history">): TimelineEntry[] {
+export function statusTimeline(
+  c: Pick<CaseRow, "current_status" | "status_history"> & { biometrics_attended_date?: string | null },
+): TimelineEntry[] {
   const items = (Array.isArray(c.status_history) ? c.status_history : [])
     .filter((h) => h && typeof h.completedText === "string" && h.completedText.trim())
     .map((h, i) => ({ status: h.completedText.trim(), at: typeof h.date === "string" ? readUscisDate(h.date) : null, i }))
@@ -94,6 +104,25 @@ export function statusTimeline(c: Pick<CaseRow, "current_status" | "status_histo
   const same = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, " ") === b.toLowerCase().replace(/\s+/g, " ");
   if (current && (!entries[0] || !same(entries[0].status, current))) entries.unshift({ status: current, date: null, current: true });
   else if (entries[0]) entries[0].current = true;
+
+  // The person's own biometrics date, in date order below the current status.
+  const attended = c.biometrics_attended_date ? readUscisDate(c.biometrics_attended_date) : null;
+  if (attended !== null) {
+    const mine: TimelineEntry = { status: "You completed your biometrics appointment", date: utcDate.format(attended), current: false, byYou: true };
+    const dated = items.map((h) => h.at);
+    // entries[0] is the current status; later entries follow `items` (offset by one if the
+    // current status was added on top).
+    const offset = entries.length - items.length;
+    let at = entries.length;
+    for (let i = 0; i < items.length; i++) {
+      const t = dated[i];
+      if (t !== null && t <= attended) {
+        at = i + offset;
+        break;
+      }
+    }
+    entries.splice(Math.max(at, 1), 0, mine);
+  }
   return entries;
 }
 
