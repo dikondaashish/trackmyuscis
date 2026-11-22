@@ -77,7 +77,7 @@ export function CaseSkeleton() {
 /** Settings while they load. */
 export function SettingsSkeleton() {
   return (
-    <div role="status" aria-label="Loading settings" className="mt-8 flex flex-col gap-6">
+    <div role="status" aria-label="Loading settings" className="flex flex-col gap-4 lg:gap-6">
       {[0, 1].map((i) => (
         <div key={i} className={`${card} p-5 sm:p-6`}>
           <Skeleton className="h-5 w-32" />
