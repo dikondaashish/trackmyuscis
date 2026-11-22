@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { POLICY_VERSION, safeNext } from "@/lib/auth";
+import { safeNext } from "@/lib/auth";
+import { recordGoogleSignupConsent } from "@/lib/supabase/consent";
 
 /**
  * Where Google sign-in, the sign-up confirmation link and the password-reset link land.
@@ -22,16 +23,7 @@ export async function GET(request: NextRequest) {
     return fail(/verifier/i.test(error.message) ? "other_browser" : "link_expired");
   }
 
-  // First Google sign-in creates the account: record that they agreed to Terms and Privacy
-  // (the Google button says so on the sign-up page).
-  const user = data.user;
-  const isNew = user && Date.now() - new Date(user.created_at).getTime() < 60_000;
-  if (isNew && user.app_metadata?.provider === "google") {
-    await supabase.from("policy_consents").insert([
-      { policy: "terms", policy_version: POLICY_VERSION, method: "google_signup" },
-      { policy: "privacy", policy_version: POLICY_VERSION, method: "google_signup" },
-    ]);
-  }
+  await recordGoogleSignupConsent(supabase, data.user);
 
   const response = NextResponse.redirect(new URL(next, origin));
   response.headers.set("Cache-Control", "no-store");

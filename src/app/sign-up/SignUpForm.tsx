@@ -154,7 +154,7 @@ export function SignUpForm() {
   return (
     <>
       {error && <div className="mb-6"><FormMessage tone="error">{error}</FormMessage></div>}
-      <GoogleButton next={AFTER_SIGN_IN} onError={setError} />
+      <GoogleButton next={AFTER_SIGN_IN} context="signup" onError={setError} />
       <p className="mt-3 text-center text-caption text-slate">
         By continuing with Google you agree to our <Link href="/terms" className={inlineLink}>Terms</Link> and{" "}
         <Link href="/privacy" className={inlineLink}>Privacy Policy</Link>.

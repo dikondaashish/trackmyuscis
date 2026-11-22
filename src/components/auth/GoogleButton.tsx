@@ -1,12 +1,107 @@
 "use client";
 
-import { useState } from "react";
+import Script from "next/script";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { LoaderCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { authErrorMessage } from "@/lib/auth";
+import { createGoogleNonce } from "@/lib/google-identity";
 import { btnSecondary } from "@/lib/ui";
 
-/** "Continue with Google". Google sends people back to /auth/callback, which finishes sign-in. */
-export function GoogleButton({ next, onError }: { next: string; onError: (message: string) => void }) {
+const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim() ?? "";
+
+type Props = { next: string; context?: "signin" | "signup"; onError: (message: string) => void };
+
+/**
+ * Google sign-in. With a Google client ID it shows Google's own button, which fills in the
+ * visitor's Google account ("Continue as Ashish") and signs in in a popup without leaving the
+ * page. Without one, or if Google's script can't load, it falls back to the redirect flow.
+ */
+export function GoogleButton(props: Props) {
+  const [failed, setFailed] = useState(false);
+  if (!CLIENT_ID || failed) return <GoogleRedirectButton {...props} />;
+  return <GoogleIdentityButton {...props} onLoadFailed={() => setFailed(true)} />;
+}
+
+function GoogleIdentityButton({ next, context = "signin", onError, onLoadFailed }: Props & { onLoadFailed: () => void }) {
+  const slotRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const initialized = useRef(false);
+  const [ready, setReady] = useState(false);
+  const [finishing, setFinishing] = useState(false);
+
+  const initialize = useCallback(async () => {
+    const gis = window.google?.accounts.id;
+    if (!gis || initialized.current) return;
+    initialized.current = true;
+    try {
+      const { nonce, hashedNonce } = await createGoogleNonce();
+      gis.initialize({
+        client_id: CLIENT_ID,
+        nonce: hashedNonce,
+        ux_mode: "popup",
+        use_fedcm_for_button: true,
+        button_auto_select: false,
+        context,
+        callback: async ({ credential }) => {
+          setFinishing(true);
+          const { error } = await createClient().auth.signInWithIdToken({ provider: "google", token: credential, nonce });
+          if (error) {
+            onError(authErrorMessage(error));
+            setFinishing(false);
+            return;
+          }
+          // The server records consent for a new account, then redirects with the new session cookie.
+          formRef.current?.requestSubmit();
+        },
+      });
+      setReady(true);
+    } catch {
+      onLoadFailed();
+    }
+  }, [context, onError, onLoadFailed]);
+
+  // Google's button has a fixed pixel width, so redraw it whenever the card's width changes.
+  useEffect(() => {
+    const slot = slotRef.current;
+    if (!ready || !slot) return;
+    let lastWidth = 0;
+    const observer = new ResizeObserver(() => {
+      const width = Math.min(Math.floor(slot.clientWidth), 400);
+      if (!width || width === lastWidth) return;
+      lastWidth = width;
+      slot.replaceChildren();
+      window.google?.accounts.id.renderButton(slot, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
+        logo_alignment: "left",
+        width,
+      });
+    });
+    observer.observe(slot);
+    return () => observer.disconnect();
+  }, [ready]);
+
+  return (
+    <div className="relative flex min-h-11 w-full items-center justify-center" aria-busy={!ready || finishing}>
+      <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" onReady={() => void initialize()} onError={onLoadFailed} />
+      <div ref={slotRef} className="flex w-full justify-center" inert={finishing} />
+      <form ref={formRef} action={`/auth/google/complete?${new URLSearchParams({ next })}`} method="post" hidden />
+      {(!ready || finishing) && (
+        <div role="status" className="absolute inset-0 flex items-center justify-center gap-2 rounded-[10px] border border-border bg-white text-small text-slate">
+          <LoaderCircle aria-hidden className="size-4 animate-spin motion-reduce:animate-none" />
+          {finishing ? "Signing you in…" : "Loading Google sign-in…"}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Fallback: "Continue with Google" that leaves for Google and comes back to /auth/callback. */
+function GoogleRedirectButton({ next, onError }: Props) {
   const [busy, setBusy] = useState(false);
 
   async function signIn() {
