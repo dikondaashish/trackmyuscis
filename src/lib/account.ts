@@ -26,7 +26,7 @@ export type Account = {
    */
   community: { name: string | null; bio: string | null; photoUrl: string | null; photoPath: string | null };
   /** Choices from Settings > Preferences. */
-  preferences: { emailNotifications: boolean; publicProfile: boolean; showActivityStatus: boolean };
+  preferences: { emailNotifications: boolean; publicProfile: boolean; showActivityStatus: boolean; documentReminders: boolean };
   /** True when the account signs in with Google (no password to manage here). */
   google: boolean;
   /**
@@ -50,7 +50,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, email, username, username_changed_at, date_of_birth, community_name, community_bio, community_avatar_path, email_notifications, public_profile, show_activity_status")
+    .select("first_name, last_name, email, username, username_changed_at, date_of_birth, community_name, community_bio, community_avatar_path, email_notifications, public_profile, show_activity_status, document_reminders")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -83,6 +83,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
       emailNotifications: profile?.email_notifications ?? true,
       publicProfile: profile?.public_profile ?? false,
       showActivityStatus: profile?.show_activity_status ?? false,
+      documentReminders: profile?.document_reminders ?? true,
     },
     google: user.app_metadata?.provider === "google",
     plan: user.app_metadata?.plan === "premium" ? "premium" : "free",

@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { focusRing } from "@/lib/ui";
 
-type Column = "email_notifications" | "public_profile" | "show_activity_status";
+type Column = "email_notifications" | "public_profile" | "show_activity_status" | "document_reminders";
 
 /**
  * One on/off preference row: a label and a line of help on the left, a switch on the right.

@@ -229,7 +229,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "If you sign in with Google, we receive only your name, email address and profile picture from Google, and use them only to run your account.",
             "We don't sell your personal information or share it for targeted advertising.",
             "We don't use advertising or analytics cookies.",
-            "We never ask for your A-Number, Social Security number, passport or immigration documents.",
+            "We never ask for your A-Number or Social Security number. If you choose to keep documents in Documents (such as a passport or green card), they're stored privately, locked with your passcode, and read by Google's Gemini AI only to fill in their details.",
             `You can ask us to see, correct or delete your information at any time: ${email.privacy}.`,
           ],
         ],
@@ -256,6 +256,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3. If you choose, you can add your date of birth in Settings; it's optional, only you can see it, and you can remove it at any time. We also give every account a random username, such as Calm-River-4821, so it doesn't reveal your name. You can add an optional community profile (a display name, short bio and photo you upload), kept separate from your real name and email. Nobody else can see it today; it's for community features when they launch, and you can change or remove it at any time in Settings.",
             "When you use your account: the receipt numbers you save, any name you give a case (such as \"My work permit\") and the date you saved it.",
             "Your choices in Settings > Preferences: whether we may email you about case updates, and whether your community profile and activity status may be shown to other users once community features launch (both off unless you turn them on).",
+            "If you use Documents: the files you upload (for example a passport, green card, work permit or USCIS notice), the type, dates, one-line summary and key details read from each one (which can include your name, document numbers and date of birth), your 6-digit passcode (stored only as a secure hash), your lock settings and whether expiry reminders are on. Documents is optional; nothing is uploaded unless you choose a file.",
             "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
             "For each saved case: the status, description and status history USCIS returns, when it last changed and when we last checked it, and your email and privacy choices in Settings.",
           ],
@@ -263,7 +264,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           [
             "Standard server logs kept by our hosting provider: IP address, browser type, the pages requested and the time. We use them to keep the site secure and working.",
           ],
-          "Please don't send us your A-Number, Social Security number, passport details or immigration documents. The Service doesn't need them.",
+          "Please don't email us your A-Number, Social Security number or immigration documents. If you want to keep documents with us, upload them to Documents in your account, where they stay private and locked.",
         ],
       },
       {
@@ -291,6 +292,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "to run the Service and show you the results you ask for",
             "to reply when you contact us",
             "to check your saved cases with USCIS and, if case emails are on, email you when a status changes",
+            "to store the documents you upload, read their type, dates and key details with AI, and, if reminders are on, email you before they expire",
             "to send the account messages you need",
             "to protect the Service, our users and us from fraud, abuse and security threats",
             "to understand, in aggregate, which features are used so we can improve them",
@@ -304,6 +306,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         heading: "5. Immigration information",
         body: [
           "Details about an immigration case can be sensitive. We use them to provide the features you ask for and, with names, emails and receipt numbers removed, to produce aggregated statistics such as typical processing times, combined with case information from other services our company runs. We never publish or sell individual cases. We never use them for advertising or profiling, and we never share them with USCIS or any government agency unless the law requires it.",
+          "Documents you upload are used only to show them to you, fill in their details and send your expiry reminders. They aren't used for statistics, advertising or profiling, and they're never shared with any government agency unless the law requires it.",
         ],
       },
       {
@@ -311,7 +314,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         heading: "6. Who we share it with",
         body: [
           [
-            "Service providers who help us run the Service: Vercel (website hosting), Supabase (sign-in and our database), our email provider (to send alerts) and, if we offer paid plans, payment processing. They may only use it to provide their service to us.",
+            "Service providers who help us run the Service: Vercel (website hosting), Supabase (sign-in, our database and file storage for Documents), Google (its Gemini AI reads each document you upload so we can fill in its type, dates and key details), our email provider (to send alerts, reminders and codes) and, if we offer paid plans, payment processing. They may only use it to provide their service to us.",
             "A case-status service run by our company, which looks up your saved receipt numbers with the official USCIS Case Status API. It receives only each receipt number and a random account ID, and uses them only to check your cases and for the aggregated statistics described in section 5.",
             "A lawyer you choose to contact through the directory, when that feature is live. They receive what you send them.",
             "Authorities, when the law requires it or to protect someone's safety, rights or property.",
@@ -333,6 +336,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           [
             "Server logs: up to 90 days, unless we need them longer to investigate abuse.",
             "Emails with us: up to 24 months after the conversation ends.",
+            "Documents: until you delete them or your account. Resetting a forgotten Documents passcode deletes them too.",
             "Account information: while your account is open. When you delete it, we delete your information within 30 days, apart from backups, which are overwritten within a further 90 days, and anything the law requires us to keep.",
           ],
         ],
@@ -341,7 +345,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         id: "security",
         heading: "9. Security",
         body: [
-          "Every page is served over an encrypted (HTTPS) connection, access to personal information is limited to people who need it, and passwords are stored only as secure hashes. No system is perfectly secure, so we can't guarantee absolute security. Our [Security](/security) page explains more and how to report a problem.",
+          "Every page is served over an encrypted (HTTPS) connection, access to personal information is limited to people who need it, and passwords are stored only as secure hashes. Documents are kept in private storage, open only after you unlock them with your passcode, and shown through links that expire after 5 minutes. No system is perfectly secure, so we can't guarantee absolute security. Our [Security](/security) page explains more and how to report a problem.",
         ],
       },
       {
@@ -425,6 +429,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         heading: "3. Signing in",
         body: [
           "When you sign in, we set strictly necessary cookies that keep you signed in. They hold a secure sign-in token from our sign-in provider, Supabase. The site can't keep you signed in without them, so they don't need consent. They are deleted when you sign out or when they expire, and they are never used for tracking or advertising.",
+          "When you unlock Documents with your passcode, we set one more strictly necessary cookie that remembers this browser is unlocked, for up to 12 hours or until you lock it. It holds only a random code, never your passcode.",
           "We also keep one small note in your browser's local storage saying whether you last signed in with Google or with email, so the sign-in page can mark that option \"Last used\". It holds only the word \"google\" or \"email\", never your address, and stays on your device. You can clear it with your browser's site data.",
         ],
       },
@@ -667,7 +672,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           [
             "Every page is served over an encrypted HTTPS connection.",
             "The receipt number check runs in your browser, so the number never reaches our servers.",
-            "We never ask for A-Numbers, Social Security numbers or immigration documents.",
+            "We never ask for A-Numbers or Social Security numbers. Documents you choose to upload stay in private storage, locked with your own passcode, and open through links that expire after 5 minutes.",
             "Passwords will be stored only as secure hashes, never as plain text.",
             "Only the people who need access to personal information to run the Service have it.",
             "We keep our software and its dependencies up to date.",

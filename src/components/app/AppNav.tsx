@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Clock, FileSearch, FileText, LayoutList } from "lucide-react";
+import { BookOpen, Clock, FileSearch, FileText, FolderLock, LayoutList } from "lucide-react";
 import { focusRing } from "@/lib/ui";
 
 const MAIN = [
   { href: "/dashboard", label: "Cases", icon: LayoutList, match: (p: string) => p === "/dashboard" || p.startsWith("/dashboard/cases") },
+  { href: "/dashboard/documents", label: "Documents", icon: FolderLock, match: (p: string) => p.startsWith("/dashboard/documents") },
 ];
 
 const under = (base: string) => (p: string) => p === base || p.startsWith(`${base}/`);

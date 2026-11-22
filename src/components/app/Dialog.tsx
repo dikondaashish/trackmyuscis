@@ -16,6 +16,7 @@ export function Dialog({
   title,
   description,
   step,
+  size = "md",
   children,
 }: {
   open: boolean;
@@ -24,6 +25,8 @@ export function Dialog({
   description?: string;
   /** Changes when the content moves to another step, to move focus into the new step. */
   step?: string;
+  /** md for forms; lg for wide content such as a document preview. */
+  size?: "md" | "lg";
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -59,7 +62,7 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       aria-labelledby="dialog-title"
-      className="modal m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)]"
+      className={`modal m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] overflow-y-auto ${size === "lg" ? "max-w-3xl" : "max-w-md"} rounded-xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)]`}
     >
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">

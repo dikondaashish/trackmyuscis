@@ -7,6 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { appPanel, appSectionTitle, focusRing } from "@/lib/ui";
 import { SettingsSkeleton } from "@/components/app/Skeletons";
 import { ComingSoonSwitch, PreferenceSwitch } from "../PreferenceSwitch";
+import { DocumentLockSettings } from "../DocumentSettings";
 
 export const metadata = pageMetadata({
   title: "Preferences",
@@ -32,7 +33,7 @@ export default function PreferencesPage() {
 
 async function Preferences() {
   const account = await getAccount("/dashboard/settings/preferences");
-  const { emailNotifications, publicProfile, showActivityStatus } = account.preferences;
+  const { emailNotifications, publicProfile, showActivityStatus, documentReminders } = account.preferences;
 
   return (
     <div className="stagger flex flex-col gap-4">
@@ -54,6 +55,23 @@ async function Preferences() {
             initial={emailNotifications}
           />
           <ComingSoonSwitch label="SMS notifications" description="Text alerts to your phone." />
+        </div>
+      </section>
+
+      <section id="documents" aria-labelledby="documents-title" className={`${appPanel} jump-target`}>
+        <h2 id="documents-title" className={appSectionTitle}>
+          Documents
+        </h2>
+        <p className="mt-0.5 text-small text-slate">Reminders before your saved documents expire, and the passcode lock.</p>
+        <div className="mt-2 divide-y divide-border">
+          <PreferenceSwitch
+            userId={account.id}
+            column="document_reminders"
+            label="Expiry reminder emails"
+            description={`60, 45, 30, 20, 10 and 5 days before, and on the day, to ${account.email}`}
+            initial={documentReminders}
+          />
+          <DocumentLockSettings />
         </div>
       </section>
 
