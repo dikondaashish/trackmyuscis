@@ -77,8 +77,11 @@ export function CaseForm({
       const permit = onWorkPermit ? await workPermitFor(added.id) : null;
       setChecking(false);
       setBusy(false);
-      router.refresh();
+      // Don't refresh yet: on an empty dashboard the button that opened this dialog is
+      // replaced by the list, which would close the dialog before step 2. The parent
+      // refreshes when step 2 is saved, skipped or closed.
       if (permit) return onWorkPermit?.(permit);
+      router.refresh();
       return onDone();
     }
     router.refresh();

@@ -8,7 +8,7 @@ import { syncUserCases } from "@/lib/case-engine/sync";
 import { getAccount } from "@/lib/account";
 import { CASE_COLUMNS, MAX_CASES, type CaseRow } from "@/lib/cases";
 import { pageMetadata } from "@/lib/seo";
-import { AddCaseButton } from "@/components/app/CaseActions";
+import { AddCaseButton, AddCaseProvider } from "@/components/app/CaseActions";
 import { CasesSkeleton } from "@/components/app/Skeletons";
 import { CaseTable } from "@/components/app/CaseTable";
 import { appCard, appLink, appPage, appTitle, focusRing } from "@/lib/ui";
@@ -46,7 +46,9 @@ async function Cases() {
   }
 
   return (
-    <>
+    // The provider stays mounted when the first case replaces the empty state, so the add
+    // dialog can go on to its second step.
+    <AddCaseProvider>
       <div className="enter flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-small text-slate">{account.firstName ? `Hi ${account.firstName}` : "Welcome back"}</p>
@@ -80,7 +82,7 @@ async function Cases() {
           <CaseTable cases={cases} />
         </>
       )}
-    </>
+    </AddCaseProvider>
   );
 }
 

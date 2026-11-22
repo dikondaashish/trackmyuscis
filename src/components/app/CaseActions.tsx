@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Check, Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -22,30 +22,30 @@ async function copy(text: string) {
   }
 }
 
+const AddCaseContext = createContext<(() => void) | null>(null);
+
 /**
- * "Add case" button that opens the add dialog. When USCIS says the new case is a work
- * permit, the same dialog then asks what it's for (skippable; the case page asks later).
+ * Owns the "Add a case" dialog for the dashboard. It sits above the empty state and the
+ * list, so the dialog stays open when the first case is saved and the empty state (with
+ * the button that opened it) is replaced. When USCIS says the new case is a work permit,
+ * the same dialog then asks what it's for (skippable; the case page asks later).
  */
-export function AddCaseButton({ disabled, label = "Add case" }: { disabled?: boolean; label?: string }) {
+export function AddCaseProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [permit, setPermit] = useState<NewWorkPermit | null>(null);
-  const close = () => setOpen(false);
+  const show = useCallback(() => {
+    setPermit(null);
+    setOpen(true);
+  }, []);
+  const close = () => {
+    setOpen(false);
+    // Step 2 holds the refresh back (see CaseForm); show the new case now.
+    if (permit) router.refresh();
+  };
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => {
-          setPermit(null);
-          setOpen(true);
-        }}
-        disabled={disabled}
-        title={disabled ? "You've saved the most cases an account can hold" : undefined}
-        className={appBtnPrimary}
-      >
-        <Plus aria-hidden className="size-3.5" />
-        {label}
-      </button>
+    <AddCaseContext.Provider value={show}>
+      {children}
       <Dialog
         open={open}
         onClose={close}
@@ -61,17 +61,31 @@ export function AddCaseButton({ disabled, label = "Add case" }: { disabled?: boo
             premium={null}
             suggested={permit.suggested}
             compact
-            onSaved={() => {
-              router.refresh();
-              close();
-            }}
+            onSaved={close}
             secondary={{ label: "Skip for now", onClick: close }}
           />
         ) : (
           <CaseForm onDone={close} onCancel={close} onWorkPermit={setPermit} />
         )}
       </Dialog>
-    </>
+    </AddCaseContext.Provider>
+  );
+}
+
+/** "Add case" button; opens the dialog of the AddCaseProvider around it. */
+export function AddCaseButton({ disabled, label = "Add case" }: { disabled?: boolean; label?: string }) {
+  const show = useContext(AddCaseContext);
+  return (
+    <button
+      type="button"
+      onClick={() => show?.()}
+      disabled={disabled || !show}
+      title={disabled ? "You've saved the most cases an account can hold" : undefined}
+      className={appBtnPrimary}
+    >
+      <Plus aria-hidden className="size-3.5" />
+      {label}
+    </button>
   );
 }
 
