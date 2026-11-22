@@ -80,14 +80,14 @@ export function SiteSearch({ index }: { index: SearchEntry[] }) {
           spellCheck={false}
           autoFocus
           aria-describedby={countId}
-          className={`${field} h-14 pr-14 pl-12 [&::-webkit-search-cancel-button]:hidden`}
+          className={`${field} h-12 pr-14 pl-12 [&::-webkit-search-cancel-button]:hidden`}
         />
         {query && (
           <button
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className={`absolute top-1/2 right-1.5 inline-flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-slate transition-colors duration-200 hover:bg-ice hover:text-midnight ${focusRing}`}
+            className={`absolute top-1/2 right-1.5 inline-flex size-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-slate transition-colors duration-200 hover:bg-ice hover:text-midnight ${focusRing}`}
           >
             <X aria-hidden className="size-5" />
           </button>
@@ -117,7 +117,7 @@ export function SiteSearch({ index }: { index: SearchEntry[] }) {
         </div>
       ) : words.length === 0 ? (
         <>
-          <h2 className="mt-12 text-title font-semibold text-midnight">Or browse</h2>
+          <h2 className="mt-10 text-title font-semibold text-midnight">Or browse</h2>
           <ul className={`mt-4 ${rows}`}>
             {BROWSE.map((b) => (
               <li key={b.href}>

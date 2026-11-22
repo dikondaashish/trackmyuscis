@@ -62,7 +62,7 @@ export default function ProcessingTimesPage() {
             ))}
           </ol>
 
-          <h2 className="mt-16 text-h3 font-semibold text-midnight">How to read the number</h2>
+          <h2 className="mt-12 text-h3 font-semibold text-midnight">How to read the number</h2>
           <ul className={`mt-6 ${rows}`}>
             {TIPS.map((t) => (
               <li key={t.title} className={`${rowPad} py-6`}>

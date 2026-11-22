@@ -58,12 +58,12 @@ export default async function AnswerPage({ params }: PageProps<"/answers/[slug]"
       <section className={section}>
         <div className={readContainer}>
           <article>
-            <div id="short-answer" className="rounded-2xl border border-blue/15 bg-ice p-6 sm:p-8">
+            <div id="short-answer" className="rounded-xl border border-blue/15 bg-ice p-5 sm:p-6">
               <h2 className="text-small font-semibold text-blue">Short answer</h2>
               <p className="mt-2 text-lead text-midnight">{a.short}</p>
             </div>
 
-            <div className={`mt-6 ${panel} sm:p-10`}>
+            <div className={`mt-6 ${panel} sm:p-8`}>
               {a.sections.map((s, i) => (
                 <section key={s.heading} className={i ? "mt-10" : ""}>
                   <h2 className="text-title font-semibold text-midnight">{s.heading}</h2>
@@ -82,7 +82,7 @@ export default async function AnswerPage({ params }: PageProps<"/answers/[slug]"
             </p>
 
             {related.length > 0 && (
-              <div className="mt-16">
+              <div className="mt-12">
                 <h2 className="text-h3 text-midnight">Related questions</h2>
                 <LinkRows compact className="mt-5" items={related.map((r) => ({ href: `/answers/${r.slug}`, title: r.question }))} />
               </div>

@@ -24,7 +24,7 @@ export default function HelpPage() {
         <div className={readContainer}>
           <div>
             <FaqList />
-            <h2 className="mt-16 text-h3 text-midnight">Keep reading</h2>
+            <h2 className="mt-12 text-h3 text-midnight">Keep reading</h2>
             <LinkRows
               compact
               className="mt-5"

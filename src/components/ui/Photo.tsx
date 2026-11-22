@@ -19,7 +19,7 @@ export function Photo({
   zoomOnHover = false,
 }: {
   photo: PhotoAsset;
-  /** Aspect ratio and radius classes, e.g. "aspect-[16/10] rounded-2xl". */
+  /** Aspect ratio and radius classes, e.g. "aspect-[16/10] rounded-xl". */
   className?: string;
   /** Rendered width hint, e.g. "(min-width: 1024px) 560px, 100vw". */
   sizes: string;

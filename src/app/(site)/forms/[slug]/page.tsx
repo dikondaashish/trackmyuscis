@@ -62,7 +62,7 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
         <p className="mt-1 text-small text-slate">Updated {longDate(FORMS_UPDATED)} · Checked against uscis.gov</p>
       </PageIntro>
       <section className={section}>
-        <div className={`${container} grid gap-14 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16`}>
+        <div className={`${container} grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12`}>
           <div>
             <h2 id="know" className="scroll-mt-28 text-h3 font-semibold text-midnight">What to know about Form {f.form}</h2>
             <div className={`mt-6 ${rows}`}>
@@ -82,7 +82,7 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
               </div>
             </div>
 
-            <h2 id="steps" className="mt-16 scroll-mt-28 text-h3 font-semibold text-midnight">Steps most cases go through</h2>
+            <h2 id="steps" className="mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">Steps most cases go through</h2>
             <ol className={`mt-6 ${panel}`}>
               {f.milestones.map((m, i) => (
                 <li key={m} className="relative flex gap-5 pb-7 last:pb-0">
@@ -101,7 +101,7 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
             </p>
 
             {related.length > 0 && (
-              <div className="mt-16">
+              <div className="mt-12">
                 <h2 id="questions" className="scroll-mt-28 text-h3 font-semibold text-midnight">Questions about {f.form} cases</h2>
                 <LinkRows compact className="mt-6" items={related.map((r) => ({ href: r.path, title: r.title }))} />
               </div>
@@ -109,7 +109,7 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
 
             <OfficialSources
               id="sources"
-              className="mt-16 scroll-mt-28"
+              className="mt-12 scroll-mt-28"
               sources={[{ label: `USCIS: Form ${f.form}, ${f.title}`, href: officialFormUrl(f) }, ...(f.sources ?? [])]}
             />
           </div>

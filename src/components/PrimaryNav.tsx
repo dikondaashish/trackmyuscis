@@ -116,7 +116,7 @@ export function PrimaryNav({ entries }: { entries: NavEntry[] }) {
 
               <div id={panelId} hidden={!isOpen} className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2">
                 <div
-                  className={`rounded-2xl border border-border bg-white p-2 shadow-[0_24px_48px_-24px_rgba(16,34,61,0.25)] ${entry.columns === 2 ? "w-[30rem]" : "w-80"}`}
+                  className={`rounded-xl border border-border bg-white p-2 shadow-[0_24px_48px_-24px_rgba(16,34,61,0.25)] ${entry.columns === 2 ? "w-[30rem]" : "w-80"}`}
                 >
                   <ul className={entry.columns === 2 ? "grid grid-cols-2 gap-1" : "flex flex-col gap-1"}>
                     {entry.items.map((item) => {

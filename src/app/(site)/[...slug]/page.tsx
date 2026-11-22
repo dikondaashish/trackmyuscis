@@ -70,7 +70,7 @@ export default async function TextPage({ params }: PageProps<"/[...slug]">) {
       {(page.body || page.sections || page.action) && (
         <section className={section}>
           <div className={readContainer}>
-            <div className={`${panel} sm:p-10`}>
+            <div className={`${panel} sm:p-8`}>
             <div className="space-y-5">
               {page.body?.map((p) => (
                 <p key={p} className="text-lead text-slate">

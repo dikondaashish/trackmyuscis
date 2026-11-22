@@ -8,7 +8,7 @@ export function FaqList() {
       {FAQ.map((item) => (
         <details key={item.q} className="disclosure group">
           <summary
-            className={`flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 ${rowPad} py-4 text-left text-title font-semibold text-midnight transition-colors duration-200 hover:bg-cloud group-open:hover:bg-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue`}
+            className={`flex min-h-14 cursor-pointer list-none items-center justify-between gap-6 ${rowPad} py-4 text-left text-title font-semibold text-midnight transition-colors duration-200 hover:bg-cloud group-open:hover:bg-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue`}
           >
             {item.q}
             <ChevronDown aria-hidden className="faq-chevron size-5 shrink-0 text-slate transition-transform duration-200" />

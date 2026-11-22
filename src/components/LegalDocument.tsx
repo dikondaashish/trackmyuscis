@@ -28,7 +28,7 @@ export function LegalDocument({ slug, doc }: { slug: string; doc: LegalDoc }) {
       </PageIntro>
 
       <section className={section}>
-        <div className={`${docContainer} grid gap-12 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-16`}>
+        <div className={`${docContainer} grid gap-10 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12`}>
           <nav aria-label="On this page" className="hidden lg:block">
             <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto pb-4">
               <p className="text-small font-semibold text-midnight">On this page</p>
@@ -48,7 +48,7 @@ export function LegalDocument({ slug, doc }: { slug: string; doc: LegalDoc }) {
           </nav>
 
           <article className="min-w-0">
-            <div className={`${panel} sm:p-10`}>
+            <div className={`${panel} sm:p-8`}>
             {doc.sections.map((s, i) => (
               <section key={s.id} id={s.id} aria-labelledby={`${s.id}-h`} className={`scroll-mt-28 ${i ? "mt-10" : ""}`}>
                 <h2 id={`${s.id}-h`} className="text-title font-semibold text-midnight">
@@ -62,7 +62,7 @@ export function LegalDocument({ slug, doc }: { slug: string; doc: LegalDoc }) {
             </div>
 
             {related.length > 0 && (
-              <div className="mt-16">
+              <div className="mt-12">
                 <h2 className="text-h3 text-midnight">Other policies</h2>
                 <LinkRows compact className="mt-5" items={related.map((k) => ({ href: `/${k}`, title: LEGAL_DOCS[k].title }))} />
               </div>

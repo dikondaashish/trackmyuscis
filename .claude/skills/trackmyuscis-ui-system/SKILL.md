@@ -30,12 +30,12 @@ Defined once in `src/app/globals.css` (`@theme inline`). Tailwind's default size
 
 | Class | Size | Line height | Tracking | Weight | Use for |
 |---|---|---|---|---|---|
-| `text-display` | 40 → 48px (fluid) | 1.2 | -0.022em | 600 | Homepage hero h1 only (two lines, second line blue) |
-| `text-h1` | 36 → 48px (fluid) | 1.1 | -0.022em | 600 | Page titles (`PageIntro`) |
-| `text-h2` | 30 → 36px (fluid) | 1.15 | -0.021em | 600 | Section headings |
-| `text-h3` | 24px | 1.25 | -0.019em | 600 | Sub-section headings, prices, big form codes |
+| `text-display` | 32 → 40px (fluid) | 1.2 | -0.022em | 600 | Homepage hero h1 only (two lines, second line blue) |
+| `text-h1` | 30 → 36px (fluid) | 1.15 | -0.022em | 600 | Page titles (`PageIntro`) |
+| `text-h2` | 24 → 28px (fluid) | 1.2 | -0.021em | 600 | Section headings |
+| `text-h3` | 20px | 1.3 | -0.019em | 600 | Sub-section headings, prices, big form codes |
 | `text-title` | 18px | 1.4 | -0.014em | 600 | Card titles, list items, FAQ questions, result headings |
-| `text-lead` | 18px | 1.6 | -0.014em | 400 | Line under a heading, long-form reading (guides) |
+| `text-lead` | 17px | 1.6 | -0.014em | 400 | Line under a heading, long-form reading (guides) |
 | `text-body` | 16px | 1.5 | -0.011em | 400 | Default text, buttons, **all inputs** (≥16px stops iOS zoom) |
 | `text-small` | 14px | 1.43 | -0.006em | 400 | Helper text, nav links, meta, footer links |
 | `text-caption` | 12px | 1.33 | 0 | 400 | Badges, pills and the footer disclaimer only — the floor; nothing smaller |
@@ -50,13 +50,13 @@ Rules:
 
 | Where | Value | Class |
 |---|---|---|
-| Section padding (top & bottom) | 80px phone, 112px ≥640px | `section` (`py-20 sm:py-28`) |
-| Section h2 → its line | 16px | `mt-4` |
-| Section intro → content | 48px | `mt-12` (`mt-10` before a form card) |
+| Section padding (top & bottom) | 64px phone, 80px ≥640px | `section` (`py-16 sm:py-20`) |
+| Section h2 → its line | 12px | `mt-3` |
+| Section intro → content | 40px | `mt-10` |
 | Sub-section h3 → content | 32px | `mt-8` |
-| Between sub-sections on a page | 80px | `mt-20` |
+| Between sub-sections on a page | 48px | `mt-12` |
 | Grid gap between cards | 16px (12px on dense phone grids) | `gap-4` / `gap-3` |
-| Card padding | 24px (32px for form cards ≥640px) | `p-6` / `sm:p-8` |
+| Card padding | 20px phone, 24px ≥640px | `p-5 sm:p-6` |
 | Label → field | 8px | `mt-2` |
 | Between form fields | 16px | `gap-4` |
 
@@ -65,9 +65,9 @@ Separate sections with a background change (`bg-white` ↔ `bg-cloud`, one `bg-m
 ## 5. Sizes
 
 - **Container:** `container` = `max-w-7xl` (1280px) with equal gutters 20px phone / 32px ≥640px, so content is 1216px wide on desktop. Header, footer and every section use it so left and right edges line up. **Text-only pages are centred instead:** `docContainer` (`max-w-5xl`, 960px content: 224px contents list + 64px gap + 672px article) for policy pages, `readContainer` (`max-w-3xl`, 704px) for every one-column text page: `/legal`, `/answers` and each answer, `/help`, `/guides` and each guide, `/status-explained`, About, Contact, Case alerts, Sign in. Don't add an inner `max-w-*` inside it. A `PageIntro` photo still spans the full `container` (a wide banner under the centred title). Pass the same one to `<PageIntro width={…}>` so the title lines up with the content and the space left and right is equal; never leave text hugging the left of a 1216px container.
-- **Touch targets:** every link, button, summary and control outside running text is **≥ 44px tall** (`min-h-11`). Primary/secondary buttons and inputs are **48px** (`min-h-12` / `h-12`); the hero receipt field and button are **56px** (`h-14`). Keep ≥ 8px between targets. This is the public site; the signed-in app is denser (next point).
+- **Touch targets:** every link, button, summary and control outside running text is **≥ 44px tall** (`min-h-11`). Primary/secondary buttons and inputs are **44px** with 14px button text (`min-h-11` / `h-11`); the hero receipt field and button and the big search fields are **48px** (`h-12`). Keep ≥ 8px between targets. This is the public site; the signed-in app is denser (next point).
 - **Signed-in app (dashboard, case pages, Settings) is compact, like Linear or Stripe's dashboard.** Use the `app*` constants in `src/lib/ui.ts` only: `appBtnPrimary` / `appBtnSecondary` / `appBtnDanger` (36px desktop, 40px phone, 14px text), `appIconBtn` (32px), `appField` + `appFieldLabel` (36/40px, 16px text on phones so iOS doesn't zoom), `appCard` / `appPanel` (12px radius, 16–20px padding), `appTitle` (18px page title), `appSectionTitle` (14px semibold panel title), `appLink`, `<SelectField compact>`. Sidebar 240px with 36px nav rows; icons 14–16px; table rows ~48px. Never use the marketing `btnPrimary`, `field`, `card`, `text-h*` inside `(app)`.
-- **Radius:** 10px controls (`rounded-[10px]`), 12px icon tiles (`rounded-xl`), 16px cards and panels (`rounded-2xl`), full for pills/badges.
+- **Radius:** 8px controls (`rounded-lg`), 12px cards, panels and icon tiles (`rounded-xl`), full for pills/badges.
 - **Icons:** lucide-react only (no emoji). 16px inline with text (`size-4`), 20px in icon tiles (`size-5`) inside a 44px `bg-ice` tile. Decorative icons get `aria-hidden`.
 - **Header:** 64px phone, 76px ≥1024px (`lg:h-19`), sticky, white. Logo 28/32/36px tall. Five header entries from `HEADER_NAV` (`src/lib/nav.ts`, types in `site.ts`): "Your case", "Forms", "Resources" and "Company" open dropdown menus, "Pricing" is a plain link. Every public page is reachable from them (single answers and policies through their hub pages). Each menu item is a label plus one short line of what the page is for; the Forms menu lists every form in two columns with "All USCIS forms" at the bottom. Menus open on click or keyboard and on mouse hover, close on Escape (focus returns to the button), an outside click or a page change; the menu holding the current page is shown in midnight and only the best-matching link is highlighted (`bestMatch`). The phone menu shows the same groups as tap-to-open sections. Before the button sits one 44px search icon link to `/search` (from 640px; on phones it is the "Search the site" row at the top of the menu). The Track Case button has no icon, so the magnifier means search only. A "Skip to main content" link is the first focusable element on every page. Accounts are live (Supabase, project `zuzfgggfhojaklawefql`): an `AccountLink` before the search icon shows "Sign in", or "Dashboard" once signed in (checked in the browser so pages stay static); on phones it is a button at the bottom of the menu. Account pages (`/sign-in`, `/sign-up`, `/forgot-password`, `/auth/reset-password`) live in the `src/app/(auth)` route group, whose layout has no site header or footer: a midnight brand panel on the left from 1024px (logo, one heading, three static points, the disclaimer; no carousel) and the form column on cloud on the right with a "Back to site" link and a Terms/Privacy/Help line. Each page puts its form in `AuthShell` (24px h1, one line with the link to the other account page, white card). Every account page fits one screen with no scrolling down to 1280×720 and 375×812: keep forms short (names side by side, password rules on the label row), and on desktop the small print sits in the panel. Every other page lives in `src/app/(site)`, whose layout adds the skip link, header and footer (404s from the catch-all render there too). The signed-in app lives in `src/app/(app)` with no site header or footer: a 256px white sidebar from 1024px (logo, Cases, Settings, a Guides group linking to site pages, the account with a sign-out button at the bottom) and a 64px top bar with a menu on smaller screens; pages sit on cloud in `appPage` with `text-h3` titles. `/dashboard` lists cases in one table card (columns stack into rows on phones) with an "Add case" dialog (`components/app/Dialog.tsx`, native `<dialog>`; mark the first field `data-autofocus`); `/dashboard/cases/[id]` shows status, the form's typical steps, receipt-number facts and "Check status on USCIS" (copies the receipt number, opens USCIS in a new tab); `/dashboard/settings` has name, sign-in method, sign out and how to delete the account. Never show a case status we don't have: unchecked cases say "Not checked yet" until automatic checks are live. Session reads go through `getAccount()` (`src/lib/account.ts`) inside `<Suspense>`; `src/proxy.ts` guards `/dashboard`. One label per action everywhere: "Track Case".
 - **Footer:** midnight, `py-16`, five equal columns ≥768px (logo + one line, then the four `FOOTER_GROUPS`; gap 32px, 48px ≥1024px), two columns on phones. Headings 14px/600 white, links 14px `text-ice/80` in 32px rows on desktop (44px on phones). Then `mt-12 pt-8 border-t` and the bottom row: "© 2026 TrackMyUSCIS" (14px `text-ice/70`) left, the independence disclaimer right-aligned as quiet fine print (12px `text-caption leading-5 text-ice/60`, no icon, max-w-2xl).

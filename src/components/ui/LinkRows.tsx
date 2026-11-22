@@ -19,7 +19,7 @@ export function LinkRows({
     <ul className={`${rows} ${className}`}>
       {items.map((item) => (
         <li key={item.href}>
-          <Link href={item.href} className={`${rowLink} ${compact ? "min-h-14 py-4" : ""}`}>
+          <Link href={item.href} className={`${rowLink} ${compact ? "min-h-12 py-4" : ""}`}>
             <span className="min-w-0">
               <span
                 className={`block font-semibold text-midnight transition-colors duration-200 group-hover:text-blue ${compact ? "text-body" : "text-title"}`}

@@ -17,7 +17,7 @@ export function SectionIntro({
       <h2 id={id} className={dark ? h2.replace("text-midnight", "text-white") : h2}>
         {title}
       </h2>
-      {description && <p className={`mt-4 ${dark ? lead.replace("text-slate", "text-ice/80") : lead}`}>{description}</p>}
+      {description && <p className={`mt-3 ${dark ? lead.replace("text-slate", "text-ice/80") : lead}`}>{description}</p>}
     </div>
   );
 }

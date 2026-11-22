@@ -26,12 +26,12 @@ export function PageIntro({
 }) {
   return (
     <section className="border-b border-border bg-white">
-      <div className="enter pt-10 pb-14 sm:pt-14 sm:pb-20">
+      <div className="enter pt-8 pb-10 sm:pt-10 sm:pb-14">
         <div className={width}>
           {back && (
             <Link
               href={back.href}
-              className={`-ml-1 mb-6 inline-flex min-h-11 items-center gap-1.5 rounded px-1 text-small font-medium text-slate transition-colors duration-200 hover:text-midnight ${focusRing}`}
+              className={`-ml-1 mb-4 inline-flex min-h-11 items-center gap-1.5 rounded px-1 text-small font-medium text-slate transition-colors duration-200 hover:text-midnight ${focusRing}`}
             >
               <ArrowLeft aria-hidden className="size-4" />
               {back.label}
@@ -39,9 +39,9 @@ export function PageIntro({
           )}
           <h1 className={`max-w-3xl ${h1}`}>{title}</h1>
           {description && (
-            <p className={`mt-5 max-w-2xl ${lead}`}>{description}</p>
+            <p className={`mt-3 max-w-2xl ${lead}`}>{description}</p>
           )}
-          {children && <div className="mt-8">{children}</div>}
+          {children && <div className="mt-6">{children}</div>}
         </div>
         {photo && (
           <div className={container}>
@@ -49,7 +49,7 @@ export function PageIntro({
               photo={photo}
               preload
               sizes="(min-width: 1280px) 1216px, (min-width: 640px) calc(100vw - 64px), calc(100vw - 40px)"
-              className="mt-10 aspect-[4/3] rounded-2xl sm:mt-12 sm:aspect-[16/9] lg:aspect-[21/9]"
+              className="mt-8 aspect-[4/3] rounded-xl sm:mt-10 sm:aspect-[16/9] lg:aspect-[21/9]"
             />
           </div>
         )}

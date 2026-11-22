@@ -49,7 +49,7 @@ export default function Home() {
       <section id="track" aria-labelledby="hero-title" className="relative isolate scroll-mt-20 overflow-hidden bg-cloud lg:scroll-mt-22">
         <FlowLines tone="light" className="absolute inset-0 -z-10 hidden h-full w-full sm:block" />
         <div
-          className={`${container} grid items-center gap-14 pt-14 pb-20 sm:pt-20 lg:grid-cols-2 lg:gap-16 lg:pt-24 lg:pb-28`}
+          className={`${container} grid items-center gap-10 pt-10 pb-14 sm:pt-14 lg:grid-cols-2 lg:gap-12 lg:pt-16 lg:pb-20`}
         >
           <HeroTracker
             intro={
@@ -86,7 +86,7 @@ export default function Home() {
             title="Find your form"
             description="See the steps most cases go through, from receipt notice to decision."
           />
-          <ul className="mt-12 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          <ul className="mt-10 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {FORMS.map((f) => (
               <li key={f.slug}>
                 <Link href={`/forms/${f.slug}`} className={`group flex items-center justify-between gap-4 p-5 sm:p-6 ${cardLink}`}>

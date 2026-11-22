@@ -67,7 +67,7 @@ export default function LawyersPage() {
             <RichText text={`USCIS explains the options on its [find legal services page](${USCIS_FIND_LEGAL}).`} />
           </p>
 
-          <h2 className="mt-16 text-h3 font-semibold text-midnight">Before you pay anyone</h2>
+          <h2 className="mt-12 text-h3 font-semibold text-midnight">Before you pay anyone</h2>
           <ul className={`mt-6 ${rows}`}>
             {CHECKS.map((c) => (
               <li key={c} className={`flex items-start gap-3 ${rowPad} py-4 text-body text-midnight`}>
@@ -80,7 +80,7 @@ export default function LawyersPage() {
             How to avoid immigration scams
           </Link>
 
-          <h2 className="mt-16 text-h3 font-semibold text-midnight">Our lawyer directory</h2>
+          <h2 className="mt-12 text-h3 font-semibold text-midnight">Our lawyer directory</h2>
           <p className="mt-4 text-body text-slate">
             <RichText text="The directory is not open yet, so a search returns no listings today. When it opens, every attorney's state bar license is checked before they appear, and paid placements carry a Sponsored label. See [how listings work](/advertising)." />
           </p>

@@ -27,7 +27,7 @@ export default function PricingPage() {
       <section className={section}>
         <div className={readContainer}>
           <div className={`${card} grid overflow-hidden sm:grid-cols-[1fr_1.4fr]`}>
-            <div className="flex flex-col p-6 sm:p-8">
+            <div className="flex flex-col p-5 sm:p-6">
               <h2 className="text-title text-midnight">Free</h2>
               <p className="mt-3 text-h1 text-midnight tabular-nums">$0</p>
               <p className="mt-2 text-body text-slate">No account and no card needed.</p>
@@ -35,7 +35,7 @@ export default function PricingPage() {
                 Track Case
               </Link>
             </div>
-            <div className="border-t border-border bg-cloud p-6 sm:border-t-0 sm:border-l sm:p-8">
+            <div className="border-t border-border bg-cloud p-6 sm:border-t-0 sm:border-l sm:p-6">
               <h3 className="text-small font-semibold text-midnight">What you get</h3>
               <ul className="mt-4 space-y-3">
                 {FREE.map((f) => (

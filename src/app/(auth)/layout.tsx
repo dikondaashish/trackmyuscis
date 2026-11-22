@@ -42,7 +42,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <ul className="stagger mt-8 flex flex-col gap-5" style={{ "--stagger-base": "300ms" } as React.CSSProperties}>
             {POINTS.map(({ icon: Icon, title, text }) => (
               <li key={title} className="flex gap-4">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
                   <Icon aria-hidden className="size-5 text-ice" />
                 </span>
                 <span>

@@ -49,7 +49,7 @@ export default function AnswersPage() {
         <div className={readContainer}>
           <div>
             {TOPICS.map((topic, i) => (
-              <div key={topic} id={topicId(topic)} className={`scroll-mt-28 ${i ? "mt-16" : ""}`}>
+              <div key={topic} id={topicId(topic)} className={`scroll-mt-28 ${i ? "mt-12" : ""}`}>
                 <h2 className="text-h3 text-midnight">{topic}</h2>
                 <LinkRows
                   className="mt-5"

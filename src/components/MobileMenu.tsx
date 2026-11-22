@@ -8,7 +8,7 @@ import { AccountLink } from "@/components/AccountLink";
 import { bestMatch, isCurrent, menuIsCurrent, type MenuItem, type NavEntry } from "@/lib/site";
 
 const row =
-  "flex min-h-12 items-center rounded-lg px-3 text-body text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue";
+  "flex min-h-11 items-center rounded-lg px-3 text-body text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue";
 
 /** Phone and tablet menu: the same groups as the desktop header, each one a section that opens on tap. */
 export function MobileMenu({ entries }: { entries: NavEntry[] }) {
@@ -38,7 +38,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
         aria-controls={panelId}
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex size-11 cursor-pointer items-center justify-center rounded-[10px] text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+        className="inline-flex size-10 cursor-pointer items-center justify-center rounded-[10px] text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
       >
         {open ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
       </button>

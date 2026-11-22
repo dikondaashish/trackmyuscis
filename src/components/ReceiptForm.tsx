@@ -49,11 +49,11 @@ export function ReceiptForm({ onResult }: { onResult?: (result: ReceiptCheck | n
           maxLength={20}
           aria-invalid={invalid || undefined}
           aria-describedby={`${helpId} ${messageId}`}
-          className="h-14 w-full min-w-0 rounded-[10px] border border-border bg-white px-4 text-body tabular-nums tracking-wide uppercase text-midnight placeholder:normal-case placeholder:tracking-normal placeholder:text-slate/70 transition-[border-color,box-shadow] duration-200 focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15 aria-invalid:border-red aria-invalid:ring-red/10"
+          className="h-12 w-full min-w-0 rounded-lg border border-border bg-white px-4 text-body tabular-nums tracking-wide uppercase text-midnight placeholder:normal-case placeholder:tracking-normal placeholder:text-slate/70 transition-[border-color,box-shadow] duration-200 focus:border-blue focus:outline-none focus:ring-4 focus:ring-blue/15 aria-invalid:border-red aria-invalid:ring-red/10"
         />
         <button
           type="submit"
-          className={`${btnPrimary} h-14 shrink-0 px-7`}
+          className={`${btnPrimary} h-12 shrink-0 px-6`}
         >
           Track Case
           <ArrowRight aria-hidden className="size-4" />

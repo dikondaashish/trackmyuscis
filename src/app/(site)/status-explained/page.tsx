@@ -24,7 +24,7 @@ export default function StatusExplainedPage() {
       <section className={section}>
         <div className={readContainer}>
           <StatusFinder statuses={STATUSES} />
-          <ExternalLink href={USCIS_CASE_STATUS} className="mt-12">
+          <ExternalLink href={USCIS_CASE_STATUS} className="mt-10">
             Check your status on uscis.gov
           </ExternalLink>
         </div>

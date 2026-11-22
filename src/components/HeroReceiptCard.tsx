@@ -29,7 +29,7 @@ export function HeroReceiptCard({ result }: { result?: Extract<ReceiptCheck, { o
   const rows = result && SERVICE_CENTERS[prefix] && !PREFIXES.includes(prefix) ? [prefix, ...PREFIXES] : PREFIXES;
 
   return (
-    <div className="rounded-2xl border border-border bg-white p-5 sm:p-8">
+    <div className="rounded-xl border border-border bg-white p-5 sm:p-6">
       <div className="flex items-start justify-between gap-4">
         <h2 className="text-title font-semibold text-midnight">
           {result ? "How to read your receipt number" : "How to read a receipt number"}

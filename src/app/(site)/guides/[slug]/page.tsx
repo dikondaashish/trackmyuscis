@@ -44,7 +44,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
       <section className={section}>
         <div className={readContainer}>
           <article>
-            <div className={`${panel} sm:p-10`}>
+            <div className={`${panel} sm:p-8`}>
               {g.sections.map((s) => (
                 <div key={s.heading} className="mb-10 last:mb-0">
                   <h2 className="text-h3 font-semibold text-midnight">{s.heading}</h2>
@@ -60,7 +60,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
             </p>
           </article>
 
-          <div className="mt-16">
+          <div className="mt-12">
             <h2 className="text-h3 text-midnight">Read next</h2>
             <LinkRows compact className="mt-5" items={others.map((o) => ({ href: `/guides/${o.slug}`, title: o.title, note: o.summary }))} />
           </div>
