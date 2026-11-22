@@ -17,7 +17,7 @@ const CALLBACK_ERRORS: Record<string, string> = {
   callback_failed: "We couldn't finish signing you in. Please try again.",
 };
 
-export function SignInForm() {
+export function SignInForm({ googleClientId }: { googleClientId: string }) {
   const params = useSearchParams();
   const next = safeNext(params.get("next"));
   const emailId = useId();
@@ -42,8 +42,8 @@ export function SignInForm() {
 
   return (
     <>
-      {error && <div className="mb-6"><FormMessage tone="error">{error}</FormMessage></div>}
-      <GoogleButton next={next} onError={setError} />
+      {error && <div className="mb-4"><FormMessage tone="error">{error}</FormMessage></div>}
+      <GoogleButton clientId={googleClientId} next={next} onError={setError} />
       <OrDivider />
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <div>
@@ -58,7 +58,7 @@ export function SignInForm() {
             autoComplete="email"
             required
             disabled={busy}
-            className={`${field} mt-2 disabled:opacity-60`}
+            className={`${field} mt-1.5 disabled:opacity-60`}
           />
         </div>
         <PasswordField label="Password" value={password} onChange={setPassword} autoComplete="current-password" disabled={busy} />

@@ -27,9 +27,9 @@ export function safeNext(next: string | null | undefined): string {
 
 /** Same rules as the sign-up form shows, checked before sending. */
 export const PASSWORD_RULES = [
-  { label: "At least 8 characters", test: (p: string) => p.length >= 8 },
-  { label: "A letter", test: (p: string) => /[A-Za-z]/.test(p) },
-  { label: "A number", test: (p: string) => /\d/.test(p) },
+  { label: "At least 8 characters", short: "8+ characters", test: (p: string) => p.length >= 8 },
+  { label: "A letter", short: "Letter", test: (p: string) => /[A-Za-z]/.test(p) },
+  { label: "A number", short: "Number", test: (p: string) => /\d/.test(p) },
 ];
 export const passwordOk = (p: string) => PASSWORD_RULES.every((r) => r.test(p));
 
@@ -50,4 +50,12 @@ export function authErrorMessage(error: { message?: string; code?: string } | nu
   if (raw.includes("weak") || raw.includes("password should"))
     return "Choose a stronger password: at least 8 characters with a letter and a number.";
   return `Something went wrong. Try again, or email ${COMPANY.email.support}.`;
+}
+
+/**
+ * The Google OAuth client ID for the "Continue as …" button. Read on the server and passed
+ * down, so either variable name works (it is public; Google shows it in the page anyway).
+ */
+export function googleClientId() {
+  return (process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || "").trim();
 }

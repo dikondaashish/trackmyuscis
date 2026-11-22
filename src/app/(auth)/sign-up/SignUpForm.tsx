@@ -23,7 +23,7 @@ async function recordConsent() {
     ]);
 }
 
-export function SignUpForm() {
+export function SignUpForm({ googleClientId }: { googleClientId: string }) {
   const ids = { first: useId(), last: useId(), email: useId(), rules: useId(), terms: useId(), code: useId() };
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -153,49 +153,56 @@ export function SignUpForm() {
 
   return (
     <>
-      {error && <div className="mb-6"><FormMessage tone="error">{error}</FormMessage></div>}
-      <GoogleButton next={AFTER_SIGN_IN} context="signup" onError={setError} />
-      <p className="mt-3 text-center text-caption text-slate">
+      {error && <div className="mb-4"><FormMessage tone="error">{error}</FormMessage></div>}
+      <GoogleButton clientId={googleClientId} next={AFTER_SIGN_IN} context="signup" onError={setError} />
+      <p className="mt-2 text-center text-caption text-slate">
         By continuing with Google you agree to our <Link href="/terms" className={inlineLink}>Terms</Link> and{" "}
         <Link href="/privacy" className={inlineLink}>Privacy Policy</Link>.
       </p>
       <OrDivider />
-      <form onSubmit={onSignUp} className="flex flex-col gap-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <form onSubmit={onSignUp} className="flex flex-col gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <label htmlFor={ids.first} className={fieldLabel}>
               First name
             </label>
-            <input id={ids.first} value={firstName} onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" required maxLength={80} disabled={busy} className={`${field} mt-2 disabled:opacity-60`} />
+            <input id={ids.first} value={firstName} onChange={(e) => setFirstName(e.target.value)} autoComplete="given-name" required maxLength={80} disabled={busy} className={`${field} mt-1.5 disabled:opacity-60`} />
           </div>
           <div>
             <label htmlFor={ids.last} className={fieldLabel}>
               Last name
             </label>
-            <input id={ids.last} value={lastName} onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" required maxLength={80} disabled={busy} className={`${field} mt-2 disabled:opacity-60`} />
+            <input id={ids.last} value={lastName} onChange={(e) => setLastName(e.target.value)} autoComplete="family-name" required maxLength={80} disabled={busy} className={`${field} mt-1.5 disabled:opacity-60`} />
           </div>
         </div>
         <div>
           <label htmlFor={ids.email} className={fieldLabel}>
             Email
           </label>
-          <input id={ids.email} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required disabled={busy} className={`${field} mt-2 disabled:opacity-60`} />
+          <input id={ids.email} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required disabled={busy} className={`${field} mt-1.5 disabled:opacity-60`} />
         </div>
-        <div>
-          <PasswordField label="Password" value={password} onChange={setPassword} autoComplete="new-password" describedBy={ids.rules} disabled={busy} />
-          <ul id={ids.rules} className="mt-3 flex flex-col gap-1.5 text-small">
-            {PASSWORD_RULES.map((rule) => {
-              const met = rule.test(password);
-              return (
-                <li key={rule.label} className={`flex items-center gap-2 ${met ? "text-teal" : "text-slate"}`}>
-                  {met ? <Check aria-hidden className="size-4" /> : <Circle aria-hidden className="size-4" />}
-                  {rule.label}
-                  <span className="sr-only">{met ? "(done)" : "(not yet)"}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <PasswordField
+            label="Password"
+            value={password}
+            onChange={setPassword}
+            autoComplete="new-password"
+            describedBy={ids.rules}
+            disabled={busy}
+            hint={
+              <ul id={ids.rules} aria-label="Password needs" className="flex flex-wrap justify-end gap-x-1.5 gap-y-0.5 text-caption sm:gap-x-2.5">
+                {PASSWORD_RULES.map((rule) => {
+                  const met = rule.test(password);
+                  return (
+                    <li key={rule.label} className={`flex items-center gap-1 ${met ? "text-teal" : "text-slate"}`}>
+                      {met ? <Check aria-hidden className="size-3.5" /> : <Circle aria-hidden className="size-3" />}
+                      <span aria-hidden className="whitespace-nowrap">{rule.short}</span>
+                      <span className="sr-only">{`${rule.label} ${met ? "(done)" : "(not yet)"}`}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            }
+          />
         <label htmlFor={ids.terms} className="flex min-h-11 cursor-pointer items-start gap-3 text-small text-slate">
           <input
             id={ids.terms}

@@ -70,5 +70,8 @@ export const FOOTER_GROUPS: { title: string; links: NavLink[] }[] = [
   },
 ];
 
+/** One-line version for small print (site footer, sign-in panel). Legal pages use DISCLAIMER. */
+export const SHORT_DISCLAIMER = "Independent. Not affiliated with USCIS or the U.S. government.";
+
 export const DISCLAIMER =
   "TrackMyUSCIS is an independent service and is not affiliated with, endorsed by, or operated by U.S. Citizenship and Immigration Services (USCIS) or the U.S. government.";

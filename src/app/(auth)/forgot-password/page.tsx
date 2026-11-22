@@ -15,11 +15,13 @@ export default function ForgotPasswordPage() {
   return (
     <AuthShell
       title="Reset your password"
-      description="Enter your email and we'll send you a link to choose a new password."
-      footer={
-        <Link href="/sign-in" className={`inline-flex min-h-11 items-center rounded font-semibold text-blue ${focusRing}`}>
-          Back to sign in
-        </Link>
+      description={
+        <>
+          We&apos;ll email you a link.{" "}
+          <Link href="/sign-in" className={`rounded font-semibold text-blue underline-offset-2 hover:underline ${focusRing}`}>
+            Back to sign in
+          </Link>
+        </>
       }
     >
       <ForgotPasswordForm />

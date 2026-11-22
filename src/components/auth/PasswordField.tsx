@@ -11,6 +11,7 @@ export function PasswordField({
   onChange,
   autoComplete,
   describedBy,
+  hint,
   invalid,
   disabled,
 }: {
@@ -19,6 +20,8 @@ export function PasswordField({
   onChange: (value: string) => void;
   autoComplete: "current-password" | "new-password";
   describedBy?: string;
+  /** Short text at the right of the label row, such as the password rules. */
+  hint?: React.ReactNode;
   invalid?: boolean;
   disabled?: boolean;
 }) {
@@ -26,10 +29,13 @@ export function PasswordField({
   const [visible, setVisible] = useState(false);
   return (
     <div>
-      <label htmlFor={id} className={fieldLabel}>
-        {label}
-      </label>
-      <div className="relative mt-2">
+      <div className="flex items-baseline justify-between gap-2">
+        <label htmlFor={id} className={fieldLabel}>
+          {label}
+        </label>
+        {hint}
+      </div>
+      <div className="relative mt-1.5">
         <input
           id={id}
           type={visible ? "text" : "password"}

@@ -41,7 +41,7 @@ export function ForgotPasswordForm() {
         <label htmlFor={emailId} className={fieldLabel}>
           Email
         </label>
-        <input id={emailId} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required disabled={busy} className={`${field} mt-2 disabled:opacity-60`} />
+        <input id={emailId} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required disabled={busy} className={`${field} mt-1.5 disabled:opacity-60`} />
       </div>
       <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
         {busy ? "Sending…" : "Send reset link"}

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { COPYRIGHT } from "@/lib/company";
-import { DISCLAIMER, FOOTER_GROUPS } from "@/lib/site";
+import { FOOTER_GROUPS, SHORT_DISCLAIMER } from "@/lib/site";
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
@@ -54,7 +54,7 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-8 md:flex-row md:items-center md:justify-between md:gap-12">
           <p className="shrink-0 text-small text-ice/70">{COPYRIGHT}</p>
-          <p className="max-w-2xl text-caption leading-5 text-ice/60 md:text-right">{DISCLAIMER}</p>
+          <p className="max-w-2xl text-caption leading-5 text-ice/60 md:text-right">{SHORT_DISCLAIMER}</p>
         </div>
       </div>
     </footer>

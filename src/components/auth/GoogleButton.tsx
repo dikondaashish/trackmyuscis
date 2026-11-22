@@ -8,9 +8,7 @@ import { authErrorMessage } from "@/lib/auth";
 import { createGoogleNonce } from "@/lib/google-identity";
 import { btnSecondary } from "@/lib/ui";
 
-const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim() ?? "";
-
-type Props = { next: string; context?: "signin" | "signup"; onError: (message: string) => void };
+type Props = { clientId: string; next: string; context?: "signin" | "signup"; onError: (message: string) => void };
 
 /**
  * Google sign-in. With a Google client ID it shows Google's own button, which fills in the
@@ -19,11 +17,11 @@ type Props = { next: string; context?: "signin" | "signup"; onError: (message: s
  */
 export function GoogleButton(props: Props) {
   const [failed, setFailed] = useState(false);
-  if (!CLIENT_ID || failed) return <GoogleRedirectButton {...props} />;
+  if (!props.clientId || failed) return <GoogleRedirectButton {...props} />;
   return <GoogleIdentityButton {...props} onLoadFailed={() => setFailed(true)} />;
 }
 
-function GoogleIdentityButton({ next, context = "signin", onError, onLoadFailed }: Props & { onLoadFailed: () => void }) {
+function GoogleIdentityButton({ clientId, next, context = "signin", onError, onLoadFailed }: Props & { onLoadFailed: () => void }) {
   const slotRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const initialized = useRef(false);
@@ -37,7 +35,7 @@ function GoogleIdentityButton({ next, context = "signin", onError, onLoadFailed 
     try {
       const { nonce, hashedNonce } = await createGoogleNonce();
       gis.initialize({
-        client_id: CLIENT_ID,
+        client_id: clientId,
         nonce: hashedNonce,
         ux_mode: "popup",
         use_fedcm_for_button: true,
@@ -59,7 +57,7 @@ function GoogleIdentityButton({ next, context = "signin", onError, onLoadFailed 
     } catch {
       onLoadFailed();
     }
-  }, [context, onError, onLoadFailed]);
+  }, [clientId, context, onError, onLoadFailed]);
 
   // Google's button has a fixed pixel width, so redraw it whenever the card's width changes.
   useEffect(() => {
@@ -134,7 +132,7 @@ function GoogleRedirectButton({ next, onError }: Props) {
 /** The "or" rule between Google and the email form. */
 export function OrDivider() {
   return (
-    <div className="my-6 flex items-center gap-4 text-small text-slate" aria-hidden>
+    <div className="my-4 flex items-center gap-4 text-small text-slate" aria-hidden>
       <span className="h-px flex-1 bg-border" />
       or
       <span className="h-px flex-1 bg-border" />

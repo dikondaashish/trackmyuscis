@@ -3,6 +3,7 @@ import { AuthShell } from "@/components/auth/AuthShell";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata, webPageSchema } from "@/lib/seo";
 import { focusRing } from "@/lib/ui";
+import { googleClientId } from "@/lib/auth";
 import { SignUpForm } from "./SignUpForm";
 
 export const metadata = pageMetadata({
@@ -18,17 +19,16 @@ export default function SignUpPage() {
       <JsonLd data={[webPageSchema({ name: "Create an account", description: "Create a TrackMyUSCIS account.", path: "/sign-up" })]} />
       <AuthShell
         title="Create your account"
-        description="Free. Save your receipt numbers and see every case in one place."
-        footer={
+        description={
           <>
-            Already have an account?{" "}
-            <Link href="/sign-in" className={`inline-flex min-h-11 items-center rounded font-semibold text-blue ${focusRing}`}>
+            Already have one?{" "}
+            <Link href="/sign-in" className={`rounded font-semibold text-blue underline-offset-2 hover:underline ${focusRing}`}>
               Sign in
             </Link>
           </>
         }
       >
-        <SignUpForm />
+        <SignUpForm googleClientId={googleClientId()} />
       </AuthShell>
     </>
   );
