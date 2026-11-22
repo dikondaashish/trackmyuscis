@@ -1,16 +1,16 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, ChevronRight, Clock, FileSearch, Info } from "lucide-react";
+import { ArrowRight, BookOpen, Clock, FileSearch, Info } from "lucide-react";
 import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { caseEngineEnabled } from "@/lib/case-engine/client";
 import { syncUserCases } from "@/lib/case-engine/sync";
 import { getAccount } from "@/lib/account";
-import { CASE_COLUMNS, MAX_CASES, caseStatus, caseTitle, receiptFacts, shortDate, type CaseRow } from "@/lib/cases";
+import { CASE_COLUMNS, MAX_CASES, type CaseRow } from "@/lib/cases";
 import { pageMetadata } from "@/lib/seo";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { AddCaseButton, CopyButton } from "@/components/app/CaseActions";
+import { AddCaseButton } from "@/components/app/CaseActions";
 import { CasesSkeleton } from "@/components/app/Skeletons";
+import { CaseTable } from "@/components/app/CaseTable";
 import { appCard, appLink, appPage, appTitle, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
@@ -81,60 +81,6 @@ async function Cases() {
         </>
       )}
     </>
-  );
-}
-
-const cols = "sm:grid sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_6rem_1rem] sm:items-center sm:gap-5";
-
-function CaseTable({ cases }: { cases: CaseRow[] }) {
-  return (
-    <div className={`${appCard} enter enter-delay mt-4 overflow-hidden`}>
-      <div className={`hidden border-b border-border bg-cloud/60 px-4 py-2 text-caption font-medium text-slate ${cols}`} aria-hidden>
-        <span>Case</span>
-        <span>Receipt number</span>
-        <span>Status</span>
-        <span>Saved</span>
-        <span />
-      </div>
-      <ul className="stagger divide-y divide-border" style={{ "--stagger-base": "180ms" } as React.CSSProperties}>
-        {cases.map((c) => {
-          const status = caseStatus(c);
-          const facts = receiptFacts(c.receipt_number);
-          return (
-            <li key={c.id} className={`group relative py-3 pr-10 pl-4 sm:py-2.5 sm:pr-4 transition-colors duration-200 hover:bg-cloud/70 ${cols}`}>
-              <div className="min-w-0">
-                <Link
-                  href={`/dashboard/cases/${c.id}`}
-                  className={`block truncate rounded text-small font-semibold text-midnight after:absolute after:inset-0 after:content-[''] ${focusRing}`}
-                >
-                  {caseTitle(c)}
-                </Link>
-                <div className="truncate text-caption text-slate">{facts.office ?? "USCIS"}</div>
-              </div>
-              <div className="mt-1 flex items-center gap-0.5 sm:mt-0">
-                <span className="text-small font-medium text-midnight tabular-nums tracking-wide">{c.receipt_number}</span>
-                {/* Phones copy from the case page. */}
-                <span className="hidden sm:block">
-                  <CopyButton value={c.receipt_number} />
-                </span>
-              </div>
-              <div className="mt-1.5 sm:mt-0">
-                {status ? (
-                  <StatusBadge tone={status.tone}>{status.name}</StatusBadge>
-                ) : (
-                  <span className="text-small text-slate">Not checked yet</span>
-                )}
-              </div>
-              <p className="hidden text-small text-slate tabular-nums sm:block">{shortDate.format(new Date(c.created_at))}</p>
-              <ChevronRight
-                aria-hidden
-                className="absolute top-1/2 right-4 size-3.5 -translate-y-1/2 text-slate transition-transform duration-200 group-hover:translate-x-0.5 sm:static sm:translate-y-0 motion-reduce:transition-none"
-              />
-            </li>
-          );
-        })}
-      </ul>
-    </div>
   );
 }
 
