@@ -41,10 +41,10 @@ export function AccountCard({ account }: { account: Account }) {
 export function AccountCardSkeleton() {
   return (
     <div className="flex items-center gap-3" aria-hidden>
-      <span className="size-9 animate-pulse rounded-full bg-border/70" />
+      <span className="skeleton size-9 rounded-full" />
       <div className="flex-1">
-        <div className="h-3.5 w-24 animate-pulse rounded bg-border/70" />
-        <div className="mt-1.5 h-3 w-32 animate-pulse rounded bg-border/70" />
+        <div className="skeleton h-3.5 w-24" />
+        <div className="skeleton mt-1.5 h-3 w-32" />
       </div>
     </div>
   );

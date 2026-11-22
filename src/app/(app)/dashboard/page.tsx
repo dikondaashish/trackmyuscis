@@ -7,6 +7,7 @@ import { CASE_COLUMNS, MAX_CASES, caseStatus, caseTitle, receiptFacts, shortDate
 import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { AddCaseButton, CopyButton } from "@/components/app/CaseActions";
+import { CasesSkeleton } from "@/components/app/Skeletons";
 import { appPage, card, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
@@ -43,10 +44,8 @@ async function Cases() {
           <h1 className="mt-1 text-h3 text-midnight">Your cases</h1>
         </div>
         {cases.length > 0 && (
-          <div className="flex items-center gap-4">
-            <p className="text-small text-slate tabular-nums">
-              {cases.length} of {MAX_CASES} saved
-            </p>
+          <div className="flex items-center gap-5">
+            <UsageMeter used={cases.length} />
             <AddCaseButton disabled={full} />
           </div>
         )}
@@ -57,7 +56,7 @@ async function Cases() {
       ) : (
         <>
           {unchecked && (
-            <div className="mt-6 flex gap-3 rounded-2xl bg-ice px-4 py-3.5 text-small text-midnight sm:px-5">
+            <div className="enter enter-delay mt-6 flex gap-3 rounded-2xl bg-ice px-4 py-3.5 text-small text-midnight sm:px-5">
               <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-blue" />
               <p>
                 Automatic status updates are on the way. Until then, open a case and choose{" "}
@@ -76,7 +75,7 @@ const cols = "sm:grid sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2
 
 function CaseTable({ cases }: { cases: CaseRow[] }) {
   return (
-    <div className={`${card} mt-6 overflow-hidden`}>
+    <div className={`${card} enter enter-delay mt-6 overflow-hidden`}>
       <div className={`hidden border-b border-border bg-cloud/60 px-5 py-3 text-caption font-semibold text-slate ${cols}`} aria-hidden>
         <span>Case</span>
         <span>Receipt number</span>
@@ -84,7 +83,7 @@ function CaseTable({ cases }: { cases: CaseRow[] }) {
         <span>Saved</span>
         <span />
       </div>
-      <ul className="divide-y divide-border">
+      <ul className="stagger divide-y divide-border" style={{ "--stagger-base": "180ms" } as React.CSSProperties}>
         {cases.map((c) => {
           const status = caseStatus(c);
           const facts = receiptFacts(c.receipt_number);
@@ -128,10 +127,8 @@ function CaseTable({ cases }: { cases: CaseRow[] }) {
 
 function EmptyState() {
   return (
-    <div className={`${card} mt-6 flex flex-col items-center px-6 py-14 text-center sm:py-16`}>
-      <span className="flex size-12 items-center justify-center rounded-xl bg-ice text-blue">
-        <FileSearch aria-hidden className="size-6" />
-      </span>
+    <div className={`${card} enter enter-delay mt-6 flex flex-col items-center px-6 py-14 text-center sm:py-16`}>
+      <EmptyArt />
       <h2 className="mt-5 text-title text-midnight">Save your first case</h2>
       <p className="mt-2 max-w-sm text-body text-slate">
         Add the receipt number from your USCIS notice. You can save up to {MAX_CASES} cases for you and your family.
@@ -161,12 +158,12 @@ function Guides() {
       <h2 id="guides-title" className="text-small font-semibold text-midnight">
         Guides
       </h2>
-      <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+      <ul className="stagger mt-3 grid gap-3 sm:grid-cols-3" style={{ "--stagger-base": "260ms" } as React.CSSProperties}>
         {GUIDES.map(({ href, icon: Icon, title, text }) => (
           <li key={href}>
             <Link
               href={href}
-              className={`group flex h-full gap-3 rounded-2xl border border-border bg-white p-4 transition-colors duration-200 hover:border-blue/40 ${focusRing}`}
+              className={`group flex h-full gap-3 rounded-2xl border border-border bg-white p-4 transition-[border-color,translate] duration-200 hover:-translate-y-0.5 hover:border-blue/40 motion-reduce:hover:translate-y-0 ${focusRing}`}
             >
               <Icon aria-hidden className="mt-0.5 size-5 shrink-0 text-blue" />
               <span className="min-w-0">
@@ -184,12 +181,38 @@ function Guides() {
   );
 }
 
-function CasesSkeleton() {
+/** How many of the 10 case slots are used: a number and a short bar that fills on load. */
+function UsageMeter({ used }: { used: number }) {
   return (
-    <div aria-busy="true" aria-label="Loading your cases">
-      <div className="h-4 w-20 animate-pulse rounded bg-border/70" />
-      <div className="mt-2 h-8 w-48 animate-pulse rounded bg-border/70" />
-      <div className={`${card} mt-6 h-56 animate-pulse`} />
+    <div className="flex flex-col items-end gap-1.5">
+      <p className="text-small text-slate tabular-nums">
+        <span className="font-semibold text-midnight">{used}</span> of {MAX_CASES} saved
+      </p>
+      <div aria-hidden className="h-1 w-24 overflow-hidden rounded-full bg-border">
+        <div className="grow-x h-full rounded-full bg-teal" style={{ width: `${(used / MAX_CASES) * 100}%` }} />
+      </div>
+    </div>
+  );
+}
+
+/** Empty-state picture: a receipt notice card with a magnifier that floats gently. */
+function EmptyArt() {
+  return (
+    <div aria-hidden className="relative h-24 w-32">
+      <div className="absolute inset-x-3 top-2 bottom-0 rounded-xl border border-border bg-cloud" />
+      <div className="absolute inset-x-0 top-5 bottom-2 rounded-xl border border-border bg-white p-3 shadow-[0_12px_24px_-16px_rgba(16,34,61,0.35)]">
+        <div className="h-2 w-12 rounded-full bg-blue/80" />
+        <div className="mt-2 h-1.5 w-20 rounded-full bg-border" />
+        <div className="mt-1.5 h-1.5 w-16 rounded-full bg-border" />
+        <div className="mt-3 flex gap-1">
+          <span className="h-1.5 w-5 rounded-full bg-teal" />
+          <span className="h-1.5 w-5 rounded-full bg-teal/50" />
+          <span className="h-1.5 w-5 rounded-full bg-border" />
+        </div>
+      </div>
+      <span className="drift absolute -right-3 -bottom-2 flex size-11 items-center justify-center rounded-full bg-blue text-white shadow-[0_8px_20px_-8px_rgba(40,90,199,0.6)]">
+        <FileSearch className="size-5" />
+      </span>
     </div>
   );
 }

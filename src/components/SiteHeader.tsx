@@ -40,7 +40,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href={TRACK_CASE_HREF}
-            className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-[10px] bg-blue px-4 text-small font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-midnight active:scale-[0.98] sm:px-5 ${focusRing}`}
+            className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-[10px] bg-blue px-4 text-small font-semibold text-white transition-[background-color,scale] duration-200 hover:bg-midnight active:scale-[0.98] sm:px-5 ${focusRing}`}
           >
             Track Case
           </Link>

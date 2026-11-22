@@ -113,9 +113,31 @@ Separate sections with a background change (`bg-white` ↔ `bg-cloud`, one `bg-m
 
 ## 8. Motion
 
-- Hero / page intro enters once on load (`.enter`, 640ms, ease-out). Nothing fades in on scroll; no parallax, carousels or auto-rotating content.
-- Hover: cards lift 2px, arrows nudge 2px, links draw an underline, buttons darken. Press: buttons scale to 0.98. All transitions 200ms.
-- Everything respects `prefers-reduced-motion` (animations off, no lift/scale).
+Calm, quick and purposeful: things *arrive* (fade + 8–14px rise); nothing bounces, spins for show or auto-rotates. All classes live in `globals.css` and sit behind `prefers-reduced-motion: no-preference`, so reduced-motion users get a still page. Use these classes; don't write new keyframes in components.
+
+| Class / piece | What it does | Where it's used |
+|---|---|---|
+| `.enter` (+ `.enter-delay`, `.enter-delay-2`) | 640ms rise on load | `PageIntro`, hero, auth heading, dashboard headers |
+| `.page-in` | 280ms fade on every navigation | `(site)/template.tsx`, `(app)/template.tsx` |
+| `.stagger` | children rise 50ms apart; set `--stagger-base` for the first delay | case rows, case panels, hero receipt tiles, auth points, menu items, guide cards |
+| `reveal` (in `cardLink`, `panel`, `rows`) | rises in as it scrolls into view (CSS scroll-driven; shows instantly where unsupported) | every linked card, panel and row list |
+| `.swap` | short re-entry when a result changes (re-key the element) | receipt check result, lawyer search result, copied message |
+| `.pop` | scale-in for small confirmations | copy tick, timeline step numbers, result check icon |
+| `.grow-x` / `.grow-y` | bars and connector lines fill in | usage meter, step connectors |
+| `.skeleton` / `<Skeleton>` | shimmering placeholder shaped like the real content | every Suspense fallback and `loading.tsx` |
+| `<LoadingBar>` | thin blue bar at the top while a route loads | `(app)` `loading.tsx` files |
+| `<Spinner>` | spinning circle before a "Saving…" label | every busy button |
+| `dialog.modal` | modal scales in, backdrop dims and blurs; eases out on close | `components/app/Dialog.tsx` |
+| `.menu-in` | menu panel drops in when opened | both phone menus |
+| `details.disclosure` | FAQ and menu sections open smoothly (height: auto) | `FaqList`, `MobileMenu` |
+| `<FlowLines>` | decorative "journey" lines that draw in, with a teal dot travelling them | auth panel (lower part), homepage hero (≥640px only); never behind body text |
+
+Rules:
+- Hover: cards lift 2px, arrows nudge 2px, links draw an underline, buttons darken; press scales buttons to 0.98. Tailwind v4 moves things with the `translate` and `scale` properties, so transitions must name those (`transition-[border-color,translate,scale]`), not `transform`.
+- Durations: 200ms hover, 220–360ms UI feedback, 480–640ms arrivals. Never longer than ~1s for anything that blocks reading.
+- No `loading.tsx` in `(site)`: those pages are prerendered, and a loading boundary makes missing pages stream as 200 instead of 404.
+- No live-looking motion (pulsing "live" dots) on statuses we don't fetch automatically (honest UI).
+- Print styles switch every animation off and show final states.
 
 ## 9. Accessibility checklist (WCAG 2.2 AA)
 

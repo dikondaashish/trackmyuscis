@@ -52,7 +52,7 @@ export function MobileAppMenu({ account }: { account: Account }) {
       <div
         id="app-menu"
         hidden={!open}
-        className="fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-border bg-white px-4 pt-4 pb-6"
+        className="menu-in fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-border bg-white px-4 pt-4 pb-6"
       >
         <div className="flex min-h-full flex-col justify-between gap-8">
           <AppNav onNavigate={() => setOpen(false)} />

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Info } from "lucide-react";
 import { FaqList } from "@/components/FaqList";
 import { HeroTracker } from "@/components/HeroTracker";
+import { FlowLines } from "@/components/ui/FlowLines";
 import { LinkRows } from "@/components/ui/LinkRows";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { RichText } from "@/components/ui/RichText";
@@ -45,7 +46,8 @@ export default function Home() {
         ]}
       />
       {/* 1. Hero: one job, check a receipt number */}
-      <section id="track" aria-labelledby="hero-title" className="scroll-mt-20 lg:scroll-mt-22 bg-cloud">
+      <section id="track" aria-labelledby="hero-title" className="relative isolate scroll-mt-20 overflow-hidden bg-cloud lg:scroll-mt-22">
+        <FlowLines tone="light" className="absolute inset-0 -z-10 hidden h-full w-full sm:block" />
         <div
           className={`${container} grid items-center gap-14 pt-14 pb-20 sm:pt-20 lg:grid-cols-2 lg:gap-16 lg:pt-24 lg:pb-28`}
         >

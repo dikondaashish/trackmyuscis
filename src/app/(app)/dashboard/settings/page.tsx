@@ -6,6 +6,7 @@ import { COMPANY } from "@/lib/company";
 import { pageMetadata } from "@/lib/seo";
 import { appPage, btnSecondary, card, focusRing } from "@/lib/ui";
 import { ProfileForm } from "./ProfileForm";
+import { SettingsSkeleton } from "@/components/app/Skeletons";
 
 export const metadata = pageMetadata({
   title: "Settings",
@@ -21,7 +22,7 @@ export default function SettingsPage() {
   return (
     <div className={`${appPage} max-w-3xl`}>
       <h1 className="enter text-h3 text-midnight">Settings</h1>
-      <Suspense fallback={<div className={`${card} mt-8 h-64 animate-pulse`} aria-busy="true" />}>
+      <Suspense fallback={<SettingsSkeleton />}>
         <Settings />
       </Suspense>
     </div>
@@ -31,7 +32,7 @@ export default function SettingsPage() {
 async function Settings() {
   const account = await getAccount("/dashboard/settings");
   return (
-    <div className="mt-8 flex flex-col gap-4 lg:gap-6">
+    <div className="stagger mt-8 flex flex-col gap-4 lg:gap-6">
       <section aria-labelledby="profile-title" className={panel}>
         <h2 id="profile-title" className="text-title text-midnight">
           Profile

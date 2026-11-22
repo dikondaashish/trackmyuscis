@@ -9,6 +9,7 @@ import { USCIS_PROCESSING_TIMES, officialFormUrl, statusId } from "@/lib/content
 import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckOnUscisButton, CopyButton, EditRemoveButtons } from "@/components/app/CaseActions";
+import { CaseSkeleton } from "@/components/app/Skeletons";
 import { appPage, card, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
@@ -64,7 +65,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
       </header>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-6">
-        <div className="flex min-w-0 flex-col gap-4 lg:gap-6">
+        <div className="stagger flex min-w-0 flex-col gap-4 lg:gap-6" style={{ "--stagger-base": "120ms" } as React.CSSProperties}>
           <section aria-labelledby="status-title" className={panel}>
             <h2 id="status-title" className="text-small font-semibold text-slate">
               Status
@@ -105,8 +106,17 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                 <ol className="mt-4">
                   {form.milestones.map((m, i) => (
                     <li key={m} className="relative flex gap-4 pb-5 last:pb-0">
-                      {i < form.milestones.length - 1 && <span aria-hidden className="absolute top-7 bottom-0 left-[13px] w-px bg-border" />}
-                      <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-white text-caption font-semibold text-slate tabular-nums">
+                      {i < form.milestones.length - 1 && (
+                        <span
+                          aria-hidden
+                          className="grow-y absolute top-7 bottom-0 left-[13px] w-px bg-border"
+                          style={{ animationDelay: `${450 + i * 120}ms` }}
+                        />
+                      )}
+                      <span
+                        className="pop flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-white text-caption font-semibold text-slate tabular-nums"
+                        style={{ animationDelay: `${380 + i * 120}ms` }}
+                      >
                         {i + 1}
                       </span>
                       <span className="pt-0.5 text-body text-midnight">{m}</span>
@@ -123,7 +133,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
           </section>
         </div>
 
-        <aside className="flex flex-col gap-4 lg:gap-6">
+        <aside className="stagger flex flex-col gap-4 lg:gap-6" style={{ "--stagger-base": "220ms" } as React.CSSProperties}>
           <section aria-labelledby="receipt-title" className={panel}>
             <h2 id="receipt-title" className="text-small font-semibold text-slate">
               About this receipt number
@@ -196,18 +206,5 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
         </aside>
       </div>
     </>
-  );
-}
-
-function CaseSkeleton() {
-  return (
-    <div aria-busy="true" aria-label="Loading case">
-      <div className="mt-4 h-8 w-64 animate-pulse rounded bg-border/70" />
-      <div className="mt-2 h-5 w-40 animate-pulse rounded bg-border/70" />
-      <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-6">
-        <div className={`${card} h-64 animate-pulse`} />
-        <div className={`${card} h-56 animate-pulse`} />
-      </div>
-    </div>
   );
 }

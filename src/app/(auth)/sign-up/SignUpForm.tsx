@@ -9,6 +9,7 @@ import { FormMessage } from "@/components/auth/FormMessage";
 import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { btnPrimary, field, fieldLabel, focusRing } from "@/lib/ui";
+import { Spinner } from "@/components/ui/Spinner";
 
 const inlineLink = `rounded font-semibold text-blue underline-offset-2 hover:underline ${focusRing}`;
 const RESEND_AFTER = 60;
@@ -124,7 +125,12 @@ export function SignUpForm({ googleClientId }: { googleClientId: string }) {
           />
         </div>
         <button type="submit" disabled={busy || code.length < 6} className={`${btnPrimary} w-full disabled:opacity-60`}>
-          {busy ? "Checking…" : "Confirm and continue"}
+          {busy ? (
+            <>
+              <Spinner />
+              Checking…
+            </>
+          ) : "Confirm and continue"}
         </button>
         <div className="flex flex-wrap items-center justify-between gap-2 text-small">
           <button
@@ -218,7 +224,12 @@ export function SignUpForm({ googleClientId }: { googleClientId: string }) {
           </span>
         </label>
         <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
-          {busy ? "Creating account…" : "Create account"}
+          {busy ? (
+            <>
+              <Spinner />
+              Creating account…
+            </>
+          ) : "Create account"}
         </button>
       </form>
     </>

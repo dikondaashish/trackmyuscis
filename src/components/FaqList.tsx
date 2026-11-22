@@ -6,7 +6,7 @@ export function FaqList() {
   return (
     <div className={rows}>
       {FAQ.map((item) => (
-        <details key={item.q} className="group">
+        <details key={item.q} className="disclosure group">
           <summary
             className={`flex min-h-16 cursor-pointer list-none items-center justify-between gap-6 ${rowPad} py-4 text-left text-title font-semibold text-midnight transition-colors duration-200 hover:bg-cloud group-open:hover:bg-white focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue`}
           >

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { btnPrimary, field, fieldLabel } from "@/lib/ui";
+import { Spinner } from "@/components/ui/Spinner";
 
 /** First and last name. Saved to the profile row; row-level security limits it to the owner. */
 export function ProfileForm({ userId, firstName, lastName }: { userId: string; firstName: string; lastName: string }) {
@@ -50,7 +51,12 @@ export function ProfileForm({ userId, firstName, lastName }: { userId: string; f
       {message && <FormMessage tone={message.tone}>{message.text}</FormMessage>}
       <div>
         <button type="submit" disabled={busy} className={`${btnPrimary} disabled:opacity-60`}>
-          {busy ? "Saving…" : "Save name"}
+          {busy ? (
+            <>
+              <Spinner />
+              Saving…
+            </>
+          ) : "Save name"}
         </button>
       </div>
     </form>

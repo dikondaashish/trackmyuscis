@@ -8,6 +8,7 @@ import { FORM_OPTIONS, MAX_CASES } from "@/lib/cases";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { SelectField } from "@/components/ui/SelectField";
 import { btnPrimary, btnSecondary, field, fieldLabel } from "@/lib/ui";
+import { Spinner } from "@/components/ui/Spinner";
 
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
 
@@ -104,7 +105,12 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
           Cancel
         </button>
         <button type="submit" disabled={busy} className={`${btnPrimary} disabled:opacity-60`}>
-          {busy ? "Saving…" : existing ? "Save changes" : "Save case"}
+          {busy ? (
+            <>
+              <Spinner />
+              Saving…
+            </>
+          ) : existing ? "Save changes" : "Save case"}
         </button>
       </div>
     </form>

@@ -44,7 +44,7 @@ export function HeroReceiptCard({ result }: { result?: Extract<ReceiptCheck, { o
       </div>
 
       {/* Re-keyed so the tiles settle in again when the number changes. */}
-      <dl key={receipt} className={`mt-6 grid gap-3 sm:grid-cols-[auto_auto_1fr] ${result ? "swap" : ""}`}>
+      <dl key={receipt} className="stagger mt-6 grid gap-3 sm:grid-cols-[auto_auto_1fr]" style={{ "--stagger-base": result ? "0ms" : "360ms" } as React.CSSProperties}>
         {parts.map((p, i) => (
           <div key={p.label} className="rounded-xl border border-border bg-cloud p-4">
             <dt className="text-small text-slate">{p.label}</dt>
@@ -57,7 +57,7 @@ export function HeroReceiptCard({ result }: { result?: Extract<ReceiptCheck, { o
       </dl>
 
       <h3 className="mt-8 text-small font-semibold text-midnight">What the three letters mean</h3>
-      <dl className="mt-2 divide-y divide-border border-y border-border">
+      <dl className="stagger mt-2 divide-y divide-border border-y border-border" style={{ "--stagger-base": "520ms" } as React.CSSProperties}>
         {rows.map((code) => {
           const yours = result != null && code === prefix;
           return (

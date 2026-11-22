@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { authErrorMessage } from "@/lib/auth";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { btnPrimary, field, fieldLabel } from "@/lib/ui";
+import { Spinner } from "@/components/ui/Spinner";
 
 export function ForgotPasswordForm() {
   const emailId = useId();
@@ -44,7 +45,12 @@ export function ForgotPasswordForm() {
         <input id={emailId} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required disabled={busy} className={`${field} mt-1.5 disabled:opacity-60`} />
       </div>
       <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
-        {busy ? "Sending…" : "Send reset link"}
+        {busy ? (
+            <>
+              <Spinner />
+              Sending…
+            </>
+          ) : "Send reset link"}
       </button>
     </form>
   );

@@ -54,7 +54,7 @@ export function LawyerSearchWithResult() {
       <LawyerSearch location={location} caseType={caseType} />
       <div aria-live="polite">
         {submitted && (
-          <div className="mt-6 rounded-2xl bg-ice p-6">
+          <div key={`${location}|${caseType}`} className="swap mt-6 rounded-2xl bg-ice p-6">
             <p className="text-title font-semibold text-midnight">
               No listings yet{location ? ` for ${location}` : ""}
             </p>

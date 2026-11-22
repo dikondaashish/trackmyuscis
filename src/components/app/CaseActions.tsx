@@ -8,8 +8,10 @@ import { USCIS_CASE_STATUS } from "@/lib/content";
 import { btnPrimary, btnSecondary, focusRing } from "@/lib/ui";
 import { Dialog } from "./Dialog";
 
-const btnDanger = btnPrimary.replace("bg-blue", "bg-red").replace("hover:bg-midnight", "hover:bg-red/90");
 import { CaseForm } from "./CaseForm";
+import { Spinner } from "@/components/ui/Spinner";
+
+const btnDanger = btnPrimary.replace("bg-blue", "bg-red").replace("hover:bg-midnight", "hover:bg-red/90");
 
 async function copy(text: string) {
   try {
@@ -58,7 +60,7 @@ export function CopyButton({ value }: { value: string }) {
       title={done ? "Copied" : "Copy receipt number"}
       className={`relative z-10 flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[10px] text-slate transition-colors duration-200 hover:bg-cloud hover:text-midnight ${focusRing}`}
     >
-      {done ? <Check aria-hidden className="size-4 text-teal" /> : <Copy aria-hidden className="size-4" />}
+      {done ? <Check aria-hidden className="pop size-4 text-teal" /> : <Copy aria-hidden className="size-4" />}
       <span aria-live="polite" className="sr-only">
         {done ? "Copied" : ""}
       </span>
@@ -85,8 +87,15 @@ export function CheckOnUscisButton({ receipt }: { receipt: string }) {
         <ArrowUpRight aria-hidden className="size-4" />
         <span className="sr-only">(opens in a new tab)</span>
       </a>
-      <p aria-live="polite" className="min-h-5 text-small text-slate">
-        {copied ? "Receipt number copied. Paste it on the USCIS page." : "We copy your receipt number so you can paste it there."}
+      <p aria-live="polite" className="flex min-h-5 items-center gap-1.5 text-small text-slate">
+        {copied ? (
+          <span key="copied" className="swap inline-flex items-center gap-1.5 text-teal">
+            <Check aria-hidden className="size-4" />
+            Receipt number copied. Paste it on the USCIS page.
+          </span>
+        ) : (
+          "We copy your receipt number so you can paste it there."
+        )}
       </p>
     </div>
   );
@@ -154,7 +163,12 @@ export function EditRemoveButtons({
             disabled={busy}
             className={`${btnDanger} disabled:opacity-60`}
           >
-            {busy ? "Removing…" : "Remove case"}
+            {busy ? (
+            <>
+              <Spinner />
+              Removing…
+            </>
+          ) : "Remove case"}
           </button>
         </div>
       </Dialog>

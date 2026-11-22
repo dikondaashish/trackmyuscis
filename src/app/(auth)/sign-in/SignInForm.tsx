@@ -9,6 +9,7 @@ import { FormMessage } from "@/components/auth/FormMessage";
 import { GoogleButton, OrDivider } from "@/components/auth/GoogleButton";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { btnPrimary, field, fieldLabel, focusRing } from "@/lib/ui";
+import { Spinner } from "@/components/ui/Spinner";
 
 /** Messages /auth/callback can send back here. */
 const CALLBACK_ERRORS: Record<string, string> = {
@@ -68,7 +69,12 @@ export function SignInForm({ googleClientId }: { googleClientId: string }) {
           </Link>
         </div>
         <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
-          {busy ? "Signing in…" : "Sign in"}
+          {busy ? (
+            <>
+              <Spinner />
+              Signing in…
+            </>
+          ) : "Sign in"}
         </button>
       </form>
     </>

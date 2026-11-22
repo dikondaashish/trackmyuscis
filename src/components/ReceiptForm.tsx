@@ -65,15 +65,15 @@ export function ReceiptForm({ onResult }: { onResult?: (result: ReceiptCheck | n
 
       <div id={messageId} aria-live="polite" className="text-small">
         {result?.ok === false && (
-          <p className="mt-3 flex items-start gap-2 text-red">
+          <p key={result.error} className="swap mt-3 flex items-start gap-2 text-red">
             <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
             {result.error}
           </p>
         )}
         {result?.ok === true && (
-          <div className="mt-3 rounded-[10px] bg-teal/10 px-4 py-4 text-midnight">
+          <div key={result.receipt} className="swap mt-3 rounded-[10px] bg-teal/10 px-4 py-4 text-midnight">
             <p className="flex items-start gap-2">
-              <CircleCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-teal" />
+              <CircleCheck aria-hidden className="pop mt-0.5 size-4 shrink-0 text-teal" style={{ animationDelay: "200ms" }} />
               <span>
                 <span className="font-semibold">{result.receipt}</span> is a valid receipt number from{" "}
                 {result.office ?? `the ${result.prefix} office`}. Check its current status on the official USCIS

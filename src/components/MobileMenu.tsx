@@ -46,7 +46,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
       <div
         id={panelId}
         hidden={!open}
-        className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-b border-border bg-white shadow-[0_16px_32px_-16px_rgba(16,34,61,0.2)]"
+        className="menu-in absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-b border-border bg-white shadow-[0_16px_32px_-16px_rgba(16,34,61,0.2)]"
       >
         <nav aria-label="Mobile" className="mx-auto max-w-7xl px-2 py-3 sm:px-5">
           <Link
@@ -58,7 +58,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
             <Search aria-hidden className="size-5" />
             Search the site
           </Link>
-          <ul className="flex flex-col">
+          <ul className="stagger flex flex-col" style={{ "--stagger-base": "40ms" } as React.CSSProperties}>
             {entries.map((entry) => (
               <li key={entry.label}>
                 {entry.kind === "link" ? (
@@ -71,7 +71,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
                     {entry.label}
                   </Link>
                 ) : (
-                  <details className="group" open={menuIsCurrent(pathname, entry) || undefined}>
+                  <details className="disclosure group" open={menuIsCurrent(pathname, entry) || undefined}>
                     <summary className={`${row} cursor-pointer list-none justify-between [&::-webkit-details-marker]:hidden`}>
                       {entry.label}
                       <ChevronDown

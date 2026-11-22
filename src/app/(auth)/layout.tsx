@@ -4,6 +4,7 @@ import { ArrowLeft, BellOff, FileText, ListChecks } from "lucide-react";
 import { COPYRIGHT } from "@/lib/company";
 import { SHORT_DISCLAIMER } from "@/lib/site";
 import { focusRing } from "@/lib/ui";
+import { FlowLines } from "@/components/ui/FlowLines";
 
 const whiteRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
 
@@ -27,15 +28,18 @@ const LINKS = [
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-1 flex-col lg:grid lg:h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:grid-rows-[minmax(0,1fr)]">
-      <aside className="hidden flex-col justify-between gap-6 overflow-y-auto bg-midnight px-12 py-8 text-white lg:flex xl:px-16">
+      <aside className="relative isolate hidden flex-col justify-between gap-6 overflow-y-auto bg-midnight px-12 py-8 text-white lg:flex xl:px-16">
+        <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+          <FlowLines tone="dark" className="absolute inset-x-0 bottom-0 h-[42%] w-full" />
+        </div>
         <Link href="/" aria-label="TrackMyUSCIS home" className={`inline-flex min-h-11 items-center self-start rounded-md ${whiteRing}`}>
           <Image src="/brand/logo-dark.svg" alt="TrackMyUSCIS" width={1180} height={196} className="h-9 w-auto" priority />
         </Link>
 
-        <div className="max-w-md">
+        <div className="enter max-w-md">
           <h2 className="text-h2">Your USCIS cases, in one place.</h2>
           <p className="mt-3 text-lead text-ice/80">A free account keeps your receipt numbers together, so you don&apos;t have to look them up every time.</p>
-          <ul className="mt-8 flex flex-col gap-5">
+          <ul className="stagger mt-8 flex flex-col gap-5" style={{ "--stagger-base": "300ms" } as React.CSSProperties}>
             {POINTS.map(({ icon: Icon, title, text }) => (
               <li key={title} className="flex gap-4">
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">

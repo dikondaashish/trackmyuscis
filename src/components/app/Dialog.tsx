@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { focusRing } from "@/lib/ui";
 
 /**
  * A modal built on the native <dialog>: focus is trapped and Escape closes it for free.
  * A click on the dimmed backdrop closes it too. Mark the field to focus first with data-autofocus.
+ * It scales in on open and eases out on close (globals.css, dialog.modal); the content stays
+ * mounted while it closes and starts fresh on every open.
  */
 export function Dialog({
   open,
@@ -22,6 +24,13 @@ export function Dialog({
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  // A new key on every open, so forms inside start empty again.
+  const [round, setRound] = useState(0);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) setRound((r) => r + 1);
+  }
 
   useEffect(() => {
     const d = ref.current;
@@ -42,7 +51,7 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       aria-labelledby="dialog-title"
-      className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)] backdrop:bg-midnight/40"
+      className="modal m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)]"
     >
       <div className="p-6 sm:p-7">
         <div className="flex items-start justify-between gap-4">
@@ -61,7 +70,9 @@ export function Dialog({
             <X aria-hidden className="size-5" />
           </button>
         </div>
-        <div className="mt-6">{open && children}</div>
+        <div key={round} className="mt-6">
+          {children}
+        </div>
       </div>
     </dialog>
   );

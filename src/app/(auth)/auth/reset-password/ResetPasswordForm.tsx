@@ -7,6 +7,7 @@ import { AFTER_SIGN_IN, authErrorMessage, PASSWORD_RULES, passwordOk } from "@/l
 import { FormMessage } from "@/components/auth/FormMessage";
 import { PasswordField } from "@/components/auth/PasswordField";
 import { btnPrimary, textLink } from "@/lib/ui";
+import { Spinner } from "@/components/ui/Spinner";
 
 /** Shown after the emailed link: /auth/callback has already signed the person in with a recovery session. */
 export function ResetPasswordForm() {
@@ -55,7 +56,12 @@ export function ResetPasswordForm() {
       <p className="-mt-2 text-small text-slate">{PASSWORD_RULES.map((r) => r.label.toLowerCase()).join(", ").replace(/^a/, "A")}.</p>
       <PasswordField label="Confirm new password" value={confirm} onChange={setConfirm} autoComplete="new-password" disabled={busy} />
       <button type="submit" disabled={busy} className={`${btnPrimary} w-full disabled:opacity-60`}>
-        {busy ? "Saving…" : "Save new password"}
+        {busy ? (
+            <>
+              <Spinner />
+              Saving…
+            </>
+          ) : "Save new password"}
       </button>
     </form>
   );

@@ -56,7 +56,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-white px-4 sm:px-6 lg:hidden">
           <Logo />
-          <Suspense fallback={<span className="size-8 animate-pulse rounded-full bg-border/70" />}>
+          <Suspense fallback={<span className="skeleton size-8 rounded-full" />}>
             <MobileMenu />
           </Suspense>
         </header>

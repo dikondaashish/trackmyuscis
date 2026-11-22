@@ -125,7 +125,16 @@ dd {
   background-size: 100% 1.5px;
 }
 
-/* The hero enters once on load; nothing else animates on scroll. */
+/*
+ * Motion. Calm and quick: things arrive (fade + 8-14px rise), never bounce around.
+ * Every animation sits behind prefers-reduced-motion: no-preference, so people who
+ * ask for less motion get a still page. Rules: .claude/skills/trackmyuscis-ui-system §8.
+ */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-pop: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
 @keyframes enter {
   from {
     opacity: 0;
@@ -136,16 +145,254 @@ dd {
     transform: none;
   }
 }
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  80%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@keyframes drift {
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes loader-bar {
+  0% {
+    transform: translateX(-100%) scaleX(0.4);
+  }
+  60% {
+    transform: translateX(60%) scaleX(0.6);
+  }
+  100% {
+    transform: translateX(200%) scaleX(0.4);
+  }
+}
+
+/* Skeletons stay visible (no motion) for reduced-motion users; the shimmer is extra. */
+.skeleton {
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, var(--border) 0%, #eef3f9 40%, var(--border) 80%) 0 0 / 200% 100%;
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  /* Page intros and heroes enter once on load. */
   .enter {
-    animation: enter 640ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: enter 640ms var(--ease-out) both;
   }
   .enter-delay {
     animation-delay: 120ms;
   }
+  .enter-delay-2 {
+    animation-delay: 240ms;
+  }
   /* The hero card settles in again when it switches to the visitor's own number. */
   .swap {
-    animation: enter 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: enter 360ms var(--ease-out) both;
+  }
+  /* Every page fades in when you navigate to it (route templates). */
+  .page-in {
+    animation: fade-in 280ms ease-out both;
+  }
+
+  /* Children arrive one after another, 50ms apart (up to 12, then together). */
+  .stagger > * {
+    animation: rise 480ms var(--ease-out) both;
+    animation-delay: calc(var(--stagger-base, 80ms) + 50ms * min(var(--i, 11), 11));
+  }
+  .stagger > :nth-child(1) { --i: 0; }
+  .stagger > :nth-child(2) { --i: 1; }
+  .stagger > :nth-child(3) { --i: 2; }
+  .stagger > :nth-child(4) { --i: 3; }
+  .stagger > :nth-child(5) { --i: 4; }
+  .stagger > :nth-child(6) { --i: 5; }
+  .stagger > :nth-child(7) { --i: 6; }
+  .stagger > :nth-child(8) { --i: 7; }
+  .stagger > :nth-child(9) { --i: 8; }
+  .stagger > :nth-child(10) { --i: 9; }
+  .stagger > :nth-child(11) { --i: 10; }
+
+  /* A menu panel drops in when it opens. */
+  .menu-in:not([hidden]) {
+    animation: drop-in 220ms var(--ease-out) both;
+  }
+
+  .pop {
+    animation: pop 320ms var(--ease-pop) both;
+  }
+  .grow-x {
+    transform-origin: left;
+    animation: grow-x 900ms var(--ease-out) 200ms both;
+  }
+  .grow-y {
+    transform-origin: top;
+    animation: grow-y 500ms var(--ease-out) both;
+  }
+  .skeleton {
+    animation: shimmer 1.6s linear infinite;
+  }
+  /* A soft ring that pulses out from a status dot. */
+  .ping {
+    animation: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .drift {
+    animation: drift 7s ease-in-out infinite;
+  }
+  .draw {
+    stroke-dasharray: var(--len, 1200);
+    stroke-dashoffset: var(--len, 1200);
+    animation: draw 2.6s var(--ease-out) 300ms forwards;
+  }
+  .travel {
+    animation: travel var(--travel-time, 9s) linear infinite;
+  }
+  .loader-bar {
+    animation: loader-bar 1.3s ease-in-out infinite;
+  }
+
+  /* FAQ and menu sections open smoothly where the browser can animate to height: auto. */
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details.disclosure::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 280ms var(--ease-out),
+      content-visibility 280ms allow-discrete;
+  }
+  details.disclosure[open]::details-content {
+    block-size: auto;
+  }
+
+  /* Modals scale up from the button and fade the page behind them; they ease out on close. */
+  dialog.modal {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+    transition:
+      opacity 200ms ease-out,
+      transform 260ms var(--ease-out),
+      overlay 260ms allow-discrete,
+      display 260ms allow-discrete;
+  }
+  dialog.modal[open] {
+    opacity: 1;
+    transform: none;
+  }
+  dialog.modal::backdrop {
+    background-color: rgb(16 34 61 / 0);
+    backdrop-filter: blur(0);
+    transition:
+      background-color 260ms ease-out,
+      backdrop-filter 260ms ease-out,
+      overlay 260ms allow-discrete,
+      display 260ms allow-discrete;
+  }
+  dialog.modal[open]::backdrop {
+    background-color: rgb(16 34 61 / 0.4);
+    backdrop-filter: blur(2px);
+  }
+  @starting-style {
+    dialog.modal[open] {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+    }
+    dialog.modal[open]::backdrop {
+      background-color: rgb(16 34 61 / 0);
+      backdrop-filter: blur(0);
+    }
+  }
+}
+
+/* Without motion the backdrop still dims. */
+@media (prefers-reduced-motion: reduce) {
+  .travel-dot {
+    display: none;
+  }
+  dialog.modal::backdrop {
+    background-color: rgb(16 34 61 / 0.4);
+  }
+}
+
+/*
+ * Cards and panels further down a page rise in as they scroll into view. Pure CSS
+ * (scroll-driven animation), so browsers without support simply show them.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
   }
 }
 
@@ -197,8 +444,17 @@ summary::-webkit-details-marker {
     background: #fff;
   }
   .enter,
-  .swap {
-    animation: none;
+  .swap,
+  .page-in,
+  .stagger > *,
+  .reveal,
+  .grow-x,
+  .grow-y,
+  .draw {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
   }
   a[target="_blank"]::after {
     content: " (" attr(href) ")";
