@@ -92,3 +92,14 @@ export function statusTimeline(c: Pick<CaseRow, "current_status" | "status_histo
   else if (entries[0]) entries[0].current = true;
   return entries;
 }
+
+/**
+ * When the current status started: the date USCIS gives for it in the history, else when
+ * we saw it change. Null when neither is known (for example a case's first status).
+ */
+export function lastStatusChange(c: Pick<CaseRow, "current_status" | "status_history" | "status_changed_at">): string | null {
+  if (!c.current_status) return null;
+  const top = c.status_history?.length ? statusTimeline(c)[0] : undefined;
+  if (top?.current && top.date) return top.date;
+  return c.status_changed_at ? utcDate.format(new Date(c.status_changed_at)) : null;
+}

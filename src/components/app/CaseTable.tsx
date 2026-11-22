@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { caseStatus, caseTitle, receiptFacts, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
+import { caseStatus, caseTitle, lastStatusChange, receiptFacts, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CopyButton } from "@/components/app/CaseActions";
 import { TimelineList } from "@/components/app/StatusTimeline";
@@ -24,6 +24,7 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
           const status = caseStatus(c);
           const facts = receiptFacts(c.receipt_number);
           const history = c.status_history?.length ? statusTimeline(c) : [];
+          const changed = lastStatusChange(c);
           return (
             <li key={c.id} className={`group relative py-3 pr-10 pl-4 sm:py-2.5 sm:pr-4 transition-colors duration-200 hover:bg-cloud/70 ${cols}`}>
               <div className="min-w-0">
@@ -44,7 +45,10 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
               </div>
               <div className="mt-1.5 sm:mt-0">
                 {status ? (
-                  <StatusBadge tone={status.tone}>{status.name}</StatusBadge>
+                  <>
+                    <StatusBadge tone={status.tone}>{status.name}</StatusBadge>
+                    {changed && <p className="mt-0.5 text-caption text-slate tabular-nums">Changed {changed}</p>}
+                  </>
                 ) : (
                   <span className="text-small text-slate">Not checked yet</span>
                 )}
