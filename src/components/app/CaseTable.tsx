@@ -59,6 +59,8 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                     <StatusBadge tone={status.tone}>{status.name}</StatusBadge>
                     {changed && <p className="mt-0.5 text-caption text-slate tabular-nums">Changed {changed}</p>}
                   </>
+                ) : c.uscis_not_found ? (
+                  <StatusBadge tone="warning">Not found at USCIS</StatusBadge>
                 ) : (
                   <span className="text-small text-slate">Not checked yet</span>
                 )}

@@ -9,7 +9,7 @@ import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, lastStatusC
 import { USCIS_PROCESSING_TIMES, officialFormUrl, statusId } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { CheckOnUscisButton, CopyButton, EditRemoveButtons } from "@/components/app/CaseActions";
+import { CheckOnUscisButton, CopyButton, EditRemoveButtons, RecheckButton } from "@/components/app/CaseActions";
 import { CaseSkeleton } from "@/components/app/Skeletons";
 import { StatusTimeline } from "@/components/app/StatusTimeline";
 import { WorkPermitCategory } from "@/components/app/WorkPermitCategory";
@@ -110,6 +110,26 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                   What this status means
                   <ArrowRight aria-hidden className="size-3.5" />
                 </Link>
+              </>
+            ) : c.uscis_not_found ? (
+              <>
+                <div className="mt-2">
+                  <StatusBadge tone="warning">Not found at USCIS</StatusBadge>
+                </div>
+                <p className="mt-2.5 max-w-prose text-small text-midnight">
+                  USCIS doesn&apos;t recognize {c.receipt_number}. Check it against your receipt notice (Form I-797C). If
+                  it&apos;s wrong, remove this case and add the right number.
+                </p>
+                <p className="mt-1.5 max-w-prose text-small text-slate">
+                  {c.checks_stopped
+                    ? "We stopped checking it automatically after two weeks. If the number is right, check again."
+                    : "If you filed in the last few days, it may not be in USCIS's system yet. We'll try again a few times over the next two weeks."}
+                </p>
+                {autoChecks && (
+                  <div className="mt-3">
+                    <RecheckButton caseId={c.id} />
+                  </div>
+                )}
               </>
             ) : (
               <>

@@ -19,11 +19,14 @@ export type CaseRow = {
   /** What a work permit is for (see filing-category.ts); null until the owner says. */
   filing_category: string | null;
   premium_processing: boolean | null;
+  /** USCIS doesn't recognize the receipt number; checks_stopped once retries ended. */
+  uscis_not_found: boolean;
+  checks_stopped: boolean;
   created_at: string;
 };
 
 export const CASE_COLUMNS =
-  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, premium_processing, created_at";
+  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, premium_processing, uscis_not_found, checks_stopped, created_at";
 
 export const formFor = (code: string | null) => (code ? FORMS.find((f) => f.form === code) : undefined);
 

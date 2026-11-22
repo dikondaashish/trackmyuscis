@@ -16,6 +16,11 @@ const CHECK_WAIT_MS = 12_000;
 
 export type NewWorkPermit = { caseId: string; suggested: FilingCategory | null };
 
+/** What the add dialog shows after saving, when it has more to say than "done". */
+export type AfterAdd =
+  | ({ kind: "work-permit" } & NewWorkPermit)
+  | { kind: "not-found"; caseId: string; receipt: string; label: string | null };
+
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
 
 /**
@@ -27,13 +32,19 @@ export function CaseForm({
   existing,
   onDone,
   onCancel,
-  onWorkPermit,
+  onNext,
+  initial,
 }: {
   existing?: Existing;
   onDone: () => void;
   onCancel: () => void;
-  /** Called instead of onDone when USCIS says the new case is a work permit, to ask what it's for. */
-  onWorkPermit?: (permit: NewWorkPermit) => void;
+  /**
+   * Called instead of onDone when there's a second step: USCIS doesn't recognize the
+   * number, or says it's a work permit (to ask what it's for).
+   */
+  onNext?: (next: AfterAdd) => void;
+  /** Starting values when someone goes back to fix a number. */
+  initial?: { receipt: string; label: string | null };
 }) {
   const router = useRouter();
   const ids = { receipt: useId(), label: useId(), msg: useId() };
@@ -65,6 +76,8 @@ export function CaseForm({
       setBusy(false);
       if (error || !added) {
         if (error?.code === "23505") return setError("You already saved this receipt number.");
+        if (error?.message.includes("daily_add_limit"))
+          return setError("You've added a lot of receipt numbers today. Please try again tomorrow.");
         if (error?.message.includes("case_limit_reached"))
           return setError(`You can save up to ${MAX_CASES} cases. Remove one to add another.`);
         return setError("We couldn't save that case. Please try again.");
@@ -74,13 +87,11 @@ export function CaseForm({
       setBusy(true);
       setChecking(true);
       await Promise.race([syncMyCases().catch(() => {}), new Promise((r) => setTimeout(r, CHECK_WAIT_MS))]);
-      const permit = onWorkPermit ? await workPermitFor(added.id) : null;
+      const next = onNext ? await afterAdd(added.id, check.receipt, label) : null;
       setChecking(false);
       setBusy(false);
-      // Don't refresh yet: on an empty dashboard the button that opened this dialog is
-      // replaced by the list, which would close the dialog before step 2. The parent
-      // refreshes when step 2 is saved, skipped or closed.
-      if (permit) return onWorkPermit?.(permit);
+      // Don't refresh before a second step; the parent refreshes when it closes.
+      if (next) return onNext?.(next);
       router.refresh();
       return onDone();
     }
@@ -99,6 +110,7 @@ export function CaseForm({
             id={ids.receipt}
             name="receipt"
             placeholder="e.g. IOE0912345678"
+            defaultValue={initial?.receipt}
             autoComplete="off"
             autoCapitalize="characters"
             spellCheck={false}
@@ -122,7 +134,7 @@ export function CaseForm({
         <input
           id={ids.label}
           name="label"
-          defaultValue={existing?.label ?? ""}
+          defaultValue={existing?.label ?? initial?.label ?? ""}
           placeholder="e.g. My work permit"
           maxLength={60}
           data-autofocus={existing ? true : undefined}
@@ -152,13 +164,15 @@ export function CaseForm({
   );
 }
 
-/** If USCIS says this saved case is a work permit, what to ask next (with a likely answer). */
-async function workPermitFor(caseId: string): Promise<NewWorkPermit | null> {
-  const { data } = await createClient().from("cases").select("id, form_type, filing_category").returns<
-    { id: string; form_type: string | null; filing_category: string | null }[]
+/** What to ask after saving: USCIS doesn't know the number, or it's a work permit. */
+async function afterAdd(caseId: string, receipt: string, label: string | null): Promise<AfterAdd | null> {
+  const { data } = await createClient().from("cases").select("id, form_type, filing_category, uscis_not_found").returns<
+    { id: string; form_type: string | null; filing_category: string | null; uscis_not_found: boolean }[]
   >();
   const mine = data?.find((c) => c.id === caseId);
-  if (!mine || !asksFilingCategory(mine.form_type) || mine.filing_category) return null;
+  if (!mine) return null;
+  if (mine.uscis_not_found) return { kind: "not-found", caseId, receipt, label };
+  if (!asksFilingCategory(mine.form_type) || mine.filing_category) return null;
   const others = (data ?? []).filter((c) => c.id !== caseId).map((c) => c.form_type);
-  return { caseId, suggested: suggestCategory(others) };
+  return { kind: "work-permit", caseId, suggested: suggestCategory(others) };
 }

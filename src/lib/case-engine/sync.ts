@@ -10,9 +10,16 @@ export type SyncedCase = {
   current_status: string | null;
   alerted_status: string | null;
   engine_registered_at: string | null;
+  uscis_not_found: boolean;
+  checks_stopped: boolean;
 };
 
-export const SYNC_COLUMNS = "id, user_id, receipt_number, form_type, current_status, alerted_status, engine_registered_at";
+export const SYNC_COLUMNS =
+  "id, user_id, receipt_number, form_type, current_status, alerted_status, engine_registered_at, uscis_not_found, checks_stopped";
+
+/** Older engine responses only carry the error code. */
+const notFound = (remote: EngineCase) =>
+  remote.notFound ?? (!remote.status && (remote.lastErrorCode === 404 || remote.lastErrorCode === 422));
 
 /** Same format the database accepts (cases_form_type_format), e.g. I-765 or I-821D. */
 const FORM_CODE = /^[A-Z]{1,2}-[0-9]{1,4}[A-Z]?$/;
@@ -25,6 +32,10 @@ export async function applyEngineStatus(admin: SupabaseClient, row: SyncedCase, 
   const update: Record<string, unknown> = {};
   if (!row.engine_registered_at) update.engine_registered_at = new Date().toISOString();
   if (remote.lastCheckedAt) update.last_checked_at = remote.lastCheckedAt;
+  const missing = notFound(remote);
+  const stopped = missing && remote.checksStopped === true;
+  if (missing !== row.uscis_not_found) update.uscis_not_found = missing;
+  if (stopped !== row.checks_stopped) update.checks_stopped = stopped;
   // USCIS says which form the case is for, so people never have to pick it.
   const form = remote.formType?.trim().toUpperCase();
   if (form && FORM_CODE.test(form) && form !== row.form_type) update.form_type = form;

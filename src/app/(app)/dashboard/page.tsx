@@ -37,11 +37,12 @@ async function Cases() {
   const { data } = await supabase.from("cases").select(CASE_COLUMNS).order("created_at", { ascending: true }).returns<CaseRow[]>();
   const cases = data ?? [];
   const full = cases.length >= MAX_CASES;
-  const unchecked = cases.some((c) => !c.current_status);
+  const unchecked = cases.some((c) => !c.current_status && !c.uscis_not_found);
   const autoChecks = caseEngineEnabled();
   // Register any case the status checker doesn't have yet (a failed sync, or saved before
   // automatic checks started), after the page is sent so it never slows the dashboard.
-  if (autoChecks && cases.some((c) => !c.engine_registered_at)) {
+  // Also refresh not-found cases (no USCIS lookup), so "we stopped checking" shows when it happens.
+  if (autoChecks && cases.some((c) => !c.engine_registered_at || (c.uscis_not_found && !c.checks_stopped))) {
     after(() => syncUserCases(account.id).catch(() => console.error("Background case sync failed")));
   }
 

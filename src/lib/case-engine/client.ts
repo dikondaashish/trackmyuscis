@@ -24,6 +24,10 @@ export type EngineCase = {
   statusChangedAt: string | null;
   lastCheckedAt: string | null;
   lastErrorCode: number | null;
+  /** USCIS doesn't recognize the receipt number (it has never returned a status). */
+  notFound?: boolean;
+  /** Not found, and the engine has stopped retrying (after about two weeks). */
+  checksStopped?: boolean;
 };
 
 export type EngineStatusEvent = {
@@ -83,6 +87,15 @@ export const engine = {
   /** Idempotent: an already-registered receipt returns the saved case. */
   add: (userId: string, receiptNumber: string) =>
     call<{ case: EngineCase }>("POST", {}, { userRef: userId, receiptNumber }).then((r) => r.case),
+  /**
+   * One more USCIS lookup for a receipt it didn't recognize. The engine allows it at most
+   * hourly per case; `rechecked` is false when it didn't look again.
+   */
+  recheck: (userId: string, receiptNumber: string) =>
+    call<{ case: EngineCase; rechecked?: boolean }>("POST", {}, { userRef: userId, receiptNumber, recheck: true }).then((r) => ({
+      case: r.case,
+      rechecked: r.rechecked === true,
+    })),
   remove: (userId: string, receiptNumber?: string) =>
     call<{ removed: number }>("DELETE", receiptNumber ? { userRef: userId, receiptNumber } : { userRef: userId }),
 };

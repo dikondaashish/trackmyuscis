@@ -2,16 +2,16 @@
 
 import { createContext, useCallback, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, Check, Copy, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowUpRight, Check, Copy, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { USCIS_CASE_STATUS } from "@/lib/content";
 import { appBtnDanger, appBtnPrimary, appBtnSecondary, appIconBtn } from "@/lib/ui";
 import { Dialog } from "./Dialog";
 
-import { CaseForm, type NewWorkPermit } from "./CaseForm";
+import { CaseForm, type AfterAdd } from "./CaseForm";
 import { WORK_PERMIT_WHY, WorkPermitForm } from "./WorkPermitCategory";
 import { Spinner } from "@/components/ui/Spinner";
-import { syncMyCases } from "@/app/(app)/dashboard/actions";
+import { recheckMyCase, syncMyCases, type RecheckResult } from "@/app/(app)/dashboard/actions";
 
 async function copy(text: string) {
   try {
@@ -33,42 +33,131 @@ const AddCaseContext = createContext<(() => void) | null>(null);
 export function AddCaseProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [permit, setPermit] = useState<NewWorkPermit | null>(null);
+  const [next, setNext] = useState<AfterAdd | null>(null);
+  // Set when someone goes back from "not found" to fix the number.
+  const [retry, setRetry] = useState<{ receipt: string; label: string | null } | null>(null);
   const show = useCallback(() => {
-    setPermit(null);
+    setNext(null);
+    setRetry(null);
     setOpen(true);
   }, []);
   const close = () => {
     setOpen(false);
-    // Step 2 holds the refresh back (see CaseForm); show the new case now.
-    if (permit) router.refresh();
+    // A second step holds the refresh back (see CaseForm); show the new case now.
+    if (next || retry) router.refresh();
   };
+
+  let title = "Add a case";
+  let description = "Save a receipt number to keep it in your list.";
+  if (next?.kind === "work-permit") {
+    title = "What is this work permit for?";
+    description = `Case saved. ${WORK_PERMIT_WHY}`;
+  } else if (next?.kind === "not-found") {
+    title = "USCIS doesn't recognize this number";
+    description = `${next.receipt} is saved, but USCIS says it doesn't know it.`;
+  }
+
   return (
     <AddCaseContext.Provider value={show}>
       {children}
       <Dialog
         open={open}
         onClose={close}
-        wide={Boolean(permit)}
-        title={permit ? "What is this work permit for?" : "Add a case"}
-        description={permit ? `Case saved. ${WORK_PERMIT_WHY}` : "Save a receipt number to keep it in your list."}
+        wide={next?.kind === "work-permit"}
+        step={next?.kind ?? (retry ? "fix" : "add")}
+        title={title}
+        description={description}
       >
-        {permit ? (
+        {next?.kind === "work-permit" ? (
           <WorkPermitForm
-            key={permit.caseId}
-            caseId={permit.caseId}
+            key={next.caseId}
+            caseId={next.caseId}
             saved={null}
             premium={null}
-            suggested={permit.suggested}
+            suggested={next.suggested}
             compact
             onSaved={close}
             secondary={{ label: "Skip for now", onClick: close }}
           />
+        ) : next?.kind === "not-found" ? (
+          <NotFoundStep
+            key={next.caseId}
+            found={next}
+            onKeep={close}
+            onFix={() => {
+              setRetry({ receipt: next.receipt, label: next.label });
+              setNext(null);
+            }}
+          />
         ) : (
-          <CaseForm onDone={close} onCancel={close} onWorkPermit={setPermit} />
+          <CaseForm key={retry?.receipt ?? "new"} initial={retry ?? undefined} onDone={close} onCancel={close} onNext={setNext} />
         )}
       </Dialog>
     </AddCaseContext.Provider>
+  );
+}
+
+/**
+ * Second step when USCIS doesn't know a new receipt number: usually a typo, sometimes a
+ * filing too new to be in its system. "Fix the number" removes it and goes back to the form.
+ */
+function NotFoundStep({
+  found,
+  onKeep,
+  onFix,
+}: {
+  found: Extract<AfterAdd, { kind: "not-found" }>;
+  onKeep: () => void;
+  onFix: () => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  return (
+    <div>
+      <p className="text-small text-midnight">Check it against your receipt notice (Form I-797C). It&apos;s usually a typo.</p>
+      <p className="mt-2 text-small text-slate">
+        If you filed in the last few days, it may not be in USCIS&apos;s system yet. Keep it and we&apos;ll try again a few
+        times over the next two weeks.
+      </p>
+      {error && (
+        <p role="alert" className="mt-3 text-small text-red">
+          {error}
+        </p>
+      )}
+      <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" onClick={onKeep} disabled={busy} className={appBtnSecondary}>
+          Keep it
+        </button>
+        <button
+          type="button"
+          data-autofocus
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            setError(null);
+            const { error } = await createClient().from("cases").delete().eq("id", found.caseId);
+            if (error) {
+              setBusy(false);
+              return setError("We couldn't remove it. Please try again.");
+            }
+            // Stop the engine checking the wrong number. Never blocks fixing it.
+            void syncMyCases().catch(() => {});
+            setBusy(false);
+            onFix();
+          }}
+          className={appBtnPrimary}
+        >
+          {busy ? (
+            <>
+              <Spinner />
+              Removing…
+            </>
+          ) : (
+            "Fix the number"
+          )}
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -141,6 +230,43 @@ export function CheckOnUscisButton({ receipt }: { receipt: string }) {
         ) : (
           "We copy your receipt number so you can paste it there."
         )}
+      </p>
+    </div>
+  );
+}
+
+const RECHECK_MESSAGES: Record<Exclude<RecheckResult, "found">, string> = {
+  "not-found": "USCIS still doesn't recognize this number.",
+  "too-soon": "We checked this number less than an hour ago. Try again later.",
+  failed: "We couldn't check right now. Please try again later.",
+};
+
+/** "Check again" for a receipt number USCIS didn't recognize. One lookup, at most hourly. */
+export function RecheckButton({ caseId }: { caseId: string }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  return (
+    <div className="flex flex-col items-stretch gap-2 sm:items-start">
+      <button
+        type="button"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          setMessage(null);
+          const result = await recheckMyCase(caseId).catch((): RecheckResult => "failed");
+          setBusy(false);
+          if (result === "found") return router.refresh();
+          setMessage(RECHECK_MESSAGES[result]);
+          router.refresh();
+        }}
+        className={appBtnSecondary}
+      >
+        {busy ? <Spinner /> : <RefreshCw aria-hidden className="size-3.5" />}
+        {busy ? "Checking…" : "Check again"}
+      </button>
+      <p aria-live="polite" className="min-h-4 text-caption text-slate">
+        {message}
       </p>
     </div>
   );

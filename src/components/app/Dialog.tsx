@@ -16,6 +16,7 @@ export function Dialog({
   title,
   description,
   wide = false,
+  step,
   children,
 }: {
   open: boolean;
@@ -24,6 +25,8 @@ export function Dialog({
   description?: string;
   /** A little wider, for content in two columns. */
   wide?: boolean;
+  /** Changes when the content moves to another step, to move focus into the new step. */
+  step?: string;
   children: React.ReactNode;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -45,6 +48,11 @@ export function Dialog({
     }
     if (!open && d.open) d.close();
   }, [open]);
+
+  useEffect(() => {
+    if (step === undefined) return;
+    ref.current?.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+  }, [step]);
 
   return (
     <dialog
