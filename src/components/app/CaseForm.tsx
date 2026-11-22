@@ -14,11 +14,11 @@ import { asksFilingCategory, suggestCategory, type FilingCategory } from "@/lib/
 /** How long "Add a case" waits for the first USCIS check before closing anyway. */
 const CHECK_WAIT_MS = 12_000;
 
-export type NewWorkPermit = { caseId: string; suggested: FilingCategory | null };
+export type NewPurpose = { caseId: string; formType: string; suggested: FilingCategory | null };
 
 /** What the add dialog shows after saving, when it has more to say than "done". */
 export type AfterAdd =
-  | ({ kind: "work-permit" } & NewWorkPermit)
+  | ({ kind: "purpose" } & NewPurpose)
   | { kind: "not-found"; caseId: string; receipt: string; label: string | null };
 
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
@@ -174,5 +174,5 @@ async function afterAdd(caseId: string, receipt: string, label: string | null): 
   if (mine.uscis_not_found) return { kind: "not-found", caseId, receipt, label };
   if (!asksFilingCategory(mine.form_type) || mine.filing_category) return null;
   const others = (data ?? []).filter((c) => c.id !== caseId).map((c) => c.form_type);
-  return { kind: "work-permit", caseId, suggested: suggestCategory(others) };
+  return { kind: "purpose", caseId, formType: mine.form_type!, suggested: suggestCategory(mine.form_type, others) };
 }

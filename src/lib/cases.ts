@@ -16,7 +16,7 @@ export type CaseRow = {
   /** USCIS history, newest first: [{ date, completedText }]. */
   status_history: { date: string; completedText: string }[] | null;
   engine_registered_at: string | null;
-  /** What a work permit is for (see filing-category.ts); null until the owner says. */
+  /** What the case is for (see filing-category.ts); null until the owner says. */
   filing_category: string | null;
   /** USCIS doesn't recognize the receipt number; checks_stopped once retries ended. */
   uscis_not_found: boolean;
@@ -34,7 +34,7 @@ export const formFor = (code: string | null) => (code ? FORMS.find((f) => f.form
 /** What we call a case in lists: its name, else what it's for, else its form, else "USCIS case". */
 export function caseTitle(c: Pick<CaseRow, "label" | "form_type"> & { filing_category?: string | null }) {
   if (c.label) return c.label;
-  const category = asksFilingCategory(c.form_type) ? categoryFor(c.filing_category ?? null) : undefined;
+  const category = asksFilingCategory(c.form_type) ? categoryFor(c.filing_category ?? null, c.form_type) : undefined;
   if (category && category.value !== "other") return category.short;
   const form = formFor(c.form_type);
   return (form ? `${form.form} ${form.label.toLowerCase()}` : c.form_type) || "USCIS case";

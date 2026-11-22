@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog } from "./Dialog";
-import { WORK_PERMIT_WHY, WorkPermitForm } from "./WorkPermitCategory";
+import { PurposeForm } from "./CasePurpose";
 import { BIOMETRICS_NOTE, BiometricsDateForm, showIsoDate } from "./BiometricsAttendance";
-import type { FilingCategory } from "@/lib/filing-category";
+import { purposesFor, type FilingCategory } from "@/lib/filing-category";
 import { focusRing } from "@/lib/ui";
 
 /** Small link-style button in a dashboard row, above the row's own link. */
@@ -15,17 +15,28 @@ const rowButton = `relative z-10 -ml-1 mr-2 inline-flex min-h-7 cursor-pointer i
  * Dashboard rows ask their open questions in a popup on the same page, so people don't
  * have to open the case. The case page keeps its own panels for the same questions.
  */
-export function WorkPermitQuestion({ caseId, suggested }: { caseId: string; suggested: FilingCategory | null }) {
+export function PurposeQuestion({
+  caseId,
+  formType,
+  suggested,
+}: {
+  caseId: string;
+  formType: string;
+  suggested: FilingCategory | null;
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const purpose = purposesFor(formType);
+  if (!purpose) return null;
   return (
     <>
       <button type="button" onClick={() => setOpen(true)} className={rowButton}>
-        Add work permit type
+        {purpose.prompt}
       </button>
-      <Dialog open={open} onClose={() => setOpen(false)} title="What is this work permit for?" description={WORK_PERMIT_WHY}>
-        <WorkPermitForm
+      <Dialog open={open} onClose={() => setOpen(false)} title={purpose.question} description={purpose.why}>
+        <PurposeForm
           caseId={caseId}
+          formType={formType}
           saved={null}
           suggested={suggested}
           onSaved={() => {

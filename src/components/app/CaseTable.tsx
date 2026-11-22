@@ -7,7 +7,7 @@ import { TimelineList } from "@/components/app/StatusTimeline";
 import { appCard, focusRing } from "@/lib/ui";
 import { asksFilingCategory, categoryFor, suggestCategory } from "@/lib/filing-category";
 import { asksBiometrics, biometricsScheduledOn } from "@/lib/biometrics";
-import { BiometricsQuestion, WorkPermitQuestion } from "@/components/app/CaseRowQuestions";
+import { BiometricsQuestion, PurposeQuestion } from "@/components/app/CaseRowQuestions";
 
 const biometricsDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
@@ -31,7 +31,7 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
           const history = c.status_history?.length ? statusTimeline(c) : [];
           const changed = lastStatusChange(c);
           const asksCategory = asksFilingCategory(c.form_type);
-          const category = asksCategory ? categoryFor(c.filing_category) : undefined;
+          const category = asksCategory ? categoryFor(c.filing_category, c.form_type) : undefined;
           // Any form can be premium (I-765, I-129, I-140…); USCIS gives the date in the history.
           const premium = premiumSince(c);
           const confirmBiometrics = !c.biometrics_attended_date && asksBiometrics(c.current_status, c.status_history);
@@ -63,9 +63,10 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                 )}
                 {confirmBiometrics && <BiometricsQuestion caseId={c.id} scheduledOn={biometricsScheduledOn(c.status_history)} />}
                 {asksCategory && !category && (
-                  <WorkPermitQuestion
+                  <PurposeQuestion
                     caseId={c.id}
-                    suggested={suggestCategory(cases.filter((o) => o.id !== c.id).map((o) => o.form_type))}
+                    formType={c.form_type!}
+                    suggested={suggestCategory(c.form_type, cases.filter((o) => o.id !== c.id).map((o) => o.form_type))}
                   />
                 )}
               </div>

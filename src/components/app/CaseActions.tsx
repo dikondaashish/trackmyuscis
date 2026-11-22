@@ -9,7 +9,8 @@ import { appBtnDanger, appBtnPrimary, appBtnSecondary, appIconBtn } from "@/lib/
 import { Dialog } from "./Dialog";
 
 import { CaseForm, type AfterAdd } from "./CaseForm";
-import { WORK_PERMIT_WHY, WorkPermitForm } from "./WorkPermitCategory";
+import { PurposeForm } from "./CasePurpose";
+import { purposesFor } from "@/lib/filing-category";
 import { Spinner } from "@/components/ui/Spinner";
 import { recheckMyCase, syncMyCases, type RecheckResult } from "@/app/(app)/dashboard/actions";
 
@@ -49,9 +50,10 @@ export function AddCaseProvider({ children }: { children: React.ReactNode }) {
 
   let title = "Add a case";
   let description = "Save a receipt number to keep it in your list.";
-  if (next?.kind === "work-permit") {
-    title = "What is this work permit for?";
-    description = `Case saved. ${WORK_PERMIT_WHY}`;
+  const purpose = next?.kind === "purpose" ? purposesFor(next.formType) : undefined;
+  if (purpose) {
+    title = purpose.question;
+    description = `Case saved. ${purpose.why}`;
   } else if (next?.kind === "not-found") {
     title = "USCIS doesn't recognize this number";
     description = `${next.receipt} is saved, but USCIS says it doesn't know it.`;
@@ -67,10 +69,11 @@ export function AddCaseProvider({ children }: { children: React.ReactNode }) {
         title={title}
         description={description}
       >
-        {next?.kind === "work-permit" ? (
-          <WorkPermitForm
+        {next?.kind === "purpose" ? (
+          <PurposeForm
             key={next.caseId}
             caseId={next.caseId}
+            formType={next.formType}
             saved={null}
             suggested={next.suggested}
             onSaved={close}

@@ -12,7 +12,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckOnUscisButton, CopyButton, EditRemoveButtons, RecheckButton } from "@/components/app/CaseActions";
 import { CaseSkeleton } from "@/components/app/Skeletons";
 import { StatusTimeline } from "@/components/app/StatusTimeline";
-import { WorkPermitCategory } from "@/components/app/WorkPermitCategory";
+import { CasePurpose } from "@/components/app/CasePurpose";
 import { BiometricsAttendance } from "@/components/app/BiometricsAttendance";
 import { asksBiometrics, biometricsScheduledOn } from "@/lib/biometrics";
 import { asksFilingCategory, suggestCategory } from "@/lib/filing-category";
@@ -61,7 +61,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
   let suggested: ReturnType<typeof suggestCategory> = null;
   if (asksCategory && !c.filing_category) {
     const { data: others } = await supabase.from("cases").select("form_type").neq("id", c.id).returns<{ form_type: string | null }[]>();
-    suggested = suggestCategory((others ?? []).map((o) => o.form_type));
+    suggested = suggestCategory(c.form_type, (others ?? []).map((o) => o.form_type));
   }
 
   return (
@@ -149,7 +149,13 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
           </section>
 
           {asksCategory && (
-            <WorkPermitCategory caseId={c.id} saved={c.filing_category} premiumSince={premiumSince(c)} suggested={suggested} />
+            <CasePurpose
+              caseId={c.id}
+              formType={c.form_type!}
+              saved={c.filing_category}
+              premiumSince={premiumSince(c)}
+              suggested={suggested}
+            />
           )}
 
           <BiometricsAttendance

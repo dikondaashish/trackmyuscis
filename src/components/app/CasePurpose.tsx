@@ -4,49 +4,51 @@ import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { WORK_PERMIT_CATEGORIES, categoryFor, type FilingCategory } from "@/lib/filing-category";
+import { categoryFor, purposesFor, type CategoryOption, type FilingCategory } from "@/lib/filing-category";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Spinner } from "@/components/ui/Spinner";
 import { appBtnPrimary, appBtnSecondary, appField, appFieldLabel, appPanel, focusRing } from "@/lib/ui";
 
 const sectionLabel = "text-caption font-medium text-slate";
 
-export const WORK_PERMIT_WHY =
-  "Each kind of work permit has its own processing time, and USCIS doesn't say which one this is. It's on your receipt notice as the category, like (c)(3)(B).";
-
-/** One line per choice, with the code from the receipt notice. */
-const optionLabel = (c: (typeof WORK_PERMIT_CATEGORIES)[number]) => (c.code ? `${c.label} – ${c.code}` : c.label);
+/** One line per choice, with the code from the notice when there is one. */
+const optionLabel = (c: CategoryOption) => (c.code ? `${c.label} – ${c.code}` : c.label);
 
 /**
- * What the work permit is for, as one dropdown, saved straight to Supabase (row-level
- * security limits it to the owner; the database stamps when it was confirmed). Premium
- * processing isn't asked: USCIS reports it in the case history (see premiumSince).
- * Used on the case page and as the second step of "Add a case".
+ * What the case is for, as one dropdown with this form's own choices (see filing-category),
+ * saved straight to Supabase (row-level security limits it to the owner; the database stamps
+ * when it was confirmed). Used on the case page, in the dashboard popup and as the second
+ * step of "Add a case".
  */
-export function WorkPermitForm({
+export function PurposeForm({
   caseId,
+  formType,
   saved,
   suggested,
   onSaved,
   secondary,
 }: {
   caseId: string;
+  formType: string;
   saved: string | null;
   suggested: FilingCategory | null;
   onSaved: () => void;
   secondary?: { label: string; onClick: () => void };
 }) {
   const ids = { select: useId(), hint: useId(), msg: useId() };
-  const current = categoryFor(saved);
+  const purpose = purposesFor(formType);
+  const current = categoryFor(saved, formType);
   const initial = current?.value ?? suggested;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!purpose) return null;
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     const choice = String(new FormData(e.currentTarget).get("category") ?? "");
-    if (!categoryFor(choice)) return setError("Choose what this work permit is for.");
+    if (!categoryFor(choice, formType)) return setError("Choose one to continue.");
     setBusy(true);
     const { error } = await createClient().from("cases").update({ filing_category: choice }).eq("id", caseId);
     setBusy(false);
@@ -58,7 +60,7 @@ export function WorkPermitForm({
   return (
     <form onSubmit={onSubmit} noValidate>
       <label htmlFor={ids.select} className={appFieldLabel}>
-        Work permit category
+        {purpose.field}
       </label>
       <div className="relative mt-1.5">
         <select
@@ -74,7 +76,7 @@ export function WorkPermitForm({
           <option value="" disabled>
             Choose one
           </option>
-          {WORK_PERMIT_CATEGORIES.map((c) => (
+          {purpose.options.map((c) => (
             <option key={c.value} value={c.value}>
               {optionLabel(c)}
             </option>
@@ -116,17 +118,30 @@ export function WorkPermitForm({
   );
 }
 
+/** What the answered panel calls it: "Work permit for", "Petition for", "Based on"… */
+const answeredLabel: Record<string, string> = {
+  "I-765": "Work permit for",
+  "I-140": "Petition for",
+  "I-129": "Petition for",
+  "I-485": "Based on",
+  "I-130": "Petition for",
+  "I-539": "Application for",
+  "I-131": "Travel document",
+};
+
 /**
- * The case page panel: asks "What is this work permit for?" until it's answered, then shows
- * the answer with a Change link. People who skipped it when adding the case answer it here.
+ * The case page panel: asks this form's question until it's answered, then shows the answer
+ * with a Change link. People who skipped it when adding the case answer it here.
  */
-export function WorkPermitCategory({
+export function CasePurpose({
   caseId,
+  formType,
   saved,
   premiumSince,
   suggested,
 }: {
   caseId: string;
+  formType: string;
   saved: string | null;
   /** From the USCIS history: a date, "" when undated, or null when not premium. */
   premiumSince: string | null;
@@ -134,17 +149,20 @@ export function WorkPermitCategory({
 }) {
   const router = useRouter();
   const titleId = useId();
-  const current = categoryFor(saved);
+  const purpose = purposesFor(formType);
+  const current = categoryFor(saved, formType);
   const [editing, setEditing] = useState(!current);
   const [done, setDone] = useState(false);
 
+  if (!purpose) return null;
+
   if (!editing && current) {
     return (
-      <section id="work-permit" aria-labelledby={titleId} className={`${appPanel} jump-target`}>
+      <section id="purpose" aria-labelledby={titleId} className={`${appPanel} jump-target`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h2 id={titleId} className={sectionLabel}>
-              Work permit for
+              {answeredLabel[formType] ?? "Case for"}
             </h2>
             <p className="mt-1 text-small font-medium text-midnight">
               {current.label}
@@ -177,14 +195,15 @@ export function WorkPermitCategory({
   }
 
   return (
-    <section id="work-permit" aria-labelledby={titleId} className={`${appPanel} jump-target`}>
+    <section id="purpose" aria-labelledby={titleId} className={`${appPanel} jump-target`}>
       <h2 id={titleId} className="text-small font-semibold text-midnight">
-        What is this work permit for?
+        {purpose.question}
       </h2>
-      <p className="mt-1 max-w-prose text-small text-slate">{WORK_PERMIT_WHY}</p>
+      <p className="mt-1 max-w-prose text-small text-slate">{purpose.why}</p>
       <div className="mt-3 max-w-md">
-        <WorkPermitForm
+        <PurposeForm
           caseId={caseId}
+          formType={formType}
           saved={saved}
           suggested={suggested}
           onSaved={() => {
