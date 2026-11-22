@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/auth";
 import { recordGoogleSignupConsent } from "@/lib/supabase/consent";
+import { fillNameFromGoogle } from "@/lib/supabase/google-name";
 
 /**
  * The Google button signs in in the browser, then posts here: record consent for a new
@@ -20,6 +21,7 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.redirect(new URL("/sign-in?error=callback_failed", origin), 303);
 
   await recordGoogleSignupConsent(supabase, user);
+  await fillNameFromGoogle(supabase, user);
 
   const response = NextResponse.redirect(new URL(safeNext(searchParams.get("next")), origin), 303);
   response.headers.set("Cache-Control", "no-store");

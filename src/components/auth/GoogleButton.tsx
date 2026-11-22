@@ -61,6 +61,10 @@ function GoogleIdentityButton({ clientId, next, context = "signin", onError, onL
             setFinishing(false);
             return;
           }
+          // Supabase keeps only Google's full name; save the separate first and last names
+          // from Google's token so the server can fill an empty profile name with them.
+          const names = googleNames(credential);
+          if (names) await createClient().auth.updateUser({ data: names });
           rememberSignInMethod("google");
           // The server records consent for a new account, then redirects with the new session cookie.
           formRef.current?.requestSubmit();
@@ -109,6 +113,21 @@ function GoogleIdentityButton({ clientId, next, context = "signin", onError, onL
       )}
     </div>
   );
+}
+
+/** given_name / family_name from Google's ID token (already verified by Supabase above). */
+function googleNames(credential: string): { given_name?: string; family_name?: string } | null {
+  try {
+    const part = credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const bytes = Uint8Array.from(atob(part.padEnd(part.length + ((4 - (part.length % 4)) % 4), "=")), (c) => c.charCodeAt(0));
+    const claims = JSON.parse(new TextDecoder().decode(bytes)) as Record<string, unknown>;
+    const names: { given_name?: string; family_name?: string } = {};
+    if (typeof claims.given_name === "string") names.given_name = claims.given_name;
+    if (typeof claims.family_name === "string") names.family_name = claims.family_name;
+    return Object.keys(names).length ? names : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Fallback: "Continue with Google" that leaves for Google and comes back to /auth/callback. */

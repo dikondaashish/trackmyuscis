@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/auth";
 import { recordGoogleSignupConsent } from "@/lib/supabase/consent";
+import { fillNameFromGoogle } from "@/lib/supabase/google-name";
 
 /**
  * Where Google sign-in, the sign-up confirmation link and the password-reset link land.
@@ -24,6 +25,7 @@ export async function GET(request: NextRequest) {
   }
 
   await recordGoogleSignupConsent(supabase, data.user);
+  await fillNameFromGoogle(supabase, data.user);
 
   const response = NextResponse.redirect(new URL(next, origin));
   response.headers.set("Cache-Control", "no-store");
