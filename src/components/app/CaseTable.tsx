@@ -28,6 +28,8 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
           const changed = lastStatusChange(c);
           const asksCategory = asksFilingCategory(c.form_type);
           const category = asksCategory ? categoryFor(c.filing_category) : undefined;
+          // Any form can be premium (I-765, I-129, I-140…); USCIS gives the date in the history.
+          const premium = premiumSince(c);
           return (
             <li key={c.id} className={`group relative py-3 pr-10 pl-4 sm:py-2.5 sm:pr-4 transition-colors duration-200 hover:bg-cloud/70 ${cols}`}>
               <div className="min-w-0">
@@ -41,10 +43,14 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                   <div className="truncate text-caption text-midnight">
                     {category.label}
                     {category.code && <span className="text-slate tabular-nums"> · {category.code}</span>}
-                    {premiumSince(c) !== null && <span className="text-slate"> · Premium</span>}
                   </div>
                 )}
                 <div className="truncate text-caption text-slate">{facts.office ?? "USCIS"}</div>
+                {premium !== null && (
+                  <div className="truncate text-caption font-medium text-teal tabular-nums">
+                    {premium ? `Premium processing since ${premium}` : "Premium processing"}
+                  </div>
+                )}
                 {asksCategory && !category && (
                   // Above the row's link, like the history toggle.
                   <Link
