@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getAccount } from "@/lib/account";
 import { caseEngineEnabled } from "@/lib/case-engine/client";
-import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, lastStatusChange, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
+import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, lastStatusChange, premiumSince, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
 import { USCIS_PROCESSING_TIMES, officialFormUrl, statusId } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -147,7 +147,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
           </section>
 
           {asksCategory && (
-            <WorkPermitCategory caseId={c.id} saved={c.filing_category} premium={c.premium_processing} suggested={suggested} />
+            <WorkPermitCategory caseId={c.id} saved={c.filing_category} premiumSince={premiumSince(c)} suggested={suggested} />
           )}
 
           {timeline.length > 0 && <StatusTimeline entries={timeline} className={panel} />}

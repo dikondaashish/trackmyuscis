@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { caseStatus, caseTitle, lastStatusChange, receiptFacts, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
+import { caseStatus, caseTitle, lastStatusChange, premiumSince, receiptFacts, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CopyButton } from "@/components/app/CaseActions";
 import { TimelineList } from "@/components/app/StatusTimeline";
@@ -41,7 +41,7 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                   <div className="truncate text-caption text-midnight">
                     {category.label}
                     {category.code && <span className="text-slate tabular-nums"> · {category.code}</span>}
-                    {category.premium && c.premium_processing && <span className="text-slate"> · Premium</span>}
+                    {premiumSince(c) !== null && <span className="text-slate"> · Premium</span>}
                   </div>
                 )}
                 <div className="truncate text-caption text-slate">{facts.office ?? "USCIS"}</div>

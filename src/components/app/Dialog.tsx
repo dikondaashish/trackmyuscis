@@ -15,7 +15,6 @@ export function Dialog({
   onClose,
   title,
   description,
-  wide = false,
   step,
   children,
 }: {
@@ -23,8 +22,6 @@ export function Dialog({
   onClose: () => void;
   title: string;
   description?: string;
-  /** A little wider, for content in two columns. */
-  wide?: boolean;
   /** Changes when the content moves to another step, to move focus into the new step. */
   step?: string;
   children: React.ReactNode;
@@ -62,7 +59,7 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       aria-labelledby="dialog-title"
-      className={`modal m-auto w-[calc(100%-2rem)] ${wide ? "max-w-xl" : "max-w-md"} rounded-xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)] transition-[max-width] duration-200`}
+      className="modal m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)]"
     >
       <div className="p-5">
         <div className="flex items-start justify-between gap-4">

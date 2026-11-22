@@ -18,7 +18,6 @@ export type CaseRow = {
   engine_registered_at: string | null;
   /** What a work permit is for (see filing-category.ts); null until the owner says. */
   filing_category: string | null;
-  premium_processing: boolean | null;
   /** USCIS doesn't recognize the receipt number; checks_stopped once retries ended. */
   uscis_not_found: boolean;
   checks_stopped: boolean;
@@ -26,7 +25,7 @@ export type CaseRow = {
 };
 
 export const CASE_COLUMNS =
-  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, premium_processing, uscis_not_found, checks_stopped, created_at";
+  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, uscis_not_found, checks_stopped, created_at";
 
 export const formFor = (code: string | null) => (code ? FORMS.find((f) => f.form === code) : undefined);
 
@@ -106,4 +105,20 @@ export function lastStatusChange(c: Pick<CaseRow, "current_status" | "status_his
   const top = c.status_history?.length ? statusTimeline(c)[0] : undefined;
   if (top?.current && top.date) return top.date;
   return c.status_changed_at ? utcDate.format(new Date(c.status_changed_at)) : null;
+}
+
+/**
+ * When USCIS started premium processing, from the case's history: "We started the
+ * premium-processing clock…" or "Case Was Changed To A Premium Processing Case" (an
+ * upgrade after filing). USCIS reports it for every premium case, so we never ask.
+ * Returns the earliest such date, "" when the date is unreadable, or null if not premium.
+ */
+export function premiumSince(c: Pick<CaseRow, "status_history" | "current_status">): string | null {
+  const isPremium = (text: string) => /premium[- ]processing/i.test(text);
+  const entries = (Array.isArray(c.status_history) ? c.status_history : []).filter(
+    (h) => h && typeof h.completedText === "string" && isPremium(h.completedText),
+  );
+  if (entries.length === 0) return c.current_status && isPremium(c.current_status) ? "" : null;
+  const times = entries.map((h) => (typeof h.date === "string" ? readUscisDate(h.date) : null)).filter((t): t is number => t !== null);
+  return times.length ? utcDate.format(Math.min(...times)) : "";
 }

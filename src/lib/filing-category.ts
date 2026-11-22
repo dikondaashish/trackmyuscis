@@ -13,22 +13,20 @@ export type CategoryOption = {
   code: string | null;
   /** Short name for titles: "OPT work permit". */
   short: string;
-  /** USCIS offers premium processing for this category. */
-  premium: boolean;
 };
 
 export const WORK_PERMIT_CATEGORIES: CategoryOption[] = [
-  { value: "c3b", label: "OPT after graduation", code: "(c)(3)(B)", short: "OPT work permit", premium: true },
-  { value: "c3c", label: "STEM OPT extension", code: "(c)(3)(C)", short: "STEM OPT work permit", premium: true },
-  { value: "c3a", label: "OPT before graduation", code: "(c)(3)(A)", short: "OPT work permit", premium: true },
-  { value: "c9", label: "Pending green card", code: "(c)(9)", short: "Green card work permit", premium: false },
-  { value: "c8", label: "Pending asylum", code: "(c)(8)", short: "Asylum work permit", premium: false },
-  { value: "a5", label: "Asylum granted", code: "(a)(5)", short: "Asylee work permit", premium: false },
-  { value: "c26", label: "H-4 spouse", code: "(c)(26)", short: "H-4 work permit", premium: false },
-  { value: "tps", label: "Temporary Protected Status", code: "(a)(12) or (c)(19)", short: "TPS work permit", premium: false },
-  { value: "c11", label: "Parole", code: "(c)(11)", short: "Parole work permit", premium: false },
-  { value: "c33", label: "DACA", code: "(c)(33)", short: "DACA work permit", premium: false },
-  { value: "other", label: "Something else", code: null, short: "Work permit", premium: false },
+  { value: "c3b", label: "OPT after graduation", code: "(c)(3)(B)", short: "OPT work permit" },
+  { value: "c3c", label: "STEM OPT extension", code: "(c)(3)(C)", short: "STEM OPT work permit" },
+  { value: "c3a", label: "OPT before graduation", code: "(c)(3)(A)", short: "OPT work permit" },
+  { value: "c9", label: "Pending green card", code: "(c)(9)", short: "Green card work permit" },
+  { value: "c8", label: "Pending asylum", code: "(c)(8)", short: "Asylum work permit" },
+  { value: "a5", label: "Asylum granted", code: "(a)(5)", short: "Asylee work permit" },
+  { value: "c26", label: "H-4 spouse", code: "(c)(26)", short: "H-4 work permit" },
+  { value: "tps", label: "Temporary Protected Status", code: "(a)(12) or (c)(19)", short: "TPS work permit" },
+  { value: "c11", label: "Parole", code: "(c)(11)", short: "Parole work permit" },
+  { value: "c33", label: "DACA", code: "(c)(33)", short: "DACA work permit" },
+  { value: "other", label: "Something else", code: null, short: "Work permit" },
 ];
 
 /** Forms where we ask. Other forms have one main purpose, or we don't ask yet. */

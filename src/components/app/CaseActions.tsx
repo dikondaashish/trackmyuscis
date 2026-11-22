@@ -63,7 +63,6 @@ export function AddCaseProvider({ children }: { children: React.ReactNode }) {
       <Dialog
         open={open}
         onClose={close}
-        wide={next?.kind === "work-permit"}
         step={next?.kind ?? (retry ? "fix" : "add")}
         title={title}
         description={description}
@@ -73,9 +72,7 @@ export function AddCaseProvider({ children }: { children: React.ReactNode }) {
             key={next.caseId}
             caseId={next.caseId}
             saved={null}
-            premium={null}
             suggested={next.suggested}
-            compact
             onSaved={close}
             secondary={{ label: "Skip for now", onClick: close }}
           />
