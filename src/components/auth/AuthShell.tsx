@@ -1,8 +1,8 @@
 import { card } from "@/lib/ui";
 
 /**
- * The frame for every account page (sign in, sign up, reset): a centred white card on the
- * soft background, the h1 and one line above the form, an optional line under the card.
+ * The form column on every account page (sign in, sign up, reset): the h1 and one line,
+ * then the white card, then an optional line under it. The (auth) layout centres it.
  */
 export function AuthShell({
   title,
@@ -16,15 +16,13 @@ export function AuthShell({
   footer?: React.ReactNode;
 }) {
   return (
-    <section className="bg-cloud py-14 sm:py-20">
-      <div className="mx-auto w-full max-w-[30rem] px-5 sm:px-8">
-        <div className="enter">
-          <h1 className="text-h2 text-midnight">{title}</h1>
-          {description && <p className="mt-3 text-body text-slate">{description}</p>}
-        </div>
-        <div className={`${card} mt-8 p-6 sm:p-8`}>{children}</div>
-        {footer && <div className="mt-6 text-center text-small text-slate">{footer}</div>}
+    <div className="w-full max-w-[28rem]">
+      <div className="enter">
+        <h1 className="text-h2 text-midnight">{title}</h1>
+        {description && <p className="mt-3 text-body text-slate">{description}</p>}
       </div>
-    </section>
+      <div className={`${card} mt-8 p-6 sm:p-8`}>{children}</div>
+      {footer && <div className="mt-6 text-center text-small text-slate">{footer}</div>}
+    </div>
   );
 }
