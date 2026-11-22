@@ -1,0 +1,59 @@
+<!--
+  Supabase → Authentication → Emails → "Confirm signup".
+  Subject: Your TrackMyUSCIS code: {{ .Token }}
+  The sign-up page asks for this code, so the email must show {{ .Token }}.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <title>Your TrackMyUSCIS code</title>
+  </head>
+  <body style="margin:0;padding:0;background:#F8FAFC;">
+    <div style="display:none;max-height:0;overflow:hidden;">Your code is {{ .Token }}. It expires in 1 hour.</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F8FAFC;">
+      <tr>
+        <td align="center" style="padding:40px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+            <tr>
+              <td style="padding:0 4px 24px;">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="padding-right:10px;vertical-align:middle;">
+                      <img src="https://www.trackmyuscis.com/brand/logo-app.png" width="32" height="32" alt="" style="display:block;border:0;border-radius:8px;" />
+                    </td>
+                    <td style="vertical-align:middle;font-size:18px;font-weight:600;letter-spacing:-0.01em;color:#10223D;">
+                      TrackMy<span style="color:#285AC7;">USCIS</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#FFFFFF;border:1px solid #DDE6F0;border-radius:16px;padding:32px;">
+                <h1 style="margin:0;font-size:22px;line-height:1.3;font-weight:600;color:#10223D;">Confirm your email</h1>
+                <p style="margin:12px 0 0;font-size:16px;line-height:1.5;color:#516176;">
+                  Enter this code on the sign-up page to finish creating your account.
+                </p>
+                <div style="margin:24px 0 0;padding:18px 12px;background:#EAF1FC;border-radius:12px;text-align:center;font-size:32px;line-height:1.2;font-weight:600;letter-spacing:0.3em;color:#10223D;font-variant-numeric:tabular-nums;">
+                  {{ .Token }}
+                </div>
+                <p style="margin:16px 0 0;font-size:14px;line-height:1.5;color:#516176;">
+                  The code expires in 1 hour. If you didn&rsquo;t try to create a TrackMyUSCIS account, you can ignore this email.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px 4px 0;font-size:12px;line-height:1.5;color:#516176;">
+                Independent. Not affiliated with USCIS or the U.S. government.<br />
+                Questions? <a href="mailto:support@trackmyuscis.com" style="color:#285AC7;text-decoration:none;">support@trackmyuscis.com</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

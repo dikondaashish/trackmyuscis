@@ -1,0 +1,53 @@
+import { cache } from "react";
+import { redirect } from "next/navigation";
+import { connection } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+
+export type Account = {
+  id: string;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  /** Full name, or null when we don't have one. */
+  name: string | null;
+  initials: string;
+  /** True when the account signs in with Google (no password to manage here). */
+  google: boolean;
+};
+
+/**
+ * The signed-in person, read once per request (the layout and the page share it).
+ * Sends signed-out visitors to sign in. Request-time only, so call it inside <Suspense>.
+ */
+export const getAccount = cache(async (next = "/dashboard"): Promise<Account> => {
+  await connection();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect(`/sign-in?next=${encodeURIComponent(next)}`);
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("first_name, last_name, email")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const meta = user.user_metadata ?? {};
+  const firstName: string | null = profile?.first_name || meta.first_name || meta.given_name || null;
+  const lastName: string | null = profile?.last_name || meta.last_name || meta.family_name || null;
+  const email = profile?.email ?? user.email ?? "";
+  const name = [firstName, lastName].filter(Boolean).join(" ") || meta.full_name || null;
+  const initials =
+    ((firstName?.[0] ?? "") + (lastName?.[0] ?? "")).toUpperCase() || email.slice(0, 1).toUpperCase() || "?";
+
+  return {
+    id: user.id,
+    email,
+    firstName,
+    lastName,
+    name,
+    initials,
+    google: user.app_metadata?.provider === "google",
+  };
+});

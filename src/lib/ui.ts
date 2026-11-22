@@ -20,6 +20,9 @@ export const readContainer = "mx-auto w-full max-w-3xl px-5 sm:px-8";
 /** Vertical rhythm for every section: 80px phone, 112px from 640px. */
 export const section = "py-20 sm:py-28";
 
+/** The content column of a signed-in app page (inside the sidebar layout). */
+export const appPage = "mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-10";
+
 export const btnPrimary = `inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[10px] bg-blue px-6 text-body font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-midnight active:scale-[0.98] motion-reduce:active:scale-100 ${focusRing}`;
 
 export const btnSecondary = `inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[10px] border border-border bg-white px-6 text-body font-semibold text-midnight transition-[border-color,transform] duration-200 hover:border-blue active:scale-[0.98] motion-reduce:active:scale-100 ${focusRing}`;
