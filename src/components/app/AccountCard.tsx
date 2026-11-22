@@ -16,11 +16,11 @@ export function Avatar({
   initials: string;
   photoUrl?: string | null;
   premium?: boolean;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
 }) {
   const [broken, setBroken] = useState(false);
-  const px = size === "sm" ? 28 : size === "lg" ? 48 : 32;
-  const box = size === "sm" ? "size-7 text-caption" : size === "lg" ? "size-12 text-body" : "size-8 text-caption";
+  const px = { sm: 28, md: 32, lg: 48, xl: 72 }[size];
+  const box = { sm: "size-7 text-caption", md: "size-8 text-caption", lg: "size-12 text-body", xl: "size-18 text-h3" }[size];
   return (
     <span aria-hidden className="relative shrink-0">
       {photoUrl && !broken ? (
@@ -55,7 +55,7 @@ const menuItem = `flex h-9 w-full cursor-pointer items-center gap-2.5 px-3 text-
 
 /**
  * Who is signed in, at the bottom of the sidebar and of the phone menu. Opens a menu
- * upward with the name, email, Settings, Help & Support, Your Privacy Choices and Sign out.
+ * upward with the name, email, Settings, Help & Support and Sign out.
  */
 export function AccountCard({ account, onNavigate }: { account: Account; onNavigate?: () => void }) {
   const [open, setOpen] = useState(false);
