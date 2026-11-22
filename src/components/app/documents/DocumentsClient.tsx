@@ -7,7 +7,7 @@ import { FormMessage } from "@/components/auth/FormMessage";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   DOCUMENT_TYPES,
-  KNOWN_TYPES,
+  typeGroup,
   SORTS,
   daysUntil,
   documentTypeLabel,
@@ -179,9 +179,11 @@ function OpenVault({
   const [openId, setOpenId] = useState<string | null>(null);
   const [editOnOpen, setEditOnOpen] = useState(false);
 
-  const list = useMemo(() => filterAndSort([...(docs ?? [])], type, search, sort), [docs, type, search, sort]);
-  // Types the person typed themselves (not in the known list), for the chips.
-  const custom = useMemo(() => [...new Set((docs ?? []).map((d) => d.category))].filter((c) => !KNOWN_TYPES.has(c)).sort(), [docs]);
+  // Only the types this person has saved get a chip; anything uncommon falls under Other.
+  const present = useMemo(() => new Set((docs ?? []).map((d) => typeGroup(d.category))), [docs]);
+  // A chip disappears when its last document is deleted; fall back to all documents.
+  const activeType = type === "all" || present.has(type) ? type : "all";
+  const list = useMemo(() => filterAndSort([...(docs ?? [])], activeType, search, sort), [docs, activeType, search, sort]);
   const openDoc = docs?.find((d) => d.id === openId) ?? null;
 
   if (error) {
@@ -196,16 +198,18 @@ function OpenVault({
   }
   if (!docs) return <LoadingState />;
 
-  const filtered = type !== "all" || search.trim() !== "";
+  const filtered = activeType !== "all" || search.trim() !== "";
   return (
     <div className="enter enter-delay">
+      <Footnotes email={email} remindersOn={remindersOn} />
+
       {docs.length === 0 ? (
         <EmptyState />
       ) : (
         <>
           <Stats docs={docs} today={today} />
 
-          <TypeChips value={type} onChange={setType} custom={custom} />
+          <TypeChips value={activeType} onChange={setType} present={present} />
 
           <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <div className="relative min-w-0 flex-1">
@@ -271,8 +275,6 @@ function OpenVault({
         </>
       )}
 
-      <Footnotes email={email} remindersOn={remindersOn} />
-
       <DocumentDialog
         doc={openDoc}
         today={today}
@@ -317,7 +319,7 @@ function Stats({ docs, today }: { docs: VaultDocument[]; today: string }) {
   const soon = days.filter((n) => n !== null && n >= 0 && n <= 30).length;
   const expired = days.filter((n) => n !== null && n < 0).length;
   const counts = new Map<string, number>();
-  for (const d of docs) counts.set(d.category, (counts.get(d.category) ?? 0) + 1);
+  for (const d of docs) counts.set(typeGroup(d.category), (counts.get(typeGroup(d.category)) ?? 0) + 1);
   const [topType, topCount] = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0] ?? ["", 0];
   const tiles = [
     { label: "Documents", value: String(docs.length), note: "Saved", tone: "text-midnight", text: false },
@@ -350,13 +352,9 @@ function Stats({ docs, today }: { docs: VaultDocument[]; today: string }) {
  * Type chips: All, every known type, then any types the person typed themselves, then Other.
  * One scrolling row, so the list stays a single line on every screen.
  */
-function TypeChips({ value, onChange, custom }: { value: string; onChange: (v: string) => void; custom: string[] }) {
-  const chips = [
-    { value: "all", label: "All documents" },
-    ...DOCUMENT_TYPES.filter((t) => t.value !== "other"),
-    ...custom.map((c) => ({ value: c, label: documentTypeLabel(c) })),
-    { value: "other", label: "Other" },
-  ];
+function TypeChips({ value, onChange, present }: { value: string; onChange: (v: string) => void; present: Set<string> }) {
+  // DOCUMENT_TYPES ends with Other, so it stays last.
+  const chips = [{ value: "all", label: "All documents" }, ...DOCUMENT_TYPES.filter((t) => present.has(t.value))];
   return (
     <div role="group" aria-label="Filter by type" className="-mx-4 mt-5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:thin]">
       <div className="flex w-max gap-1.5">
@@ -375,11 +373,11 @@ function Chip({ value, label, active, onClick }: { value: string; label: string;
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full sm:h-9 border px-3 text-small font-medium whitespace-nowrap transition-colors duration-200 ${focusRing} ${
+      className={`inline-flex h-8 shrink-0 cursor-pointer items-center gap-1 rounded-full border px-2.5 text-caption font-medium whitespace-nowrap transition-colors duration-200 ${focusRing} ${
         active ? "border-blue bg-blue text-white" : "border-border bg-white text-midnight hover:border-blue/40 hover:bg-ice/60"
       }`}
     >
-      <Icon aria-hidden className={`size-3.5 ${active ? "text-white" : "text-blue"}`} />
+      <Icon aria-hidden className={`size-3 ${active ? "text-white" : "text-blue"}`} />
       {label}
     </button>
   );
@@ -409,7 +407,7 @@ function EmptyState() {
 
 function Footnotes({ email, remindersOn }: { email: string; remindersOn: boolean }) {
   return (
-    <div className="mt-6">
+    <div className="mt-5">
       <div className="flex gap-3 rounded-xl bg-ice px-4 py-3.5">
         <BellRing aria-hidden className="mt-0.5 size-4 shrink-0 text-blue" />
         <div className="text-small">

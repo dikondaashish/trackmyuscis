@@ -42,6 +42,9 @@ export const KNOWN_TYPES = new Set<string>(DOCUMENT_TYPES.map((t) => t.value));
 
 const LABELS: Record<string, string> = Object.fromEntries(DOCUMENT_TYPES.map((t) => [t.value, t.label]));
 
+/** The filter group a document falls in: its own type when it's a known one, otherwise "other". */
+export const typeGroup = (category: string) => (KNOWN_TYPES.has(category) ? category : "other");
+
 /** "green_card" → "Green card"; a type someone typed ("lease_agreement") → "Lease agreement". */
 export function documentTypeLabel(value: string) {
   if (LABELS[value]) return LABELS[value];
@@ -138,7 +141,7 @@ export function filterAndSort(documents: VaultDocument[], type: string, search: 
   const q = search.trim().toLowerCase();
   const list = documents.filter(
     (d) =>
-      (type === "all" || d.category === type) &&
+      (type === "all" || typeGroup(d.category) === type) &&
       (!q || [d.filename, d.summary, documentTypeLabel(d.category)].some((v) => v.toLowerCase().includes(q))),
   );
   return list.sort((a, b) => {
