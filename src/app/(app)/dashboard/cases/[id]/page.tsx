@@ -12,6 +12,8 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckOnUscisButton, CopyButton, EditRemoveButtons } from "@/components/app/CaseActions";
 import { CaseSkeleton } from "@/components/app/Skeletons";
 import { StatusTimeline } from "@/components/app/StatusTimeline";
+import { WorkPermitCategory } from "@/components/app/WorkPermitCategory";
+import { asksFilingCategory, suggestCategory } from "@/lib/filing-category";
 import { appLink, appPage, appPanel, appTitle, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
@@ -53,6 +55,12 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
   const autoChecks = caseEngineEnabled();
   const timeline = c.status_history?.length ? statusTimeline(c) : [];
   const changed = lastStatusChange(c);
+  const asksCategory = asksFilingCategory(c.form_type);
+  let suggested: ReturnType<typeof suggestCategory> = null;
+  if (asksCategory && !c.filing_category) {
+    const { data: others } = await supabase.from("cases").select("form_type").neq("id", c.id).returns<{ form_type: string | null }[]>();
+    suggested = suggestCategory((others ?? []).map((o) => o.form_type));
+  }
 
   return (
     <>
@@ -117,6 +125,10 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
               <CheckOnUscisButton receipt={c.receipt_number} />
             </div>
           </section>
+
+          {asksCategory && (
+            <WorkPermitCategory caseId={c.id} saved={c.filing_category} premium={c.premium_processing} suggested={suggested} />
+          )}
 
           {timeline.length > 0 && <StatusTimeline entries={timeline} className={panel} />}
 

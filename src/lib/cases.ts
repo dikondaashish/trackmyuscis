@@ -1,5 +1,6 @@
 import { FORMS, STATUSES, type Tone } from "@/lib/content";
 import { SERVICE_CENTERS } from "@/lib/receipt";
+import { asksFilingCategory, categoryFor } from "@/lib/filing-category";
 
 export const MAX_CASES = 10;
 
@@ -15,18 +16,24 @@ export type CaseRow = {
   /** USCIS history, newest first: [{ date, completedText }]. */
   status_history: { date: string; completedText: string }[] | null;
   engine_registered_at: string | null;
+  /** What a work permit is for (see filing-category.ts); null until the owner says. */
+  filing_category: string | null;
+  premium_processing: boolean | null;
   created_at: string;
 };
 
 export const CASE_COLUMNS =
-  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, created_at";
+  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, filing_category, premium_processing, created_at";
 
 export const formFor = (code: string | null) => (code ? FORMS.find((f) => f.form === code) : undefined);
 
-/** What we call a case in lists: its name, else its form, else "USCIS case". */
-export function caseTitle(c: Pick<CaseRow, "label" | "form_type">) {
+/** What we call a case in lists: its name, else what it's for, else its form, else "USCIS case". */
+export function caseTitle(c: Pick<CaseRow, "label" | "form_type"> & { filing_category?: string | null }) {
+  if (c.label) return c.label;
+  const category = asksFilingCategory(c.form_type) ? categoryFor(c.filing_category ?? null) : undefined;
+  if (category && category.value !== "other") return category.short;
   const form = formFor(c.form_type);
-  return c.label || (form ? `${form.form} ${form.label.toLowerCase()}` : c.form_type) || "USCIS case";
+  return (form ? `${form.form} ${form.label.toLowerCase()}` : c.form_type) || "USCIS case";
 }
 
 export function caseStatus(c: Pick<CaseRow, "current_status">): { name: string; tone: Tone; meaning?: string } | null {
