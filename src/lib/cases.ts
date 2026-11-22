@@ -1,5 +1,5 @@
 import { FORMS, STATUSES, type Tone } from "@/lib/content";
-import { SERVICE_CENTERS } from "@/lib/receipt";
+import { SERVICE_CENTERS, isOnlineReceipt, receiptFiscalYear } from "@/lib/receipt";
 import { asksFilingCategory, categoryFor } from "@/lib/filing-category";
 
 export const MAX_CASES = 10;
@@ -49,14 +49,15 @@ const monthYear = new Intl.DateTimeFormat("en-US", { month: "short", year: "nume
 /** Facts we can read straight off a receipt number, with no lookup. */
 export function receiptFacts(receipt: string) {
   const prefix = receipt.slice(0, 3);
-  const fy = 2000 + Number(receipt.slice(3, 5));
+  const fy = receiptFiscalYear(receipt);
   return {
     prefix,
     office: SERVICE_CENTERS[prefix] ?? null,
-    online: prefix === "IOE",
+    online: isOnlineReceipt(receipt),
+    // Only paper-filed numbers carry a year. USCIS fiscal year N runs October 1 of N-1 to
+    // September 30 of N.
     fiscalYear: fy,
-    // USCIS fiscal year N runs October 1 of N-1 to September 30 of N.
-    fiscalRange: `${monthYear.format(Date.UTC(fy - 1, 9, 1))} – ${monthYear.format(Date.UTC(fy, 8, 30))}`,
+    fiscalRange: fy === null ? null : `${monthYear.format(Date.UTC(fy - 1, 9, 1))} – ${monthYear.format(Date.UTC(fy, 8, 30))}`,
   };
 }
 

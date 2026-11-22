@@ -1,7 +1,9 @@
 /**
  * USCIS receipt number helpers.
  * Format: 3-letter office prefix + 10 digits (e.g. IOE0912345678, MSC2190123456).
- * Digits 1–2 = fiscal year, 3–5 = computer workday, 6–10 = case sequence.
+ * Paper filings: digits 1–2 = fiscal year, 3–5 = computer workday, 6–10 = case sequence.
+ * Online filings (IOE) don't follow that: their digits carry no year (2026 numbers start
+ * with 90–98 or 09), so we never read a year from them.
  */
 
 export const SERVICE_CENTERS: Record<string, string> = {
@@ -20,7 +22,7 @@ export const SERVICE_CENTERS: Record<string, string> = {
 };
 
 export type ReceiptCheck =
-  | { ok: true; receipt: string; prefix: string; office: string | null; fiscalYear: number }
+  | { ok: true; receipt: string; prefix: string; office: string | null; fiscalYear: number | null }
   | { ok: false; receipt: string; error: string };
 
 export function normalizeReceipt(raw: string): string {
@@ -43,6 +45,14 @@ export function checkReceipt(raw: string): ReceiptCheck {
     receipt,
     prefix,
     office: SERVICE_CENTERS[prefix] ?? null,
-    fiscalYear: 2000 + Number(receipt.slice(3, 5)),
+    fiscalYear: receiptFiscalYear(receipt),
   };
+}
+
+/** Online-filed receipt numbers (IOE) carry no year in their digits. */
+export const isOnlineReceipt = (receipt: string) => receipt.startsWith("IOE");
+
+/** The fiscal year in a paper-filed receipt number, or null for online (IOE) ones. */
+export function receiptFiscalYear(receipt: string): number | null {
+  return isOnlineReceipt(receipt) ? null : 2000 + Number(receipt.slice(3, 5));
 }

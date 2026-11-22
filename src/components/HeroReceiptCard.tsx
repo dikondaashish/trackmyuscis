@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { SERVICE_CENTERS, type ReceiptCheck } from "@/lib/receipt";
+import { SERVICE_CENTERS, isOnlineReceipt, type ReceiptCheck } from "@/lib/receipt";
 import { focusRing } from "@/lib/ui";
 
 /**
@@ -22,8 +22,13 @@ export function HeroReceiptCard({ result }: { result?: Extract<ReceiptCheck, { o
       label: "Office",
       note: result ? (result.office ?? "The office or system that received your case") : "The office or system that received your case",
     },
-    { chars: receipt.slice(3, 5), label: "Year", note: "Usually the fiscal year USCIS received it" },
-    { chars: receipt.slice(5), label: "Your case", note: "The rest of the number is unique to your case" },
+    // Online (IOE) numbers carry no year; paper ones start with the fiscal year.
+    ...(isOnlineReceipt(receipt)
+      ? [{ chars: receipt.slice(3), label: "Your case", note: "Unique to your case. Online numbers don't include the year." }]
+      : [
+          { chars: receipt.slice(3, 5), label: "Year", note: "Usually the fiscal year USCIS received it" },
+          { chars: receipt.slice(5), label: "Your case", note: "The rest of the number is unique to your case" },
+        ]),
   ];
   /** A prefix we know that isn't in the short list still gets its own row. */
   const rows = result && SERVICE_CENTERS[prefix] && !PREFIXES.includes(prefix) ? [prefix, ...PREFIXES] : PREFIXES;
@@ -44,7 +49,7 @@ export function HeroReceiptCard({ result }: { result?: Extract<ReceiptCheck, { o
       </div>
 
       {/* Re-keyed so the tiles settle in again when the number changes. */}
-      <dl key={receipt} className="stagger mt-6 grid gap-3 sm:grid-cols-[auto_auto_1fr]" style={{ "--stagger-base": result ? "0ms" : "360ms" } as React.CSSProperties}>
+      <dl key={receipt} className={`stagger mt-6 grid gap-3 ${parts.length === 3 ? "sm:grid-cols-[auto_auto_1fr]" : "sm:grid-cols-2"}`} style={{ "--stagger-base": result ? "0ms" : "360ms" } as React.CSSProperties}>
         {parts.map((p, i) => (
           <div key={p.label} className="rounded-xl border border-border bg-cloud p-4">
             <dt className="text-small text-slate">{p.label}</dt>

@@ -24,7 +24,7 @@ export type Answer = {
   related: string[];
 };
 
-export const ANSWERS_UPDATED = "2026-11-20";
+export const ANSWERS_UPDATED = "2026-11-22";
 export const TOPICS: AnswerTopic[] = ["Receipt numbers and status", "Notices and appointments", "Delays and contacting USCIS"];
 
 const SRC = {
@@ -79,7 +79,7 @@ export const ANSWERS: Answer[] = [
       {
         heading: "What the parts mean",
         body: [
-          "The three letters show which office or system received your case. The first two digits are usually the fiscal year USCIS received it. [What do the three letters mean?](/answers/uscis-receipt-number-letters)",
+          "The three letters show which office or system received your case. On paper filings, the first two digits are usually the fiscal year USCIS received it; online (IOE) numbers don't include the year. [What do the three letters mean?](/answers/uscis-receipt-number-letters)",
           "You can [check a receipt number here](/#track) to see its office and confirm the format.",
         ],
       },

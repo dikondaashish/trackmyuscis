@@ -206,12 +206,14 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                   <dd className="font-medium text-midnight">Online, in a USCIS account</dd>
                 </div>
               )}
-              <div>
-                <dt className="text-caption text-slate">Fiscal year in the number</dt>
-                <dd className="font-medium text-midnight">
-                  FY{facts.fiscalYear} <span className="font-normal text-slate">({facts.fiscalRange})</span>
-                </dd>
-              </div>
+              {facts.fiscalYear !== null && (
+                <div>
+                  <dt className="text-caption text-slate">Fiscal year in the number</dt>
+                  <dd className="font-medium text-midnight">
+                    FY{facts.fiscalYear} <span className="font-normal text-slate">({facts.fiscalRange})</span>
+                  </dd>
+                </div>
+              )}
               <div>
                 <dt className="text-caption text-slate">Saved here</dt>
                 <dd className="font-medium text-midnight">{shortDate.format(new Date(c.created_at))}</dd>
