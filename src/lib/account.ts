@@ -13,6 +13,8 @@ export type Account = {
   initials: string;
   /** Random Reddit-style username (Calm-River-4821), set by the database at sign-up. */
   username: string | null;
+  /** When the username may next be changed (once every 30 days), or null if it can change now. */
+  usernameLockedUntil: string | null;
   /** Profile photo from Google, or null (then the avatar shows initials). */
   photoUrl: string | null;
   /** True when the account signs in with Google (no password to manage here). */
@@ -38,7 +40,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, email, username")
+    .select("first_name, last_name, email, username, username_changed_at")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -58,6 +60,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
     name,
     initials,
     username: profile?.username ?? null,
+    usernameLockedUntil: lockedUntil(profile?.username_changed_at),
     photoUrl: googlePhoto(meta.avatar_url ?? meta.picture),
     google: user.app_metadata?.provider === "google",
     plan: user.app_metadata?.plan === "premium" ? "premium" : "free",
@@ -73,4 +76,13 @@ function googlePhoto(value: unknown): string | null {
   } catch {
     return null;
   }
+}
+
+const USERNAME_COOLDOWN_DAYS = 30;
+
+/** The database allows one username change every 30 days; mirror it so the form can say when. */
+function lockedUntil(changedAt: string | null | undefined): string | null {
+  if (!changedAt) return null;
+  const until = new Date(changedAt).getTime() + USERNAME_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
+  return until > Date.now() ? new Date(until).toISOString() : null;
 }
