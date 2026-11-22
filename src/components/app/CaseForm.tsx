@@ -4,9 +4,8 @@ import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { checkReceipt } from "@/lib/receipt";
-import { FORM_OPTIONS, MAX_CASES } from "@/lib/cases";
+import { MAX_CASES } from "@/lib/cases";
 import { FormMessage } from "@/components/auth/FormMessage";
-import { SelectField } from "@/components/ui/SelectField";
 import { appBtnPrimary, appBtnSecondary, appField, appFieldLabel } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
 import { syncMyCases } from "@/app/(app)/dashboard/actions";
@@ -14,12 +13,13 @@ import { syncMyCases } from "@/app/(app)/dashboard/actions";
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
 
 /**
- * Add a case (receipt number, form, optional name) or edit one (form and name; the receipt
- * number can't change). Saves straight to Supabase; row-level security limits it to the owner.
+ * Add a case (receipt number, optional name) or rename one (the receipt number can't change).
+ * The form comes from USCIS with the first status check, so nobody has to pick it.
+ * Saves straight to Supabase; row-level security limits it to the owner.
  */
 export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; onDone: () => void; onCancel: () => void }) {
   const router = useRouter();
-  const ids = { receipt: useId(), form: useId(), label: useId(), msg: useId() };
+  const ids = { receipt: useId(), label: useId(), msg: useId() };
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,19 +28,18 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
     setError(null);
     const data = new FormData(e.currentTarget);
     const label = String(data.get("label") ?? "").trim() || null;
-    const form_type = String(data.get("form_type") ?? "") || null;
     const supabase = createClient();
 
     if (existing) {
       setBusy(true);
-      const { error } = await supabase.from("cases").update({ label, form_type }).eq("id", existing.id);
+      const { error } = await supabase.from("cases").update({ label }).eq("id", existing.id);
       setBusy(false);
       if (error) return setError("We couldn't save your changes. Please try again.");
     } else {
       const check = checkReceipt(String(data.get("receipt") ?? ""));
       if (!check.ok) return setError(check.error);
       setBusy(true);
-      const { error } = await supabase.from("cases").insert({ receipt_number: check.receipt, label, form_type });
+      const { error } = await supabase.from("cases").insert({ receipt_number: check.receipt, label });
       setBusy(false);
       if (error) {
         if (error.code === "23505") return setError("You already saved this receipt number.");
@@ -84,7 +83,6 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
           </p>
         </div>
       )}
-      <SelectField id={ids.form} name="form_type" label="Form" options={FORM_OPTIONS} defaultValue={existing?.form_type ?? ""} compact />
       <div>
         <label htmlFor={ids.label} className={appFieldLabel}>
           Name <span className="font-normal text-slate">(optional)</span>

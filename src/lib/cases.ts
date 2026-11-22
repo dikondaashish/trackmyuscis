@@ -21,12 +21,6 @@ export type CaseRow = {
 export const CASE_COLUMNS =
   "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, created_at";
 
-/** Choices for "Which form?": every form we cover, plus "Not sure". */
-export const FORM_OPTIONS = [
-  { value: "", label: "Not sure / other form" },
-  ...FORMS.map((f) => ({ value: f.form, label: `${f.form} · ${f.label}` })),
-];
-
 export const formFor = (code: string | null) => (code ? FORMS.find((f) => f.form === code) : undefined);
 
 /** What we call a case in lists: its name, else its form, else "USCIS case". */

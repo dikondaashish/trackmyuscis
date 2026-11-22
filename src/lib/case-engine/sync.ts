@@ -6,12 +6,16 @@ export type SyncedCase = {
   id: string;
   user_id: string;
   receipt_number: string;
+  form_type: string | null;
   current_status: string | null;
   alerted_status: string | null;
   engine_registered_at: string | null;
 };
 
-export const SYNC_COLUMNS = "id, user_id, receipt_number, current_status, alerted_status, engine_registered_at";
+export const SYNC_COLUMNS = "id, user_id, receipt_number, form_type, current_status, alerted_status, engine_registered_at";
+
+/** Same format the database accepts (cases_form_type_format), e.g. I-765 or I-821D. */
+const FORM_CODE = /^[A-Z]{1,2}-[0-9]{1,4}[A-Z]?$/;
 
 /**
  * Copies what the engine knows about one case onto our row. A first status is marked as
@@ -21,6 +25,9 @@ export async function applyEngineStatus(admin: SupabaseClient, row: SyncedCase, 
   const update: Record<string, unknown> = {};
   if (!row.engine_registered_at) update.engine_registered_at = new Date().toISOString();
   if (remote.lastCheckedAt) update.last_checked_at = remote.lastCheckedAt;
+  // USCIS says which form the case is for, so people never have to pick it.
+  const form = remote.formType?.trim().toUpperCase();
+  if (form && FORM_CODE.test(form) && form !== row.form_type) update.form_type = form;
   if (remote.status) {
     update.current_status = remote.status;
     update.status_description = remote.description;

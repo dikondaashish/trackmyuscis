@@ -150,7 +150,9 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
               </>
             ) : (
               <p className="mt-2 max-w-prose text-small text-slate">
-                Choose this case&apos;s form with <span className="font-semibold text-midnight">Edit</span> to see the steps it usually goes through.
+                {c.form_type
+                  ? `We don't have a step guide for Form ${c.form_type} yet. Your USCIS notices list what comes next.`
+                  : "The typical steps show here once USCIS tells us which form this case is for, usually with the first status check."}
               </p>
             )}
           </section>

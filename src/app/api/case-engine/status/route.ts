@@ -38,10 +38,10 @@ export async function POST(request: Request) {
 
   const { data: row, error } = await admin
     .from("cases")
-    .select(`${SYNC_COLUMNS}, label, form_type`)
+    .select(`${SYNC_COLUMNS}, label`)
     .eq("user_id", remote.userRef)
     .eq("receipt_number", remote.receiptNumber)
-    .maybeSingle<SyncedCase & { label: string | null; form_type: string | null }>();
+    .maybeSingle<SyncedCase & { label: string | null }>();
   if (error) return NextResponse.json({ ok: false }, { status: 500 });
 
   if (!row) {
