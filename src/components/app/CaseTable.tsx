@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CopyButton } from "@/components/app/CaseActions";
 import { TimelineList } from "@/components/app/StatusTimeline";
 import { appCard, focusRing } from "@/lib/ui";
+import { asksFilingCategory } from "@/lib/filing-category";
 
 const cols = "sm:grid sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_6rem_1rem] sm:items-center sm:gap-x-5 sm:gap-y-1";
 
@@ -35,6 +36,15 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                   {caseTitle(c)}
                 </Link>
                 <div className="truncate text-caption text-slate">{facts.office ?? "USCIS"}</div>
+                {asksFilingCategory(c.form_type) && !c.filing_category && (
+                  // Above the row's link, like the history toggle.
+                  <Link
+                    href={`/dashboard/cases/${c.id}#work-permit`}
+                    className={`relative z-10 -ml-1 inline-flex min-h-7 items-center rounded px-1 text-caption font-medium text-blue underline-offset-2 hover:underline ${focusRing}`}
+                  >
+                    Add work permit type
+                  </Link>
+                )}
               </div>
               <div className="mt-1 flex items-center gap-0.5 sm:mt-0">
                 <span className="text-small font-medium text-midnight tabular-nums tracking-wide">{c.receipt_number}</span>

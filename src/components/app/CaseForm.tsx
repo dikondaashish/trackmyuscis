@@ -9,6 +9,12 @@ import { FormMessage } from "@/components/auth/FormMessage";
 import { appBtnPrimary, appBtnSecondary, appField, appFieldLabel } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
 import { syncMyCases } from "@/app/(app)/dashboard/actions";
+import { asksFilingCategory, suggestCategory, type FilingCategory } from "@/lib/filing-category";
+
+/** How long "Add a case" waits for the first USCIS check before closing anyway. */
+const CHECK_WAIT_MS = 12_000;
+
+export type NewWorkPermit = { caseId: string; suggested: FilingCategory | null };
 
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
 
@@ -17,10 +23,22 @@ type Existing = { id: string; receipt_number: string; label: string | null; form
  * The form comes from USCIS with the first status check, so nobody has to pick it.
  * Saves straight to Supabase; row-level security limits it to the owner.
  */
-export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; onDone: () => void; onCancel: () => void }) {
+export function CaseForm({
+  existing,
+  onDone,
+  onCancel,
+  onWorkPermit,
+}: {
+  existing?: Existing;
+  onDone: () => void;
+  onCancel: () => void;
+  /** Called instead of onDone when USCIS says the new case is a work permit, to ask what it's for. */
+  onWorkPermit?: (permit: NewWorkPermit) => void;
+}) {
   const router = useRouter();
   const ids = { receipt: useId(), label: useId(), msg: useId() };
   const [busy, setBusy] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -39,18 +57,29 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
       const check = checkReceipt(String(data.get("receipt") ?? ""));
       if (!check.ok) return setError(check.error);
       setBusy(true);
-      const { error } = await supabase.from("cases").insert({ receipt_number: check.receipt, label });
+      const { data: added, error } = await supabase
+        .from("cases")
+        .insert({ receipt_number: check.receipt, label })
+        .select("id")
+        .single<{ id: string }>();
       setBusy(false);
-      if (error) {
-        if (error.code === "23505") return setError("You already saved this receipt number.");
-        if (error.message.includes("case_limit_reached"))
+      if (error || !added) {
+        if (error?.code === "23505") return setError("You already saved this receipt number.");
+        if (error?.message.includes("case_limit_reached"))
           return setError(`You can save up to ${MAX_CASES} cases. Remove one to add another.`);
         return setError("We couldn't save that case. Please try again.");
       }
-      // Start automatic checks and fetch the first status. Never blocks saving.
+      // Start automatic checks and fetch the first status (which says the form). The case is
+      // already saved, so a slow or failed check just closes the dialog; the case page asks later.
       setBusy(true);
-      await syncMyCases().catch(() => {});
+      setChecking(true);
+      await Promise.race([syncMyCases().catch(() => {}), new Promise((r) => setTimeout(r, CHECK_WAIT_MS))]);
+      const permit = onWorkPermit ? await workPermitFor(added.id) : null;
+      setChecking(false);
       setBusy(false);
+      router.refresh();
+      if (permit) return onWorkPermit?.(permit);
+      return onDone();
     }
     router.refresh();
     onDone();
@@ -111,11 +140,22 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
           {busy ? (
             <>
               <Spinner />
-              Saving…
+              {checking ? "Checking with USCIS…" : "Saving…"}
             </>
           ) : existing ? "Save changes" : "Save case"}
         </button>
       </div>
     </form>
   );
+}
+
+/** If USCIS says this saved case is a work permit, what to ask next (with a likely answer). */
+async function workPermitFor(caseId: string): Promise<NewWorkPermit | null> {
+  const { data } = await createClient().from("cases").select("id, form_type, filing_category").returns<
+    { id: string; form_type: string | null; filing_category: string | null }[]
+  >();
+  const mine = data?.find((c) => c.id === caseId);
+  if (!mine || !asksFilingCategory(mine.form_type) || mine.filing_category) return null;
+  const others = (data ?? []).filter((c) => c.id !== caseId).map((c) => c.form_type);
+  return { caseId, suggested: suggestCategory(others) };
 }

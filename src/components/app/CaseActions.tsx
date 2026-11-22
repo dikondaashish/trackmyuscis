@@ -8,7 +8,8 @@ import { USCIS_CASE_STATUS } from "@/lib/content";
 import { appBtnDanger, appBtnPrimary, appBtnSecondary, appIconBtn } from "@/lib/ui";
 import { Dialog } from "./Dialog";
 
-import { CaseForm } from "./CaseForm";
+import { CaseForm, type NewWorkPermit } from "./CaseForm";
+import { WORK_PERMIT_WHY, WorkPermitForm } from "./WorkPermitCategory";
 import { Spinner } from "@/components/ui/Spinner";
 import { syncMyCases } from "@/app/(app)/dashboard/actions";
 
@@ -21,14 +22,23 @@ async function copy(text: string) {
   }
 }
 
-/** "Add case" button that opens the add dialog. */
+/**
+ * "Add case" button that opens the add dialog. When USCIS says the new case is a work
+ * permit, the same dialog then asks what it's for (skippable; the case page asks later).
+ */
 export function AddCaseButton({ disabled, label = "Add case" }: { disabled?: boolean; label?: string }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [permit, setPermit] = useState<NewWorkPermit | null>(null);
+  const close = () => setOpen(false);
   return (
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setPermit(null);
+          setOpen(true);
+        }}
         disabled={disabled}
         title={disabled ? "You've saved the most cases an account can hold" : undefined}
         className={appBtnPrimary}
@@ -36,8 +46,30 @@ export function AddCaseButton({ disabled, label = "Add case" }: { disabled?: boo
         <Plus aria-hidden className="size-3.5" />
         {label}
       </button>
-      <Dialog open={open} onClose={() => setOpen(false)} title="Add a case" description="Save a receipt number to keep it in your list.">
-        <CaseForm onDone={() => setOpen(false)} onCancel={() => setOpen(false)} />
+      <Dialog
+        open={open}
+        onClose={close}
+        wide={Boolean(permit)}
+        title={permit ? "What is this work permit for?" : "Add a case"}
+        description={permit ? `Case saved. ${WORK_PERMIT_WHY}` : "Save a receipt number to keep it in your list."}
+      >
+        {permit ? (
+          <WorkPermitForm
+            key={permit.caseId}
+            caseId={permit.caseId}
+            saved={null}
+            premium={null}
+            suggested={permit.suggested}
+            compact
+            onSaved={() => {
+              router.refresh();
+              close();
+            }}
+            secondary={{ label: "Skip for now", onClick: close }}
+          />
+        ) : (
+          <CaseForm onDone={close} onCancel={close} onWorkPermit={setPermit} />
+        )}
       </Dialog>
     </>
   );
