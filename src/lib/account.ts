@@ -11,6 +11,10 @@ export type Account = {
   /** Full name, or null when we don't have one. */
   name: string | null;
   initials: string;
+  /** Random Reddit-style username (Calm-River-4821), set by the database at sign-up. */
+  username: string | null;
+  /** Profile photo from Google, or null (then the avatar shows initials). */
+  photoUrl: string | null;
   /** True when the account signs in with Google (no password to manage here). */
   google: boolean;
   /**
@@ -34,7 +38,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, email")
+    .select("first_name, last_name, email, username")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -53,7 +57,20 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
     lastName,
     name,
     initials,
+    username: profile?.username ?? null,
+    photoUrl: googlePhoto(meta.avatar_url ?? meta.picture),
     google: user.app_metadata?.provider === "google",
     plan: user.app_metadata?.plan === "premium" ? "premium" : "free",
   };
 });
+
+/** Only Google's own photo host, over https; anything else falls back to initials. */
+function googlePhoto(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname.endsWith(".googleusercontent.com") ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}

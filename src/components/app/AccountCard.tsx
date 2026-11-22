@@ -1,21 +1,45 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronUp, CircleHelp, LogOut, Settings, ShieldCheck } from "lucide-react";
 import type { Account } from "@/lib/account";
 import { focusRing } from "@/lib/ui";
 
-export function Avatar({ initials, premium = false, size = "md" }: { initials: string; premium?: boolean; size?: "sm" | "md" }) {
+export function Avatar({
+  initials,
+  photoUrl = null,
+  premium = false,
+  size = "md",
+}: {
+  initials: string;
+  photoUrl?: string | null;
+  premium?: boolean;
+  size?: "sm" | "md" | "lg";
+}) {
+  const [broken, setBroken] = useState(false);
+  const px = size === "sm" ? 32 : size === "lg" ? 64 : 36;
+  const box = size === "sm" ? "size-8 text-caption" : size === "lg" ? "size-16 text-title" : "size-9 text-small";
   return (
     <span aria-hidden className="relative shrink-0">
-      <span
-        className={`flex items-center justify-center rounded-full border border-blue/20 bg-ice font-semibold text-blue ${
-          size === "sm" ? "size-8 text-caption" : "size-9 text-small"
-        }`}
-      >
-        {initials}
-      </span>
+      {photoUrl && !broken ? (
+        <Image
+          src={photoUrl}
+          alt=""
+          width={px}
+          height={px}
+          sizes={`${px}px`}
+          onError={() => setBroken(true)}
+          className={`rounded-full border border-blue/20 bg-ice object-cover ${box}`}
+        />
+      ) : (
+        <span
+          className={`flex items-center justify-center rounded-full border border-blue/20 bg-ice font-semibold text-blue ${box}`}
+        >
+          {initials}
+        </span>
+      )}
       {premium && (
         <span className="absolute -right-1 -bottom-1.5 rounded-md border-2 border-white bg-blue px-1 text-caption leading-4 font-semibold text-white">
           Pro
@@ -73,6 +97,7 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
       >
         <div className="border-b border-border px-4 pt-2 pb-3">
           <p className="truncate text-small font-semibold text-midnight">{account.name ?? "Your account"}</p>
+          {account.username && <p className="truncate text-small text-blue">u/{account.username}</p>}
           <p className="truncate text-caption text-slate">{account.email}</p>
         </div>
         <ul className="py-1">
@@ -114,7 +139,7 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
           open ? "bg-cloud" : ""
         } ${focusRing}`}
       >
-        <Avatar initials={account.initials} premium={premium} />
+        <Avatar initials={account.initials} photoUrl={account.photoUrl} premium={premium} />
         <span className="min-w-0 flex-1">
           <span className="block truncate text-small font-semibold text-midnight">{account.email}</span>
           <span className={`block truncate text-caption ${premium ? "font-semibold text-blue" : "text-slate"}`}>

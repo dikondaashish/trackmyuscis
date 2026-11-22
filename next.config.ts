@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
     qualities: [75],
     // Default steps plus 2560, so a 2x desktop banner (~2200px) needn't pull the 3840 file.
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 2560, 3840],
+    // Google profile photos in the dashboard avatar, served through our image optimizer.
+    remotePatterns: [{ protocol: "https", hostname: "*.googleusercontent.com" }],
   },
   partialPrefetching: true,
   turbopack: {

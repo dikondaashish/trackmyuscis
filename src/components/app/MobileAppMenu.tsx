@@ -46,7 +46,7 @@ export function MobileAppMenu({ account }: { account: Account }) {
         aria-label={open ? "Close menu" : "Open menu"}
         className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-[10px] pl-1 pr-2 text-slate hover:bg-cloud ${focusRing}`}
       >
-        <Avatar initials={account.initials} premium={account.plan === "premium"} size="sm" />
+        <Avatar initials={account.initials} photoUrl={account.photoUrl} premium={account.plan === "premium"} size="sm" />
         {open ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
       </button>
       <div

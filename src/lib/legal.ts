@@ -251,7 +251,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           "Information you give us:",
           [
             "When you email us: your name, email address and what you write.",
-            "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3.",
+            "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3. We also give every account a random username, such as Calm-River-4821, so it doesn't reveal your name.",
             "When you use your account: the receipt numbers you save, any name you give a case (such as \"My work permit\") and the date you saved it.",
             "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
             "When automatic status checks and alerts launch: the case updates we fetch for you and your alert settings.",
@@ -275,7 +275,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "a Google account ID that lets us recognize you the next time you sign in",
           ],
           "We don't ask for, and can't see, your Google password, contacts, Gmail, Drive, Calendar or any other Google data.",
-          "We use this information only to create your account, sign you in, show your name in your account and contact you about your account. We don't use it for advertising, we don't sell it, and we don't use it to train AI or machine-learning models. We share it only with the service providers that run our sign-in and database (see section 6), who may use it only to provide that service to us, or when the law requires it.",
+          "We use this information only to create your account, sign you in, show your name and profile picture in your account and contact you about your account. We don't use it for advertising, we don't sell it, and we don't use it to train AI or machine-learning models. We share it only with the service providers that run our sign-in and database (see section 6), who may use it only to provide that service to us, or when the law requires it.",
           "We keep it for as long as your account is open and delete it as described in section 8 when you delete your account. You can also remove TrackMyUSCIS's access at any time from your [Google Account connections](https://myaccount.google.com/connections). That stops Google sign-in but doesn't delete your TrackMyUSCIS account, so email us if you want that too.",
           "TrackMyUSCIS's use and transfer of information received from Google APIs adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements.",
         ],
