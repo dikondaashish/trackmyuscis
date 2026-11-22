@@ -5,7 +5,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CopyButton } from "@/components/app/CaseActions";
 import { TimelineList } from "@/components/app/StatusTimeline";
 import { appCard, focusRing } from "@/lib/ui";
-import { asksFilingCategory } from "@/lib/filing-category";
+import { asksFilingCategory, categoryFor } from "@/lib/filing-category";
 
 const cols = "sm:grid sm:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_6rem_1rem] sm:items-center sm:gap-x-5 sm:gap-y-1";
 
@@ -26,6 +26,8 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
           const facts = receiptFacts(c.receipt_number);
           const history = c.status_history?.length ? statusTimeline(c) : [];
           const changed = lastStatusChange(c);
+          const asksCategory = asksFilingCategory(c.form_type);
+          const category = asksCategory ? categoryFor(c.filing_category) : undefined;
           return (
             <li key={c.id} className={`group relative py-3 pr-10 pl-4 sm:py-2.5 sm:pr-4 transition-colors duration-200 hover:bg-cloud/70 ${cols}`}>
               <div className="min-w-0">
@@ -35,8 +37,15 @@ export function CaseTable({ cases }: { cases: CaseRow[] }) {
                 >
                   {caseTitle(c)}
                 </Link>
+                {category && (
+                  <div className="truncate text-caption text-midnight">
+                    {category.label}
+                    {category.code && <span className="text-slate tabular-nums"> · {category.code}</span>}
+                    {category.premium && c.premium_processing && <span className="text-slate"> · Premium</span>}
+                  </div>
+                )}
                 <div className="truncate text-caption text-slate">{facts.office ?? "USCIS"}</div>
-                {asksFilingCategory(c.form_type) && !c.filing_category && (
+                {asksCategory && !category && (
                   // Above the row's link, like the history toggle.
                   <Link
                     href={`/dashboard/cases/${c.id}#work-permit`}
