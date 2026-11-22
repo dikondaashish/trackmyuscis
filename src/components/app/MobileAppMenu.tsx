@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import type { Account } from "@/lib/account";
 import { focusRing } from "@/lib/ui";
-import { AppNav } from "./AppNav";
+import { AppNav, AppNavBottom } from "./AppNav";
 import { AccountCard, Avatar } from "./AccountCard";
 
 /** Phones and tablets: a menu button in the top bar that opens the same navigation as the sidebar. */
@@ -56,8 +56,11 @@ export function MobileAppMenu({ account }: { account: Account }) {
       >
         <div className="flex min-h-full flex-col justify-between gap-8">
           <AppNav onNavigate={() => setOpen(false)} />
-          <div className="border-t border-border pt-4">
-            <AccountCard account={account} />
+          <div>
+            <AppNavBottom onNavigate={() => setOpen(false)} />
+            <div className="mt-3 border-t border-border pt-4">
+              <AccountCard account={account} />
+            </div>
           </div>
         </div>
       </div>
