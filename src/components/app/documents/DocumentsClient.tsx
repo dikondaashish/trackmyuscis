@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { BellRing, ChevronDown, FolderOpen, Lock, Plus, Search, ShieldCheck } from "lucide-react";
+import { BellRing, ChevronDown, FolderOpen, Lock, Plus, Search } from "lucide-react";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
@@ -360,7 +360,7 @@ function EmptyState() {
 
 function Footnotes({ email, remindersOn }: { email: string; remindersOn: boolean }) {
   return (
-    <div className="mt-6 grid gap-3 sm:grid-cols-2">
+    <div className="mt-6">
       <div className="flex gap-3 rounded-xl bg-ice px-4 py-3.5">
         <BellRing aria-hidden className="mt-0.5 size-4 shrink-0 text-blue" />
         <div className="text-small">
@@ -372,16 +372,6 @@ function Footnotes({ email, remindersOn }: { email: string; remindersOn: boolean
             <Link href="/dashboard/settings/preferences#documents" className="font-medium text-blue underline-offset-2 hover:underline">
               Change
             </Link>
-          </p>
-        </div>
-      </div>
-      <div className="flex gap-3 rounded-xl bg-cloud px-4 py-3.5 ring-1 ring-border ring-inset">
-        <ShieldCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-teal" />
-        <div className="text-small">
-          <p className="font-medium text-midnight">How your documents are kept private</p>
-          <p className="mt-0.5 text-slate">
-            Files are stored privately in your own folder, encrypted in transit and at rest. They open only while unlocked, through
-            links that expire in 5 minutes. Google&apos;s Gemini AI reads each upload to fill in the details.
           </p>
         </div>
       </div>

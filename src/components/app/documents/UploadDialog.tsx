@@ -224,7 +224,11 @@ function UploadFlow({
         </div>
       )}
       <p className="mt-3 text-caption text-slate">
-        AI reads the file to fill in the type and dates. Your file is stored privately and only you can open it.
+        Read by Google&apos;s Gemini AI.{" "}
+        <a href="/privacy#sharing" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-midnight">
+          Privacy Policy
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
       </p>
       <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <button type="button" onClick={onClose} className={appBtnSecondary}>
