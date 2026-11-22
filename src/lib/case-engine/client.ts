@@ -47,7 +47,8 @@ function config() {
   }
 }
 
-export const caseEngineEnabled = () => config() !== null;
+/** On only when we can also save what the engine returns (SUPABASE_SECRET_KEY). */
+export const caseEngineEnabled = () => config() !== null && Boolean(process.env.SUPABASE_SECRET_KEY);
 
 export class CaseEngineError extends Error {
   constructor(readonly status: number) {
