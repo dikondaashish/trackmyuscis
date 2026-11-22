@@ -5,6 +5,7 @@ import { card } from "@/lib/ui";
 import { Avatar } from "@/components/app/AccountCard";
 import { SettingsSkeleton } from "@/components/app/Skeletons";
 import { ProfileForm } from "./ProfileForm";
+import { UsernameForm } from "./UsernameForm";
 
 export const metadata = pageMetadata({
   title: "Profile settings",
@@ -53,8 +54,8 @@ async function Profile() {
           <h2 id="username-title" className="text-title text-midnight">
             Username
           </h2>
-          <p className="mt-3 font-medium text-midnight">u/{account.username}</p>
-          <p className="mt-1 text-small text-slate">Picked at random when you joined, so it doesn&apos;t reveal your name.</p>
+          <p className="mt-1 mb-5 text-small text-slate">Your name on TrackMyUSCIS instead of your real name.</p>
+          <UsernameForm userId={account.id} username={account.username} />
         </section>
       )}
     </div>
