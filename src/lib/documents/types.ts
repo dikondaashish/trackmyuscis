@@ -45,6 +45,8 @@ const LABELS: Record<string, string> = Object.fromEntries(DOCUMENT_TYPES.map((t)
 /** "green_card" → "Green card"; a type someone typed ("lease_agreement") → "Lease agreement". */
 export function documentTypeLabel(value: string) {
   if (LABELS[value]) return LABELS[value];
+  // Short codes someone typed ("dl", "ssn") read as capitals.
+  if (/^[a-z]{1,3}$/.test(value)) return value.toUpperCase();
   const words = value.replace(/_/g, " ").trim();
   return words ? words[0].toUpperCase() + words.slice(1) : "Other";
 }

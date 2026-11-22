@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { BellRing, ChevronDown, FolderOpen, Lock, Plus, Search } from "lucide-react";
+import { BellRing, ChevronDown, FileBadge, FolderOpen, Lock, Plus, Search } from "lucide-react";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
+  DOCUMENT_TYPES,
+  KNOWN_TYPES,
   SORTS,
   daysUntil,
   documentTypeLabel,
@@ -14,8 +16,8 @@ import {
   type SortKey,
   type VaultDocument,
 } from "@/lib/documents/types";
-import { appBtnPrimary, appBtnSecondary, appCard, appField, appLink, appTitle } from "@/lib/ui";
-import { DocumentCard } from "./DocumentCard";
+import { appBtnPrimary, appBtnSecondary, appCard, appField, appLink, appTitle, focusRing } from "@/lib/ui";
+import { DocumentCard, TYPE_ICONS } from "./DocumentCard";
 import { DocumentDialog } from "./DocumentDialog";
 import { SetupScreen, UnlockScreen } from "./PasscodeScreens";
 import { UploadDialog } from "./UploadDialog";
@@ -178,7 +180,8 @@ function OpenVault({
   const [editOnOpen, setEditOnOpen] = useState(false);
 
   const list = useMemo(() => filterAndSort([...(docs ?? [])], type, search, sort), [docs, type, search, sort]);
-  const types = useMemo(() => [...new Set((docs ?? []).map((d) => d.category))].sort(), [docs]);
+  // Types the person typed themselves (not in the known list), for the chips.
+  const custom = useMemo(() => [...new Set((docs ?? []).map((d) => d.category))].filter((c) => !KNOWN_TYPES.has(c)).sort(), [docs]);
   const openDoc = docs?.find((d) => d.id === openId) ?? null;
 
   if (error) {
@@ -202,7 +205,9 @@ function OpenVault({
         <>
           <Stats docs={docs} today={today} />
 
-          <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+          <TypeChips value={type} onChange={setType} custom={custom} />
+
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <div className="relative min-w-0 flex-1">
               <Search aria-hidden className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate" />
               <input
@@ -214,14 +219,6 @@ function OpenVault({
                 className={`${appField} pl-9`}
               />
             </div>
-            <Select label="Filter by type" value={type} onChange={setType}>
-              <option value="all">All types</option>
-              {types.map((t) => (
-                <option key={t} value={t}>
-                  {documentTypeLabel(t)}
-                </option>
-              ))}
-            </Select>
             <Select label="Sort documents" value={sort} onChange={(v) => setSort(v as SortKey)}>
               {SORTS.map((s) => (
                 <option key={s.value} value={s.value}>
@@ -319,20 +316,72 @@ function Stats({ docs, today }: { docs: VaultDocument[]; today: string }) {
   const days = docs.map((d) => daysUntil(d.expiryDate, today));
   const soon = days.filter((n) => n !== null && n >= 0 && n <= 30).length;
   const expired = days.filter((n) => n !== null && n < 0).length;
+  const counts = new Map<string, number>();
+  for (const d of docs) counts.set(d.category, (counts.get(d.category) ?? 0) + 1);
+  const [topType, topCount] = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0] ?? ["", 0];
   const tiles = [
-    { label: "Documents", value: docs.length, tone: "text-midnight" },
-    { label: "Expiring in 30 days", value: soon, tone: soon ? "text-amber" : "text-midnight" },
-    { label: "Expired", value: expired, tone: expired ? "text-red" : "text-midnight" },
+    { label: "Documents", value: String(docs.length), note: "Saved", tone: "text-midnight", text: false },
+    { label: "Expiring soon", value: String(soon), note: "Within 30 days", tone: soon ? "text-amber" : "text-midnight", text: false },
+    { label: "Expired", value: String(expired), note: expired ? "Update the dates" : "None", tone: expired ? "text-red" : "text-midnight", text: false },
+    {
+      label: "Most common",
+      value: topType ? documentTypeLabel(topType) : "None",
+      note: `${topCount} ${topCount === 1 ? "document" : "documents"}`,
+      tone: "text-midnight",
+      text: true,
+    },
   ];
   return (
-    <dl className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+    <dl className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
       {tiles.map((t) => (
-        <div key={t.label} className={`${appCard} px-3 py-3 sm:px-4`}>
+        <div key={t.label} className={`${appCard} min-w-0 px-3 py-3 sm:px-4`}>
           <dt className="text-caption text-slate">{t.label}</dt>
-          <dd className={`mt-0.5 text-h3 tabular-nums ${t.tone}`}>{t.value}</dd>
+          <dd className={`mt-0.5 truncate tabular-nums ${t.text ? "text-title leading-8" : "text-h3"} ${t.tone}`} title={t.value}>
+            {t.value}
+          </dd>
+          <dd className="text-caption text-slate">{t.note}</dd>
         </div>
       ))}
     </dl>
+  );
+}
+
+/**
+ * Type chips: All, every known type, then any types the person typed themselves, then Other.
+ * One scrolling row, so the list stays a single line on every screen.
+ */
+function TypeChips({ value, onChange, custom }: { value: string; onChange: (v: string) => void; custom: string[] }) {
+  const chips = [
+    { value: "all", label: "All documents" },
+    ...DOCUMENT_TYPES.filter((t) => t.value !== "other"),
+    ...custom.map((c) => ({ value: c, label: documentTypeLabel(c) })),
+    { value: "other", label: "Other" },
+  ];
+  return (
+    <div role="group" aria-label="Filter by type" className="-mx-4 mt-5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:thin]">
+      <div className="flex w-max gap-1.5">
+        {chips.map((c) => (
+          <Chip key={c.value} value={c.value} label={c.label} active={value === c.value} onClick={() => onChange(c.value)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Chip({ value, label, active, onClick }: { value: string; label: string; active: boolean; onClick: () => void }) {
+  const Icon = value === "all" ? FolderOpen : (TYPE_ICONS[value] ?? FileBadge);
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`inline-flex h-10 shrink-0 cursor-pointer items-center gap-1.5 rounded-full sm:h-9 border px-3 text-small font-medium whitespace-nowrap transition-colors duration-200 ${focusRing} ${
+        active ? "border-blue bg-blue text-white" : "border-border bg-white text-midnight hover:border-blue/40 hover:bg-ice/60"
+      }`}
+    >
+      <Icon aria-hidden className={`size-3.5 ${active ? "text-white" : "text-blue"}`} />
+      {label}
+    </button>
   );
 }
 

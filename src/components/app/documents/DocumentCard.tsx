@@ -20,7 +20,8 @@ import { daysUntil, documentTypeLabel, expiryState, showDate, type VaultDocument
 import { appCard, focusRing } from "@/lib/ui";
 import { ExpiryBadge } from "./ExpiryBadge";
 
-const ICONS: Record<string, LucideIcon> = {
+/** One icon per known type; anything else (a type someone typed) gets FileBadge. */
+export const TYPE_ICONS: Record<string, LucideIcon> = {
   passport: BookUser,
   visa: Stamp,
   green_card: IdCard,
@@ -54,7 +55,7 @@ export function DocumentCard({
   onOpen: () => void;
   onAddExpiry: () => void;
 }) {
-  const Icon = ICONS[doc.category] ?? FileBadge;
+  const Icon = TYPE_ICONS[doc.category] ?? FileBadge;
   return (
     <article
       className={`${appCard} group relative flex w-full min-w-0 flex-col p-4 transition-[border-color,box-shadow] duration-200 hover:border-blue/40 hover:shadow-[0_8px_24px_-16px_rgba(16,34,61,0.35)] has-[:focus-visible]:border-blue/40`}
