@@ -6,6 +6,7 @@ import { appPanel, appSectionTitle } from "@/lib/ui";
 import { Avatar } from "@/components/app/AccountCard";
 import { SettingsSkeleton } from "@/components/app/Skeletons";
 import { ProfileForm } from "../ProfileForm";
+import { DateOfBirthForm } from "../DateOfBirthForm";
 
 export const metadata = pageMetadata({
   title: "Personal profile",
@@ -52,6 +53,14 @@ async function Personal() {
         </h2>
         <p className="mt-0.5 mb-4 text-small text-slate">Your real name. We use it to greet you in the dashboard.</p>
         <ProfileForm userId={account.id} firstName={account.firstName ?? ""} lastName={account.lastName ?? ""} />
+      </section>
+
+      <section aria-labelledby="dob-title" className={appPanel}>
+        <h2 id="dob-title" className={appSectionTitle}>
+          Date of birth
+        </h2>
+        <p className="mt-0.5 mb-4 text-small text-slate">You choose whether to add it. Google doesn&apos;t share it with us.</p>
+        <DateOfBirthForm userId={account.id} dateOfBirth={account.dateOfBirth} />
       </section>
     </div>
   );
