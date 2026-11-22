@@ -2,15 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Clock, FileText, LayoutList, LifeBuoy, Settings } from "lucide-react";
+import { BookOpen, Clock, FileText, LayoutList } from "lucide-react";
 import { focusRing } from "@/lib/ui";
 
 const MAIN = [
   { href: "/dashboard", label: "Cases", icon: LayoutList, match: (p: string) => p === "/dashboard" || p.startsWith("/dashboard/cases") },
-];
-
-const BOTTOM = [
-  { href: "/dashboard/settings", label: "Settings", icon: Settings, match: (p: string) => p.startsWith("/dashboard/settings") },
 ];
 
 const GUIDES = [
@@ -73,28 +69,3 @@ export function AppNavView({ pathname, onNavigate }: { pathname: string; onNavig
   );
 }
 
-/** Settings, kept at the bottom of the sidebar above the account. */
-export function AppNavBottom({ onNavigate }: { onNavigate?: () => void }) {
-  return <AppNavBottomView pathname={usePathname()} onNavigate={onNavigate} />;
-}
-
-export function AppNavBottomView({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
-  return (
-    <nav aria-label="Account">
-      <NavList links={BOTTOM} pathname={pathname} onNavigate={onNavigate} />
-    </nav>
-  );
-}
-
-/** Help, in the top right of the app's top bar. */
-export function HelpLink() {
-  return (
-    <Link
-      href="/help"
-      className={`flex min-h-11 items-center gap-2 rounded-[10px] px-3 text-small font-medium text-slate transition-colors duration-200 hover:bg-cloud hover:text-midnight ${focusRing}`}
-    >
-      <LifeBuoy aria-hidden className="size-4" />
-      Help
-    </Link>
-  );
-}

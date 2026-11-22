@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAccount } from "@/lib/account";
 import { focusRing } from "@/lib/ui";
-import { AppNav, AppNavBottom, AppNavBottomView, AppNavView, HelpLink } from "@/components/app/AppNav";
+import { AppNav, AppNavView } from "@/components/app/AppNav";
 import { AccountCard, AccountCardSkeleton } from "@/components/app/AccountCard";
 import { MobileAppMenu } from "@/components/app/MobileAppMenu";
 
@@ -25,7 +25,7 @@ async function MobileMenu() {
 
 /**
  * The signed-in app: no marketing header or footer. A fixed sidebar from 1024px (logo,
- * navigation, Settings and account at the bottom), a top bar with Help on the right (and a menu on smaller screens), and the page on cloud.
+ * navigation, and the account menu at the bottom), a top bar with a menu on smaller screens, and the page on cloud.
  */
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -46,12 +46,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <AppNav />
           </Suspense>
         </div>
-        <div className="pb-3">
-          <Suspense fallback={<AppNavBottomView pathname="" />}>
-            <AppNavBottom />
-          </Suspense>
-        </div>
-        <div className="border-t border-border pt-4">
+        <div className="border-t border-border pt-3">
           <Suspense fallback={<AccountCardSkeleton />}>
             <SidebarAccount />
           </Suspense>
@@ -61,15 +56,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-white px-4 sm:px-6 lg:hidden">
           <Logo />
-          <div className="flex items-center gap-1">
-            <HelpLink />
-            <Suspense fallback={<span className="skeleton size-8 rounded-full" />}>
-              <MobileMenu />
-            </Suspense>
-          </div>
-        </header>
-        <header className="sticky top-0 z-40 hidden h-16 items-center justify-end border-b border-border bg-white px-8 lg:flex">
-          <HelpLink />
+          <Suspense fallback={<span className="skeleton size-8 rounded-full" />}>
+            <MobileMenu />
+          </Suspense>
         </header>
         <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
           {children}

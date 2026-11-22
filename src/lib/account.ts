@@ -13,6 +13,11 @@ export type Account = {
   initials: string;
   /** True when the account signs in with Google (no password to manage here). */
   google: boolean;
+  /**
+   * "free" for everyone today. "premium" only when the server has set app_metadata.plan
+   * (people can't change app_metadata themselves), ready for a paid plan later.
+   */
+  plan: "free" | "premium";
 };
 
 /**
@@ -49,5 +54,6 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
     name,
     initials,
     google: user.app_metadata?.provider === "google",
+    plan: user.app_metadata?.plan === "premium" ? "premium" : "free",
   };
 });
