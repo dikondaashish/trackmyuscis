@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import { focusRing } from "@/lib/ui";
+import { appIconBtn } from "@/lib/ui";
 
 /**
  * A modal built on the native <dialog>: focus is trapped and Escape closes it for free.
@@ -51,26 +51,26 @@ export function Dialog({
         if (e.target === ref.current) onClose();
       }}
       aria-labelledby="dialog-title"
-      className="modal m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)]"
+      className="modal m-auto w-[calc(100%-2rem)] max-w-md rounded-xl border border-border bg-white p-0 text-midnight shadow-[0_24px_64px_-24px_rgba(16,34,61,0.35)]"
     >
-      <div className="p-6 sm:p-7">
+      <div className="p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 id="dialog-title" className="text-title">
+            <h2 id="dialog-title" className="text-body font-semibold">
               {title}
             </h2>
-            {description && <p className="mt-1 text-small text-slate">{description}</p>}
+            {description && <p className="mt-0.5 text-small text-slate">{description}</p>}
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className={`-mt-2 -mr-2 flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[10px] text-slate hover:bg-cloud hover:text-midnight ${focusRing}`}
+            className={`${appIconBtn} -mt-1 -mr-1.5`}
           >
-            <X aria-hidden className="size-5" />
+            <X aria-hidden className="size-4" />
           </button>
         </div>
-        <div key={round} className="mt-6">
+        <div key={round} className="mt-4">
           {children}
         </div>
       </div>

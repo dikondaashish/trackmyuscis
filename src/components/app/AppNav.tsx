@@ -40,7 +40,7 @@ function NavList({ links, pathname, onNavigate }: { links: NavLink[]; pathname: 
   );
 }
 
-const item = `flex min-h-11 items-center gap-3 rounded-[10px] px-3 text-small font-medium transition-colors duration-200 ${focusRing}`;
+const item = `flex h-9 items-center gap-2.5 rounded-lg px-2.5 text-small font-medium transition-colors duration-200 ${focusRing}`;
 
 /** The app's navigation, with the current page highlighted. */
 export function AppNav({ onNavigate }: { onNavigate?: () => void }) {
@@ -50,10 +50,10 @@ export function AppNav({ onNavigate }: { onNavigate?: () => void }) {
 /** The app's navigation: the account pages, then the site's reference pages. */
 export function AppNavView({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
-    <nav aria-label="Dashboard" className="flex flex-col gap-6">
+    <nav aria-label="Dashboard" className="flex flex-col gap-5">
       <NavList links={MAIN} pathname={pathname} onNavigate={onNavigate} />
       <div>
-        <p className="px-3 text-caption font-semibold text-slate">Guides</p>
+        <p className="px-2.5 text-caption font-medium text-slate">Guides</p>
         <ul className="mt-1 flex flex-col gap-0.5">
           {GUIDES.map(({ href, label, icon: Icon }) => (
             <li key={href}>

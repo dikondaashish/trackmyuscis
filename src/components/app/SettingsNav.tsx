@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CreditCard, Settings, UserRound } from "lucide-react";
-import { card, focusRing } from "@/lib/ui";
+import { appCard, focusRing } from "@/lib/ui";
 
 const LINKS = [
   { href: "/dashboard/settings", label: "Profile", icon: UserRound },
@@ -15,8 +15,8 @@ const LINKS = [
 export function SettingsNav() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Settings" className={`${card} p-1.5 lg:sticky lg:top-6`}>
-      <ul className="flex gap-1 overflow-x-auto lg:flex-col">
+    <nav aria-label="Settings" className={`${appCard} p-1 lg:sticky lg:top-6`}>
+      <ul className="flex gap-0.5 overflow-x-auto lg:flex-col">
         {LINKS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
@@ -24,8 +24,8 @@ export function SettingsNav() {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex min-h-11 items-center gap-2.5 rounded-[10px] px-3 text-small whitespace-nowrap transition-colors duration-200 ${
-                  active ? "bg-ice font-semibold text-blue" : "text-slate hover:bg-cloud hover:text-midnight"
+                className={`flex h-9 items-center gap-2 rounded-lg px-2.5 text-small whitespace-nowrap transition-colors duration-200 ${
+                  active ? "bg-ice font-medium text-blue" : "text-slate hover:bg-cloud hover:text-midnight"
                 } ${focusRing}`}
               >
                 <Icon aria-hidden className="size-4" />

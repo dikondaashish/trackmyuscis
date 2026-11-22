@@ -44,15 +44,15 @@ export function MobileAppMenu({ account }: { account: Account }) {
         aria-expanded={open}
         aria-controls="app-menu"
         aria-label={open ? "Close menu" : "Open menu"}
-        className={`flex min-h-11 cursor-pointer items-center gap-2 rounded-[10px] pl-1 pr-2 text-slate hover:bg-cloud ${focusRing}`}
+        className={`flex h-10 cursor-pointer items-center gap-1.5 rounded-lg pl-1 pr-1.5 text-slate hover:bg-cloud ${focusRing}`}
       >
         <Avatar initials={account.initials} photoUrl={account.photoUrl} premium={account.plan === "premium"} size="sm" />
-        {open ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
+        {open ? <X aria-hidden className="size-4" /> : <Menu aria-hidden className="size-4" />}
       </button>
       <div
         id="app-menu"
         hidden={!open}
-        className="menu-in fixed inset-x-0 top-16 bottom-0 z-40 overflow-y-auto border-t border-border bg-white px-4 pt-4 pb-6"
+        className="menu-in fixed inset-x-0 top-14 bottom-0 z-40 overflow-y-auto border-t border-border bg-white px-4 pt-4 pb-6"
       >
         <div className="flex min-h-full flex-col justify-between gap-8">
           <AppNav onNavigate={() => setOpen(false)} />

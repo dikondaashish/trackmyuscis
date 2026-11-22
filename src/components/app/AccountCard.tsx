@@ -19,8 +19,8 @@ export function Avatar({
   size?: "sm" | "md" | "lg";
 }) {
   const [broken, setBroken] = useState(false);
-  const px = size === "sm" ? 32 : size === "lg" ? 64 : 36;
-  const box = size === "sm" ? "size-8 text-caption" : size === "lg" ? "size-16 text-title" : "size-9 text-small";
+  const px = size === "sm" ? 28 : size === "lg" ? 48 : 32;
+  const box = size === "sm" ? "size-7 text-caption" : size === "lg" ? "size-12 text-body" : "size-8 text-caption";
   return (
     <span aria-hidden className="relative shrink-0">
       {photoUrl && !broken ? (
@@ -51,7 +51,7 @@ export function Avatar({
 
 const PLAN_LABEL = { free: "Free plan", premium: "Premium member" } as const;
 
-const menuItem = `flex min-h-11 w-full cursor-pointer items-center gap-3 px-4 text-small text-midnight transition-colors duration-200 hover:bg-cloud ${focusRing}`;
+const menuItem = `flex h-9 w-full cursor-pointer items-center gap-2.5 px-3 text-small text-midnight transition-colors duration-200 hover:bg-cloud ${focusRing}`;
 
 /**
  * Who is signed in, at the bottom of the sidebar and of the phone menu. Opens a menu
@@ -93,11 +93,11 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
       <div
         id={menuId}
         hidden={!open}
-        className="menu-up absolute inset-x-0 bottom-full z-50 mb-2 overflow-hidden rounded-2xl border border-border bg-white py-2 shadow-[0_12px_32px_-12px_rgb(16_34_61/0.25)]"
+        className="menu-up absolute inset-x-0 bottom-full z-50 mb-1.5 overflow-hidden rounded-xl border border-border bg-white py-1.5 shadow-[0_12px_32px_-12px_rgb(16_34_61/0.25)]"
       >
-        <div className="border-b border-border px-4 pt-2 pb-3">
+        <div className="border-b border-border px-3 pt-1.5 pb-2.5">
           <p className="truncate text-small font-semibold text-midnight">{account.name ?? "Your account"}</p>
-          {account.username && <p className="truncate text-small text-blue">u/{account.username}</p>}
+          {account.username && <p className="truncate text-caption font-medium text-blue">u/{account.username}</p>}
           <p className="truncate text-caption text-slate">{account.email}</p>
         </div>
         <ul className="py-1">
@@ -135,13 +135,13 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
         aria-expanded={open}
         aria-controls={menuId}
         aria-label={`Account menu for ${account.name ?? account.email}`}
-        className={`group flex min-h-12 w-full cursor-pointer items-center gap-3 rounded-[10px] px-2 py-1.5 text-left transition-colors duration-200 hover:bg-cloud ${
+        className={`group flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors duration-200 hover:bg-cloud ${
           open ? "bg-cloud" : ""
         } ${focusRing}`}
       >
         <Avatar initials={account.initials} photoUrl={account.photoUrl} premium={premium} />
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-small font-semibold text-midnight">{account.email}</span>
+          <span className="block truncate text-small font-medium text-midnight">{account.email}</span>
           <span className={`block truncate text-caption ${premium ? "font-semibold text-blue" : "text-slate"}`}>
             {PLAN_LABEL[account.plan]}
           </span>
@@ -157,8 +157,8 @@ export function AccountCard({ account, onNavigate }: { account: Account; onNavig
 
 export function AccountCardSkeleton() {
   return (
-    <div className="flex min-h-12 items-center gap-3 px-2" aria-hidden>
-      <span className="skeleton size-9 rounded-full" />
+    <div className="flex items-center gap-2.5 px-2 py-1.5" aria-hidden>
+      <span className="skeleton size-8 rounded-full" />
       <div className="flex-1">
         <div className="skeleton h-3.5 w-32" />
         <div className="skeleton mt-1.5 h-3 w-16" />

@@ -5,13 +5,11 @@ import { useRouter } from "next/navigation";
 import { ArrowUpRight, Check, Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { USCIS_CASE_STATUS } from "@/lib/content";
-import { btnPrimary, btnSecondary, focusRing } from "@/lib/ui";
+import { appBtnDanger, appBtnPrimary, appBtnSecondary, appIconBtn } from "@/lib/ui";
 import { Dialog } from "./Dialog";
 
 import { CaseForm } from "./CaseForm";
 import { Spinner } from "@/components/ui/Spinner";
-
-const btnDanger = btnPrimary.replace("bg-blue", "bg-red").replace("hover:bg-midnight", "hover:bg-red/90");
 
 async function copy(text: string) {
   try {
@@ -32,9 +30,9 @@ export function AddCaseButton({ disabled, label = "Add case" }: { disabled?: boo
         onClick={() => setOpen(true)}
         disabled={disabled}
         title={disabled ? "You've saved the most cases an account can hold" : undefined}
-        className={`${btnPrimary} disabled:cursor-not-allowed disabled:opacity-50`}
+        className={appBtnPrimary}
       >
-        <Plus aria-hidden className="size-4" />
+        <Plus aria-hidden className="size-3.5" />
         {label}
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title="Add a case" description="Save a receipt number to keep it in your list.">
@@ -58,9 +56,9 @@ export function CopyButton({ value }: { value: string }) {
       }}
       aria-label={done ? "Copied" : `Copy ${value}`}
       title={done ? "Copied" : "Copy receipt number"}
-      className={`relative z-10 flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-[10px] text-slate transition-colors duration-200 hover:bg-cloud hover:text-midnight ${focusRing}`}
+      className={`${appIconBtn} relative z-10 size-7`}
     >
-      {done ? <Check aria-hidden className="pop size-4 text-teal" /> : <Copy aria-hidden className="size-4" />}
+      {done ? <Check aria-hidden className="pop size-3.5 text-teal" /> : <Copy aria-hidden className="size-3.5" />}
       <span aria-live="polite" className="sr-only">
         {done ? "Copied" : ""}
       </span>
@@ -81,16 +79,16 @@ export function CheckOnUscisButton({ receipt }: { receipt: string }) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={async () => setCopied(await copy(receipt))}
-        className={btnPrimary}
+        className={appBtnPrimary}
       >
         Check status on USCIS
-        <ArrowUpRight aria-hidden className="size-4" />
+        <ArrowUpRight aria-hidden className="size-3.5" />
         <span className="sr-only">(opens in a new tab)</span>
       </a>
-      <p aria-live="polite" className="flex min-h-5 items-center gap-1.5 text-small text-slate">
+      <p aria-live="polite" className="flex min-h-4 items-center gap-1.5 text-caption text-slate">
         {copied ? (
           <span key="copied" className="swap inline-flex items-center gap-1.5 text-teal">
-            <Check aria-hidden className="size-4" />
+            <Check aria-hidden className="size-3.5" />
             Receipt number copied. Paste it on the USCIS page.
           </span>
         ) : (
@@ -127,17 +125,17 @@ export function EditRemoveButtons({
 
   return (
     <>
-      <div className="flex gap-3">
-        <button type="button" onClick={() => setEditing(true)} className={`${btnSecondary} flex-1 sm:flex-none`}>
-          <Pencil aria-hidden className="size-4" />
+      <div className="flex gap-2">
+        <button type="button" onClick={() => setEditing(true)} className={`${appBtnSecondary} flex-1 sm:flex-none`}>
+          <Pencil aria-hidden className="size-3.5" />
           Edit
         </button>
         <button
           type="button"
           onClick={() => setRemoving(true)}
-          className={`${btnSecondary} flex-1 hover:border-red/40 hover:text-red sm:flex-none`}
+          className={`${appBtnSecondary} flex-1 hover:border-red/40 hover:text-red sm:flex-none`}
         >
-          <Trash2 aria-hidden className="size-4" />
+          <Trash2 aria-hidden className="size-3.5" />
           Remove
         </button>
       </div>
@@ -152,16 +150,16 @@ export function EditRemoveButtons({
         title="Remove this case?"
         description={`${existing.receipt_number} will be removed from your list. Your case with USCIS is not affected.`}
       >
-        {error && <p role="alert" className="mb-4 text-small text-red">{error}</p>}
-        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <button type="button" onClick={() => setRemoving(false)} disabled={busy} className={btnSecondary}>
+        {error && <p role="alert" className="mb-3 text-small text-red">{error}</p>}
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button type="button" onClick={() => setRemoving(false)} disabled={busy} className={appBtnSecondary}>
             Keep
           </button>
           <button
             type="button"
             onClick={remove}
             disabled={busy}
-            className={`${btnDanger} disabled:opacity-60`}
+            className={appBtnDanger}
           >
             {busy ? (
             <>

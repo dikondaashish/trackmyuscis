@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FormMessage } from "@/components/auth/FormMessage";
-import { btnPrimary, field, fieldLabel } from "@/lib/ui";
+import { appBtnPrimary, appField, appFieldLabel } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
 
 /** First and last name. Saved to the profile row; row-level security limits it to the owner. */
@@ -33,24 +33,24 @@ export function ProfileForm({ userId, firstName, lastName }: { userId: string; f
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
+      <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor={ids.first} className={fieldLabel}>
+          <label htmlFor={ids.first} className={appFieldLabel}>
             First name
           </label>
-          <input id={ids.first} name="first" defaultValue={firstName} autoComplete="given-name" maxLength={80} disabled={busy} className={`${field} mt-2 disabled:opacity-60`} />
+          <input id={ids.first} name="first" defaultValue={firstName} autoComplete="given-name" maxLength={80} disabled={busy} className={`${appField} mt-1.5`} />
         </div>
         <div>
-          <label htmlFor={ids.last} className={fieldLabel}>
+          <label htmlFor={ids.last} className={appFieldLabel}>
             Last name
           </label>
-          <input id={ids.last} name="last" defaultValue={lastName} autoComplete="family-name" maxLength={80} disabled={busy} className={`${field} mt-2 disabled:opacity-60`} />
+          <input id={ids.last} name="last" defaultValue={lastName} autoComplete="family-name" maxLength={80} disabled={busy} className={`${appField} mt-1.5`} />
         </div>
       </div>
       {message && <FormMessage tone={message.tone}>{message.text}</FormMessage>}
       <div>
-        <button type="submit" disabled={busy} className={`${btnPrimary} disabled:opacity-60`}>
+        <button type="submit" disabled={busy} className={appBtnPrimary}>
           {busy ? (
             <>
               <Spinner />

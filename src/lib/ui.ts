@@ -21,7 +21,7 @@ export const readContainer = "mx-auto w-full max-w-3xl px-5 sm:px-8";
 export const section = "py-20 sm:py-28";
 
 /** The content column of a signed-in app page (inside the sidebar layout). */
-export const appPage = "mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-10";
+export const appPage = "mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8";
 
 export const btnPrimary = `inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-[10px] bg-blue px-6 text-body font-semibold text-white transition-[background-color,scale] duration-200 hover:bg-midnight active:scale-[0.98] motion-reduce:active:scale-100 ${focusRing}`;
 
@@ -60,3 +60,28 @@ export const rowPad = "px-5 sm:px-6";
 export const rowLink = `group flex items-center justify-between gap-6 ${rowPad} py-5 transition-colors duration-200 hover:bg-cloud focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue`;
 export const rowArrow =
   "size-5 shrink-0 text-slate transition-[color,translate] duration-200 group-hover:translate-x-0.5 group-hover:text-blue motion-reduce:transition-none";
+
+/*
+ * The signed-in app is denser than the marketing site, like Linear or Stripe's dashboard:
+ * 36px controls on desktop (40px on phones), 14px text in controls, 12px-radius cards with
+ * 16-20px padding. Use these inside (app) only; the public site keeps the larger sizes above.
+ */
+const appBtnBase = `inline-flex h-10 sm:h-9 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-small font-semibold transition-[background-color,border-color,scale] duration-200 active:scale-[0.98] motion-reduce:active:scale-100 disabled:cursor-not-allowed disabled:opacity-60 ${focusRing}`;
+export const appBtnPrimary = `${appBtnBase} bg-blue text-white hover:bg-midnight`;
+export const appBtnSecondary = `${appBtnBase} border border-border bg-white text-midnight hover:border-slate/40 hover:bg-cloud`;
+export const appBtnDanger = `${appBtnBase} bg-red text-white hover:bg-red/90`;
+/** Square icon-only button (copy, close). */
+export const appIconBtn = `flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-slate transition-colors duration-200 hover:bg-cloud hover:text-midnight ${focusRing}`;
+
+export const appCard = "rounded-xl border border-border bg-white";
+export const appPanel = `${appCard} p-4 sm:p-5`;
+/** Page title inside the app (18px); section titles inside panels (14px). */
+export const appTitle = "text-title text-midnight";
+export const appSectionTitle = "text-small font-semibold text-midnight";
+
+export const appFieldLabel = "block text-small font-medium text-midnight";
+/** 16px text on phones (stops iOS zooming into the field), 14px from 640px. */
+export const appField =
+  "h-10 sm:h-9 w-full min-w-0 rounded-lg border border-border bg-white px-3 text-body sm:text-small text-midnight transition-[border-color,box-shadow] duration-200 placeholder:text-slate/70 focus:border-blue focus:outline-none focus:ring-[3px] focus:ring-blue/15 disabled:opacity-60";
+/** Small inline link with an arrow. */
+export const appLink = `inline-flex min-h-8 items-center gap-1 rounded text-small font-medium text-blue underline-offset-2 hover:underline ${focusRing}`;

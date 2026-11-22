@@ -7,7 +7,7 @@ import { checkReceipt } from "@/lib/receipt";
 import { FORM_OPTIONS, MAX_CASES } from "@/lib/cases";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { SelectField } from "@/components/ui/SelectField";
-import { btnPrimary, btnSecondary, field, fieldLabel } from "@/lib/ui";
+import { appBtnPrimary, appBtnSecondary, appField, appFieldLabel } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
 
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
@@ -53,10 +53,10 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3.5">
       {!existing && (
         <div>
-          <label htmlFor={ids.receipt} className={fieldLabel}>
+          <label htmlFor={ids.receipt} className={appFieldLabel}>
             Receipt number
           </label>
           <input
@@ -72,16 +72,16 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
             disabled={busy}
             aria-invalid={!!error || undefined}
             aria-describedby={`${ids.receipt}-hint${error ? ` ${ids.msg}` : ""}`}
-            className={`${field} mt-2 uppercase tabular-nums tracking-wide placeholder:normal-case placeholder:tracking-normal disabled:opacity-60`}
+            className={`${appField} mt-1.5 uppercase tabular-nums tracking-wide placeholder:normal-case placeholder:tracking-normal`}
           />
-          <p id={`${ids.receipt}-hint`} className="mt-2 text-small text-slate">
+          <p id={`${ids.receipt}-hint`} className="mt-1.5 text-caption text-slate">
             3 letters and 10 digits, from the receipt notice (Form I-797C) USCIS mailed you.
           </p>
         </div>
       )}
-      <SelectField id={ids.form} name="form_type" label="Form" options={FORM_OPTIONS} defaultValue={existing?.form_type ?? ""} />
+      <SelectField id={ids.form} name="form_type" label="Form" options={FORM_OPTIONS} defaultValue={existing?.form_type ?? ""} compact />
       <div>
-        <label htmlFor={ids.label} className={fieldLabel}>
+        <label htmlFor={ids.label} className={appFieldLabel}>
           Name <span className="font-normal text-slate">(optional)</span>
         </label>
         <input
@@ -92,7 +92,7 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
           maxLength={60}
           data-autofocus={existing ? true : undefined}
           disabled={busy}
-          className={`${field} mt-2 disabled:opacity-60`}
+          className={`${appField} mt-1.5`}
         />
       </div>
       {error && (
@@ -100,11 +100,11 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
           {error}
         </FormMessage>
       )}
-      <div className="mt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <button type="button" onClick={onCancel} disabled={busy} className={btnSecondary}>
+      <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" onClick={onCancel} disabled={busy} className={appBtnSecondary}>
           Cancel
         </button>
-        <button type="submit" disabled={busy} className={`${btnPrimary} disabled:opacity-60`}>
+        <button type="submit" disabled={busy} className={appBtnPrimary}>
           {busy ? (
             <>
               <Spinner />

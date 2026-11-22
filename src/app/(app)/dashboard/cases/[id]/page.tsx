@@ -10,7 +10,7 @@ import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckOnUscisButton, CopyButton, EditRemoveButtons } from "@/components/app/CaseActions";
 import { CaseSkeleton } from "@/components/app/Skeletons";
-import { appPage, card, focusRing } from "@/lib/ui";
+import { appLink, appPage, appPanel, appTitle, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
   title: "Case",
@@ -19,14 +19,15 @@ export const metadata = pageMetadata({
   noindex: true,
 });
 
-const panel = `${card} p-5 sm:p-6`;
-const link = `inline-flex min-h-11 items-center gap-1.5 rounded text-small font-semibold text-blue ${focusRing}`;
+const panel = appPanel;
+const link = appLink;
+const sectionLabel = "text-caption font-medium text-slate";
 
 export default function CasePage({ params }: PageProps<"/dashboard/cases/[id]">) {
   return (
     <div className={appPage}>
-      <Link href="/dashboard" className={`-ml-1 inline-flex min-h-11 items-center gap-1.5 rounded px-1 text-small font-semibold text-slate hover:text-midnight ${focusRing}`}>
-        <ArrowLeft aria-hidden className="size-4" />
+      <Link href="/dashboard" className={`-ml-1 inline-flex min-h-8 items-center gap-1 rounded px-1 text-small font-medium text-slate hover:text-midnight ${focusRing}`}>
+        <ArrowLeft aria-hidden className="size-3.5" />
         Your cases
       </Link>
       <Suspense fallback={<CaseSkeleton />}>
@@ -50,139 +51,139 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <>
-      <header className="enter mt-4 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+      <header className="enter mt-3 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-h3 break-words text-midnight">{caseTitle(c)}</h1>
-            {form && <span className="rounded-full border border-border bg-white px-2.5 py-0.5 text-caption font-semibold text-slate">{form.form}</span>}
+            <h1 className={`${appTitle} break-words`}>{caseTitle(c)}</h1>
+            {form && <span className="rounded-full border border-border bg-white px-2 text-caption leading-5 font-medium text-slate">{form.form}</span>}
           </div>
-          <div className="mt-1 flex items-center gap-1">
-            <span className="text-body font-medium text-midnight tabular-nums tracking-wide">{c.receipt_number}</span>
+          <div className="flex items-center gap-0.5">
+            <span className="text-small text-slate tabular-nums tracking-wide">{c.receipt_number}</span>
             <CopyButton value={c.receipt_number} />
           </div>
         </div>
         <EditRemoveButtons existing={{ id: c.id, receipt_number: c.receipt_number, label: c.label, form_type: c.form_type }} />
       </header>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-6">
-        <div className="stagger flex min-w-0 flex-col gap-4 lg:gap-6" style={{ "--stagger-base": "120ms" } as React.CSSProperties}>
+      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <div className="stagger flex min-w-0 flex-col gap-4" style={{ "--stagger-base": "120ms" } as React.CSSProperties}>
           <section aria-labelledby="status-title" className={panel}>
-            <h2 id="status-title" className="text-small font-semibold text-slate">
+            <h2 id="status-title" className={sectionLabel}>
               Status
             </h2>
             {status ? (
               <>
-                <div className="mt-3">
+                <div className="mt-2">
                   <StatusBadge tone={status.tone}>{status.name}</StatusBadge>
                 </div>
-                {status.meaning && <p className="mt-3 max-w-prose text-body text-midnight">{status.meaning}</p>}
+                {status.meaning && <p className="mt-2.5 max-w-prose text-small text-midnight">{status.meaning}</p>}
                 {c.status_changed_at && (
-                  <p className="mt-2 text-small text-slate">Changed {shortDate.format(new Date(c.status_changed_at))}</p>
+                  <p className="mt-1.5 text-caption text-slate">Changed {shortDate.format(new Date(c.status_changed_at))}</p>
                 )}
                 <Link href={`/status-explained#${statusId(status.name)}`} className={`${link} mt-2`}>
                   What this status means
-                  <ArrowRight aria-hidden className="size-4" />
+                  <ArrowRight aria-hidden className="size-3.5" />
                 </Link>
               </>
             ) : (
               <>
-                <p className="mt-2 text-title text-midnight">Not checked yet</p>
-                <p className="mt-1 max-w-prose text-body text-slate">
+                <p className="mt-1.5 text-body font-semibold text-midnight">Not checked yet</p>
+                <p className="mt-0.5 max-w-prose text-small text-slate">
                   Automatic updates are on the way. For now, the official status is one click away.
                 </p>
               </>
             )}
-            <div className="mt-5 border-t border-border pt-5">
+            <div className="mt-4 border-t border-border pt-4">
               <CheckOnUscisButton receipt={c.receipt_number} />
             </div>
           </section>
 
           <section aria-labelledby="steps-title" className={panel}>
-            <h2 id="steps-title" className="text-small font-semibold text-slate">
+            <h2 id="steps-title" className={sectionLabel}>
               {form ? `Typical steps for Form ${form.form}` : "Typical steps"}
             </h2>
             {form ? (
               <>
-                <ol className="mt-4">
+                <ol className="mt-3">
                   {form.milestones.map((m, i) => (
-                    <li key={m} className="relative flex gap-4 pb-5 last:pb-0">
+                    <li key={m} className="relative flex gap-3 pb-3.5 last:pb-0">
                       {i < form.milestones.length - 1 && (
                         <span
                           aria-hidden
-                          className="grow-y absolute top-7 bottom-0 left-[13px] w-px bg-border"
+                          className="grow-y absolute top-6 bottom-0 left-[11px] w-px bg-border"
                           style={{ animationDelay: `${450 + i * 120}ms` }}
                         />
                       )}
                       <span
-                        className="pop flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-white text-caption font-semibold text-slate tabular-nums"
+                        className="pop flex size-6 shrink-0 items-center justify-center rounded-full border border-border bg-white text-caption font-medium text-slate tabular-nums"
                         style={{ animationDelay: `${380 + i * 120}ms` }}
                       >
                         {i + 1}
                       </span>
-                      <span className="pt-0.5 text-body text-midnight">{m}</span>
+                      <span className="pt-0.5 text-small text-midnight">{m}</span>
                     </li>
                   ))}
                 </ol>
-                <p className="mt-5 text-small text-slate">Most {form.form} cases follow these steps. Yours may skip one or add one, like a request for evidence.</p>
+                <p className="mt-4 text-caption text-slate">Most {form.form} cases follow these steps. Yours may skip one or add one, like a request for evidence.</p>
               </>
             ) : (
-              <p className="mt-2 max-w-prose text-body text-slate">
+              <p className="mt-2 max-w-prose text-small text-slate">
                 Choose this case&apos;s form with <span className="font-semibold text-midnight">Edit</span> to see the steps it usually goes through.
               </p>
             )}
           </section>
         </div>
 
-        <aside className="stagger flex flex-col gap-4 lg:gap-6" style={{ "--stagger-base": "220ms" } as React.CSSProperties}>
+        <aside className="stagger flex flex-col gap-4" style={{ "--stagger-base": "220ms" } as React.CSSProperties}>
           <section aria-labelledby="receipt-title" className={panel}>
-            <h2 id="receipt-title" className="text-small font-semibold text-slate">
+            <h2 id="receipt-title" className={sectionLabel}>
               About this receipt number
             </h2>
-            <dl className="mt-4 flex flex-col gap-4 text-small">
+            <dl className="mt-3 flex flex-col gap-3 text-small">
               <div>
-                <dt className="text-slate">Office</dt>
-                <dd className="mt-0.5 font-medium text-midnight">{facts.office ?? `Office code ${facts.prefix}`}</dd>
+                <dt className="text-caption text-slate">Office</dt>
+                <dd className="font-medium text-midnight">{facts.office ?? `Office code ${facts.prefix}`}</dd>
               </div>
               {facts.online && (
                 <div>
-                  <dt className="text-slate">Filed</dt>
-                  <dd className="mt-0.5 font-medium text-midnight">Online, in a USCIS account</dd>
+                  <dt className="text-caption text-slate">Filed</dt>
+                  <dd className="font-medium text-midnight">Online, in a USCIS account</dd>
                 </div>
               )}
               <div>
-                <dt className="text-slate">Fiscal year in the number</dt>
-                <dd className="mt-0.5 font-medium text-midnight">
+                <dt className="text-caption text-slate">Fiscal year in the number</dt>
+                <dd className="font-medium text-midnight">
                   FY{facts.fiscalYear} <span className="font-normal text-slate">({facts.fiscalRange})</span>
                 </dd>
               </div>
               <div>
-                <dt className="text-slate">Saved here</dt>
-                <dd className="mt-0.5 font-medium text-midnight">{shortDate.format(new Date(c.created_at))}</dd>
+                <dt className="text-caption text-slate">Saved here</dt>
+                <dd className="font-medium text-midnight">{shortDate.format(new Date(c.created_at))}</dd>
               </div>
             </dl>
-            <Link href="/answers/uscis-receipt-number-letters" className={`${link} mt-3`}>
+            <Link href="/answers/uscis-receipt-number-letters" className={`${link} mt-2`}>
               What the letters mean
-              <ArrowRight aria-hidden className="size-4" />
+              <ArrowRight aria-hidden className="size-3.5" />
             </Link>
           </section>
 
           <section aria-labelledby="links-title" className={panel}>
-            <h2 id="links-title" className="text-small font-semibold text-slate">
+            <h2 id="links-title" className={sectionLabel}>
               Helpful links
             </h2>
-            <ul className="mt-2 flex flex-col">
+            <ul className="mt-1.5 flex flex-col">
               {form && (
                 <li>
                   <Link href={`/forms/${form.slug}`} className={link}>
                     Form {form.form} in plain English
-                    <ArrowRight aria-hidden className="size-4" />
+                    <ArrowRight aria-hidden className="size-3.5" />
                   </Link>
                 </li>
               )}
               <li>
                 <a href={USCIS_PROCESSING_TIMES} target="_blank" rel="noopener noreferrer" className={link}>
                   Official processing times
-                  <ArrowUpRight aria-hidden className="size-4" />
+                  <ArrowUpRight aria-hidden className="size-3.5" />
                   <span className="sr-only">(opens in a new tab)</span>
                 </a>
               </li>
@@ -190,7 +191,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                 <li>
                   <a href={officialFormUrl(form)} target="_blank" rel="noopener noreferrer" className={link}>
                     Form {form.form} on uscis.gov
-                    <ArrowUpRight aria-hidden className="size-4" />
+                    <ArrowUpRight aria-hidden className="size-3.5" />
                     <span className="sr-only">(opens in a new tab)</span>
                   </a>
                 </li>
@@ -198,7 +199,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
               <li>
                 <Link href="/lawyers" className={link}>
                   Find an immigration lawyer
-                  <ArrowRight aria-hidden className="size-4" />
+                  <ArrowRight aria-hidden className="size-3.5" />
                 </Link>
               </li>
             </ul>
