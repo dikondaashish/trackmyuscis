@@ -5,12 +5,13 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getAccount } from "@/lib/account";
 import { caseEngineEnabled } from "@/lib/case-engine/client";
-import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, shortDate, type CaseRow } from "@/lib/cases";
+import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, shortDate, statusTimeline, type CaseRow } from "@/lib/cases";
 import { USCIS_PROCESSING_TIMES, officialFormUrl, statusId } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { CheckOnUscisButton, CopyButton, EditRemoveButtons } from "@/components/app/CaseActions";
 import { CaseSkeleton } from "@/components/app/Skeletons";
+import { StatusTimeline } from "@/components/app/StatusTimeline";
 import { appLink, appPage, appPanel, appTitle, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
@@ -50,6 +51,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
   const form = formFor(c.form_type);
   const status = caseStatus(c);
   const autoChecks = caseEngineEnabled();
+  const timeline = c.status_history?.length ? statusTimeline(c) : [];
 
   return (
     <>
@@ -114,6 +116,8 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
               <CheckOnUscisButton receipt={c.receipt_number} />
             </div>
           </section>
+
+          {timeline.length > 0 && <StatusTimeline entries={timeline} className={panel} />}
 
           <section aria-labelledby="steps-title" className={panel}>
             <h2 id="steps-title" className={sectionLabel}>

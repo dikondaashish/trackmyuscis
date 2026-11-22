@@ -12,12 +12,14 @@ export type CaseRow = {
   status_changed_at: string | null;
   last_checked_at: string | null;
   status_description: string | null;
+  /** USCIS history, newest first: [{ date, completedText }]. */
+  status_history: { date: string; completedText: string }[] | null;
   engine_registered_at: string | null;
   created_at: string;
 };
 
 export const CASE_COLUMNS =
-  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, engine_registered_at, created_at";
+  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, status_history, engine_registered_at, created_at";
 
 /** Choices for "Which form?": every form we cover, plus "Not sure". */
 export const FORM_OPTIONS = [
@@ -56,3 +58,37 @@ export function receiptFacts(receipt: string) {
 }
 
 export const shortDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+const utcDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+
+/** USCIS history dates come as ISO timestamps or "MM-DD-YYYY HH:MM:SS"; read either, or give up. */
+function readUscisDate(value: string): number | null {
+  const us = /^(\d{2})-(\d{2})-(\d{4})/.exec(value.trim());
+  if (us) return Date.UTC(Number(us[3]), Number(us[1]) - 1, Number(us[2]));
+  const t = Date.parse(value);
+  return Number.isFinite(t) ? t : null;
+}
+
+export type TimelineEntry = { status: string; date: string | null; current: boolean };
+
+/**
+ * A case's status history for the timeline, newest first. Adds the current status on top
+ * when USCIS hasn't put it in the history yet (its date is then unknown).
+ */
+export function statusTimeline(c: Pick<CaseRow, "current_status" | "status_history">): TimelineEntry[] {
+  const items = (Array.isArray(c.status_history) ? c.status_history : [])
+    .filter((h) => h && typeof h.completedText === "string" && h.completedText.trim())
+    .map((h, i) => ({ status: h.completedText.trim(), at: typeof h.date === "string" ? readUscisDate(h.date) : null, i }))
+    // Newest first; entries without a readable date keep USCIS's own order.
+    .sort((a, b) => (a.at !== null && b.at !== null && a.at !== b.at ? b.at - a.at : a.i - b.i));
+  const entries: TimelineEntry[] = items.map((h) => ({
+    status: h.status,
+    date: h.at === null ? null : utcDate.format(h.at),
+    current: false,
+  }));
+  const current = c.current_status?.trim();
+  const same = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, " ") === b.toLowerCase().replace(/\s+/g, " ");
+  if (current && (!entries[0] || !same(entries[0].status, current))) entries.unshift({ status: current, date: null, current: true });
+  else if (entries[0]) entries[0].current = true;
+  return entries;
+}
