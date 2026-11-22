@@ -196,7 +196,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
             <ul className="mt-1.5 flex flex-col">
               {form && (
                 <li>
-                  <Link href={`/forms/${form.slug}`} className={link}>
+                  <Link href={`/dashboard/forms/${form.slug}`} className={link}>
                     Form {form.form} in plain English
                     <ArrowRight aria-hidden className="size-3.5" />
                   </Link>

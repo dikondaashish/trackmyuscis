@@ -8,6 +8,7 @@ const IN_APP: [publicPath: string, appPath: string][] = [
   ["/processing-times", "/dashboard/processing-times"],
   ["/answers", "/dashboard/answers"],
   ["/help", "/dashboard/help"],
+  ["/forms", "/dashboard/forms"],
 ];
 
 /** "/answers/x#y" → "/dashboard/answers/x#y"; anything else is returned unchanged. */

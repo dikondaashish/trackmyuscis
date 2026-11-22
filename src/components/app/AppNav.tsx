@@ -11,12 +11,12 @@ const MAIN = [
 
 const under = (base: string) => (p: string) => p === base || p.startsWith(`${base}/`);
 
-// Statuses, times, questions and help open inside the dashboard; forms is still the public page.
+// Reference pages open inside the dashboard (copies of the public pages).
 const GUIDES = [
   { href: "/dashboard/statuses", label: "Case statuses", icon: BookOpen, match: under("/dashboard/statuses") },
   { href: "/dashboard/processing-times", label: "Processing times", icon: Clock, match: under("/dashboard/processing-times") },
   { href: "/dashboard/answers", label: "Common questions", icon: FileSearch, match: under("/dashboard/answers") },
-  { href: "/forms", label: "USCIS forms", icon: FileText, match: () => false },
+  { href: "/dashboard/forms", label: "USCIS forms", icon: FileText, match: under("/dashboard/forms") },
 ];
 
 type NavLink = (typeof MAIN)[number];
