@@ -1,7 +1,10 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, ChevronRight, Clock, FileSearch, Info } from "lucide-react";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { caseEngineEnabled } from "@/lib/case-engine/client";
+import { syncUserCases } from "@/lib/case-engine/sync";
 import { getAccount } from "@/lib/account";
 import { CASE_COLUMNS, MAX_CASES, caseStatus, caseTitle, receiptFacts, shortDate, type CaseRow } from "@/lib/cases";
 import { pageMetadata } from "@/lib/seo";
@@ -35,6 +38,12 @@ async function Cases() {
   const cases = data ?? [];
   const full = cases.length >= MAX_CASES;
   const unchecked = cases.some((c) => !c.current_status);
+  const autoChecks = caseEngineEnabled();
+  // Register any case the status checker doesn't have yet (a failed sync, or saved before
+  // automatic checks started), after the page is sent so it never slows the dashboard.
+  if (autoChecks && cases.some((c) => !c.engine_registered_at)) {
+    after(() => syncUserCases(account.id).catch(() => console.error("Background case sync failed")));
+  }
 
   return (
     <>
@@ -58,10 +67,14 @@ async function Cases() {
           {unchecked && (
             <div className="enter enter-delay mt-5 flex gap-2.5 rounded-xl bg-ice px-3.5 py-2.5 text-small text-midnight">
               <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-blue" />
-              <p>
-                Automatic status updates are on the way. Until then, open a case and choose{" "}
-                <span className="font-semibold">Check status on USCIS</span>. We copy the receipt number for you.
-              </p>
+              {autoChecks ? (
+                <p>We&apos;re checking your new cases with USCIS. Their status shows here as soon as it&apos;s ready.</p>
+              ) : (
+                <p>
+                  Automatic status updates are on the way. Until then, open a case and choose{" "}
+                  <span className="font-semibold">Check status on USCIS</span>. We copy the receipt number for you.
+                </p>
+              )}
             </div>
           )}
           <CaseTable cases={cases} />

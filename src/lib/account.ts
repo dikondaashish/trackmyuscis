@@ -25,6 +25,8 @@ export type Account = {
    * Google photo above. The username belongs to it too. Not shown to anyone yet.
    */
   community: { name: string | null; bio: string | null; photoUrl: string | null; photoPath: string | null };
+  /** Choices from Settings > Preferences. */
+  preferences: { emailNotifications: boolean; publicProfile: boolean; showActivityStatus: boolean };
   /** True when the account signs in with Google (no password to manage here). */
   google: boolean;
   /**
@@ -48,7 +50,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, email, username, username_changed_at, date_of_birth, community_name, community_bio, community_avatar_path")
+    .select("first_name, last_name, email, username, username_changed_at, date_of_birth, community_name, community_bio, community_avatar_path, email_notifications, public_profile, show_activity_status")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -76,6 +78,11 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
       bio: profile?.community_bio ?? null,
       photoUrl: communityPhotoUrl(profile?.community_avatar_path),
       photoPath: profile?.community_avatar_path ?? null,
+    },
+    preferences: {
+      emailNotifications: profile?.email_notifications ?? true,
+      publicProfile: profile?.public_profile ?? false,
+      showActivityStatus: profile?.show_activity_status ?? false,
     },
     google: user.app_metadata?.provider === "google",
     plan: user.app_metadata?.plan === "premium" ? "premium" : "free",

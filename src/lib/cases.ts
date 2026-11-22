@@ -11,11 +11,13 @@ export type CaseRow = {
   current_status: string | null;
   status_changed_at: string | null;
   last_checked_at: string | null;
+  status_description: string | null;
+  engine_registered_at: string | null;
   created_at: string;
 };
 
 export const CASE_COLUMNS =
-  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, created_at";
+  "id, receipt_number, label, form_type, current_status, status_changed_at, last_checked_at, status_description, engine_registered_at, created_at";
 
 /** Choices for "Which form?": every form we cover, plus "Not sure". */
 export const FORM_OPTIONS = [

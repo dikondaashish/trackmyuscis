@@ -9,6 +9,7 @@ import { FormMessage } from "@/components/auth/FormMessage";
 import { SelectField } from "@/components/ui/SelectField";
 import { appBtnPrimary, appBtnSecondary, appField, appFieldLabel } from "@/lib/ui";
 import { Spinner } from "@/components/ui/Spinner";
+import { syncMyCases } from "@/app/(app)/dashboard/actions";
 
 type Existing = { id: string; receipt_number: string; label: string | null; form_type: string | null };
 
@@ -47,6 +48,10 @@ export function CaseForm({ existing, onDone, onCancel }: { existing?: Existing; 
           return setError(`You can save up to ${MAX_CASES} cases. Remove one to add another.`);
         return setError("We couldn't save that case. Please try again.");
       }
+      // Start automatic checks and fetch the first status. Never blocks saving.
+      setBusy(true);
+      await syncMyCases().catch(() => {});
+      setBusy(false);
     }
     router.refresh();
     onDone();

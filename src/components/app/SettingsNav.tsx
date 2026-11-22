@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CreditCard, Settings, UserRound, UsersRound } from "lucide-react";
+import { CreditCard, Settings, SlidersHorizontal, UserRound, UsersRound } from "lucide-react";
 import { appCard, focusRing } from "@/lib/ui";
 
 const LINKS = [
   { href: "/dashboard/settings", label: "Community profile", icon: UsersRound },
   { href: "/dashboard/settings/personal", label: "Personal profile", icon: UserRound },
+  { href: "/dashboard/settings/preferences", label: "Preferences", icon: SlidersHorizontal },
   { href: "/dashboard/settings/subscription", label: "Subscription", icon: CreditCard },
   { href: "/dashboard/settings/account", label: "Account", icon: Settings },
 ];

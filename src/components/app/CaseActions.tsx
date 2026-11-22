@@ -10,6 +10,7 @@ import { Dialog } from "./Dialog";
 
 import { CaseForm } from "./CaseForm";
 import { Spinner } from "@/components/ui/Spinner";
+import { syncMyCases } from "@/app/(app)/dashboard/actions";
 
 async function copy(text: string) {
   try {
@@ -119,6 +120,8 @@ export function EditRemoveButtons({
       setBusy(false);
       return setError("We couldn't remove this case. Please try again.");
     }
+    // Stop automatic checks for it. The dashboard retries if this fails.
+    void syncMyCases().catch(() => {});
     router.replace("/dashboard");
     router.refresh();
   }

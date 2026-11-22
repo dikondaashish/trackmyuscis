@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getAccount } from "@/lib/account";
+import { caseEngineEnabled } from "@/lib/case-engine/client";
 import { CASE_COLUMNS, caseStatus, caseTitle, formFor, receiptFacts, shortDate, type CaseRow } from "@/lib/cases";
 import { USCIS_PROCESSING_TIMES, officialFormUrl, statusId } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
@@ -48,6 +49,7 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
   const facts = receiptFacts(c.receipt_number);
   const form = formFor(c.form_type);
   const status = caseStatus(c);
+  const autoChecks = caseEngineEnabled();
 
   return (
     <>
@@ -77,8 +79,21 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
                   <StatusBadge tone={status.tone}>{status.name}</StatusBadge>
                 </div>
                 {status.meaning && <p className="mt-2.5 max-w-prose text-small text-midnight">{status.meaning}</p>}
-                {c.status_changed_at && (
-                  <p className="mt-1.5 text-caption text-slate">Changed {shortDate.format(new Date(c.status_changed_at))}</p>
+                {c.status_description && (
+                  <p className="mt-2.5 max-w-prose text-small text-slate">
+                    <span className="font-medium text-midnight">USCIS says: </span>
+                    {c.status_description}
+                  </p>
+                )}
+                {(c.status_changed_at || c.last_checked_at) && (
+                  <p className="mt-1.5 text-caption text-slate">
+                    {[
+                      c.status_changed_at && `Changed ${shortDate.format(new Date(c.status_changed_at))}`,
+                      c.last_checked_at && `Last checked ${shortDate.format(new Date(c.last_checked_at))}`,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
                 )}
                 <Link href={`/status-explained#${statusId(status.name)}`} className={`${link} mt-2`}>
                   What this status means
@@ -89,7 +104,9 @@ async function CaseDetail({ params }: { params: Promise<{ id: string }> }) {
               <>
                 <p className="mt-1.5 text-body font-semibold text-midnight">Not checked yet</p>
                 <p className="mt-0.5 max-w-prose text-small text-slate">
-                  Automatic updates are on the way. For now, the official status is one click away.
+                  {autoChecks
+                    ? "We're checking this with USCIS. The status shows here as soon as it's ready."
+                    : "Automatic updates are on the way. For now, the official status is one click away."}
                 </p>
               </>
             )}

@@ -68,7 +68,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "links to the official USCIS processing times",
             "publishes immigration guides",
           ],
-          "Some features are on their way and are labeled as such on the site, including automatic case status checks, status alerts and the lawyer directory. When they launch, these Terms apply to them too.",
+          "Some features are on their way and are labeled as such on the site, including the lawyer directory. When they launch, these Terms apply to them too.",
         ],
       },
       {
@@ -224,6 +224,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           [
             "Receipt numbers you check on the homepage are checked in your browser. They are not sent to us or stored.",
             "If you create an account, we store your name, email address and the receipt numbers you choose to save, so you can see them when you sign in.",
+            "A case-status service run by our company checks your saved receipt numbers with the official USCIS Case Status API about once a day. It receives only the receipt number and a random account ID, never your name or email.",
+            "If case emails are on, we email you when a saved case's status changes. You can turn them off in Settings or from the link in any alert.",
             "If you sign in with Google, we receive only your name, email address and profile picture from Google, and use them only to run your account.",
             "We don't sell your personal information or share it for targeted advertising.",
             "We don't use advertising or analytics cookies.",
@@ -253,8 +255,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "When you email us: your name, email address and what you write.",
             "When you create an account: your first and last name, your email address and a password (stored only as a secure hash, never in readable form). If you sign in with Google instead, see section 3. If you choose, you can add your date of birth in Settings; it's optional, only you can see it, and you can remove it at any time. We also give every account a random username, such as Calm-River-4821, so it doesn't reveal your name. You can add an optional community profile (a display name, short bio and photo you upload), kept separate from your real name and email. Nobody else can see it today; it's for community features when they launch, and you can change or remove it at any time in Settings.",
             "When you use your account: the receipt numbers you save, any name you give a case (such as \"My work permit\") and the date you saved it.",
+            "Your choices in Settings > Preferences: whether we may email you about case updates, and whether your community profile and activity status may be shown to other users once community features launch (both off unless you turn them on).",
             "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
-            "When automatic status checks and alerts launch: the case updates we fetch for you and your alert settings.",
+            "For each saved case: the status, description and status history USCIS returns, when it last changed and when we last checked it, and your email and privacy choices in Settings.",
           ],
           "Information collected automatically:",
           [
@@ -287,7 +290,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           [
             "to run the Service and show you the results you ask for",
             "to reply when you contact us",
-            "to send the case alerts and account messages you sign up for",
+            "to check your saved cases with USCIS and, if case emails are on, email you when a status changes",
+            "to send the account messages you need",
             "to protect the Service, our users and us from fraud, abuse and security threats",
             "to understand, in aggregate, which features are used so we can improve them",
             "to meet legal obligations",
@@ -299,7 +303,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         id: "sensitive",
         heading: "5. Immigration information",
         body: [
-          "Details about an immigration case can be sensitive. We use them only to provide the features you ask for. We never use them for advertising or profiling, and we never share them with USCIS or any government agency unless the law requires it.",
+          "Details about an immigration case can be sensitive. We use them to provide the features you ask for and, with names, emails and receipt numbers removed, to produce aggregated statistics such as typical processing times, combined with case information from other services our company runs. We never publish or sell individual cases. We never use them for advertising or profiling, and we never share them with USCIS or any government agency unless the law requires it.",
         ],
       },
       {
@@ -307,7 +311,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         heading: "6. Who we share it with",
         body: [
           [
-            "Service providers who help us run the Service: Vercel (website hosting), Supabase (sign-in and our database) and, as we add them, email delivery and, if we offer paid plans, payment processing. They may only use it to provide their service to us.",
+            "Service providers who help us run the Service: Vercel (website hosting), Supabase (sign-in and our database), our email provider (to send alerts) and, if we offer paid plans, payment processing. They may only use it to provide their service to us.",
+            "A case-status service run by our company, which looks up your saved receipt numbers with the official USCIS Case Status API. It receives only each receipt number and a random account ID, and uses them only to check your cases and for the aggregated statistics described in section 5.",
             "A lawyer you choose to contact through the directory, when that feature is live. They receive what you send them.",
             "Authorities, when the law requires it or to protect someone's safety, rights or property.",
             "A buyer or successor, if our business is merged or sold. This policy would still protect your information.",
