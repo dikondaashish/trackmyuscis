@@ -6,6 +6,7 @@ import { COMPANY } from "@/lib/company";
 import { pageMetadata } from "@/lib/seo";
 import { appBtnSecondary, appPanel, appSectionTitle, focusRing } from "@/lib/ui";
 import { SettingsSkeleton } from "@/components/app/Skeletons";
+import { SignInMethod } from "../SignInMethod";
 
 export const metadata = pageMetadata({
   title: "Account settings",
@@ -33,16 +34,7 @@ async function AccountSettings() {
         <h2 id="signin-title" className={appSectionTitle}>
           Sign-in
         </h2>
-        <dl className="mt-3 flex flex-col gap-3 text-small">
-          <div>
-            <dt className="text-caption text-slate">Email</dt>
-            <dd className="font-medium break-all text-midnight">{account.email}</dd>
-          </div>
-          <div>
-            <dt className="text-caption text-slate">Signs in with</dt>
-            <dd className="font-medium text-midnight">{account.google ? "Google" : "Email and password"}</dd>
-          </div>
-        </dl>
+        <SignInMethod google={account.google} email={account.email} />
         {!account.google && (
           <p className="mt-3 text-small text-slate">
             To change your password, use{" "}
