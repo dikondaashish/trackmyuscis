@@ -231,30 +231,95 @@ dd {
     transform: translateY(24px);
   }
 }
-/* Documents intro: a line sweeps down the sample document while AI "reads" it. */
-@keyframes doc-scan {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
+/*
+ * Documents intro film (DocumentsIntro.tsx). One stage; each scene's effects run while its
+ * layer has data-on="true" and replay every time it comes back. The countdown uses a typed
+ * custom property so the number itself animates (90 → 60) without JavaScript.
+ */
+@property --days {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 60;
+}
+.fx-count {
+  counter-reset: days var(--days);
+}
+.fx-count::after {
+  content: counter(days);
+}
+@keyframes countdown {
+  from {
+    --days: 90;
   }
-  10%,
-  90% {
-    opacity: 1;
+  to {
+    --days: 60;
+  }
+}
+@keyframes type-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes shackle {
+  0% {
+    transform: translateY(-6px);
+  }
+  65% {
+    transform: translateY(1px);
   }
   100% {
-    transform: translateY(var(--scan-distance, 150px));
-    opacity: 0;
+    transform: none;
+  }
+}
+@keyframes bell-ring {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  15% {
+    rotate: 16deg;
+  }
+  30% {
+    rotate: -13deg;
+  }
+  45% {
+    rotate: 9deg;
+  }
+  60% {
+    rotate: -6deg;
+  }
+  75% {
+    rotate: 3deg;
+  }
+}
+@keyframes beam {
+  from {
+    transform: translateY(-40px);
+  }
+  to {
+    transform: translateY(210px);
+  }
+}
+@keyframes timer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }
 @keyframes fill-dot {
   from {
     background-color: transparent;
-    transform: scale(0.6);
+    transform: scale(0.5);
   }
 }
-@keyframes progress {
-  from {
-    transform: scaleX(0);
+@keyframes spin-slow {
+  to {
+    rotate: 360deg;
   }
 }
 @keyframes loader-bar {
@@ -325,17 +390,47 @@ dd {
     animation: pop 320ms var(--ease-pop) both;
   }
 
-  /* Documents intro scenes (DocumentsIntro.tsx). */
-  .doc-scan {
-    animation: doc-scan 1.8s ease-in-out 300ms infinite;
-  }
-  .fill-dots > * {
-    animation: fill-dot 260ms var(--ease-out) both;
-    animation-delay: calc(300ms + 180ms * var(--i, 0));
-  }
-  .progress-fill {
+  /* Documents intro film (DocumentsIntro.tsx). */
+  .step-timer {
     transform-origin: left;
-    animation: progress 1.1s var(--ease-out) 200ms both;
+    animation: timer var(--dur, 4s) linear both;
+  }
+  [data-on="true"] .fx-rise {
+    animation: rise 520ms var(--ease-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+  [data-on="true"] .fx-pop {
+    animation: pop 420ms var(--ease-pop) both;
+    animation-delay: var(--d, 0ms);
+  }
+  [data-on="true"] .fx-type {
+    animation: type-in 620ms steps(16, end) both;
+    animation-delay: var(--d, 0ms);
+  }
+  [data-on="true"] .fx-fill {
+    transform-origin: left;
+    animation: timer 1.3s var(--ease-out) both;
+    animation-delay: var(--d, 0ms);
+  }
+  [data-on="true"] .fx-beam {
+    animation: beam 1.7s cubic-bezier(0.45, 0, 0.55, 1) 250ms infinite;
+  }
+  [data-on="true"] .fx-shackle {
+    animation: shackle 560ms var(--ease-pop) 950ms both;
+  }
+  [data-on="true"] .fx-dots > * {
+    animation: fill-dot 240ms var(--ease-out) both;
+    animation-delay: calc(150ms + 120ms * var(--i, 0));
+  }
+  [data-on="true"] .fx-bell {
+    transform-origin: 50% 10%;
+    animation: bell-ring 1s ease-in-out 550ms both;
+  }
+  [data-on="true"] .fx-count {
+    animation: countdown 1.5s cubic-bezier(0.16, 1, 0.3, 1) 650ms both;
+  }
+  [data-on="true"] .fx-spin {
+    animation: spin-slow 6s linear infinite;
   }
   .grow-x {
     transform-origin: left;
