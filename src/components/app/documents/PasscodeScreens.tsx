@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { KeyRound, Lock, TriangleAlert } from "lucide-react";
+import { Lock, TriangleAlert } from "lucide-react";
 import { Dialog } from "@/components/app/Dialog";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Spinner } from "@/components/ui/Spinner";
@@ -33,8 +33,11 @@ function Busy({ busy, idle, working }: { busy: boolean; idle: string; working: s
   );
 }
 
-/** First visit: choose a 6-digit passcode (typed twice). Setting it unlocks the page. */
-export function SetupScreen({ onDone }: { onDone: () => void }) {
+/**
+ * First visit: choose a 6-digit passcode (typed twice). Setting it unlocks the page. Shown in the
+ * dialog that "Set up Documents" opens on the intro.
+ */
+export function SetupForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
   const ids = { a: useId(), b: useId() };
   const [first, setFirst] = useState("");
   const [second, setSecond] = useState("");
@@ -54,32 +57,32 @@ export function SetupScreen({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <Frame icon={<KeyRound aria-hidden className="size-5" />} title="Set a passcode for your documents">
-      <p className="mt-1 text-small text-slate">
-        You&apos;ll enter it each time you open Documents, so nobody else using your device can see them.
-      </p>
-      <form onSubmit={submit} noValidate className="mt-5 flex flex-col gap-3 text-left">
-        <div>
-          <label htmlFor={ids.a} className={appFieldLabel}>
-            New passcode (6 digits)
-          </label>
-          <DigitsField id={ids.a} value={first} onChange={setFirst} autoFocus disabled={busy} className="mt-1.5" />
-        </div>
-        <div>
-          <label htmlFor={ids.b} className={appFieldLabel}>
-            Type it again
-          </label>
-          <DigitsField id={ids.b} value={second} onChange={setSecond} disabled={busy} className="mt-1.5" />
-        </div>
-        {error && <FormMessage tone="error">{error}</FormMessage>}
-        <button type="submit" disabled={busy} className={`${appBtnPrimary} mt-1 w-full`}>
-          <Busy busy={busy} idle="Set passcode" working="Saving…" />
-        </button>
-      </form>
-      <p className="mt-4 text-caption text-slate">
+    <form onSubmit={submit} noValidate className="flex flex-col gap-3">
+      <div>
+        <label htmlFor={ids.a} className={appFieldLabel}>
+          New passcode (6 digits)
+        </label>
+        <DigitsField id={ids.a} value={first} onChange={setFirst} data-autofocus disabled={busy} className="mt-1.5" />
+      </div>
+      <div>
+        <label htmlFor={ids.b} className={appFieldLabel}>
+          Type it again
+        </label>
+        <DigitsField id={ids.b} value={second} onChange={setSecond} disabled={busy} className="mt-1.5" />
+      </div>
+      {error && <FormMessage tone="error">{error}</FormMessage>}
+      <p className="text-caption text-slate">
         Forgot it later? You can reset it by email, but resetting deletes the documents you saved.
       </p>
-    </Frame>
+      <div className="mt-1 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" onClick={onCancel} disabled={busy} className={appBtnSecondary}>
+          Cancel
+        </button>
+        <button type="submit" disabled={busy} className={appBtnPrimary}>
+          <Busy busy={busy} idle="Set passcode" working="Saving…" />
+        </button>
+      </div>
+    </form>
   );
 }
 
