@@ -6,7 +6,7 @@ import { Dialog } from "@/components/app/Dialog";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Spinner } from "@/components/ui/Spinner";
 import { appBtnDanger, appBtnPrimary, appBtnSecondary, appCard, appFieldLabel, appLink } from "@/lib/ui";
-import { api, DigitsField, lockedUntilText } from "./shared";
+import { api, DigitsField, lockedUntilText, lockoutHint } from "./shared";
 
 const valid = (v: string) => /^\d{6}$/.test(v);
 
@@ -84,7 +84,15 @@ export function SetupScreen({ onDone }: { onDone: () => void }) {
 }
 
 /** Locked: enter the passcode. Three wrong tries lock it for a few minutes. */
-export function UnlockScreen({ lockedUntil: initialLock, onDone }: { lockedUntil: string | null; onDone: () => void }) {
+export function UnlockScreen({
+  lockedUntil: initialLock,
+  lockoutMinutes,
+  onDone,
+}: {
+  lockedUntil: string | null;
+  lockoutMinutes: number;
+  onDone: () => void;
+}) {
   const id = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [passcode, setPasscode] = useState("");
@@ -124,7 +132,11 @@ export function UnlockScreen({ lockedUntil: initialLock, onDone }: { lockedUntil
             className="mt-1.5"
           />
         </div>
-        {error && <FormMessage tone="error">{error}</FormMessage>}
+        {error ? (
+          <FormMessage tone="error">{error}</FormMessage>
+        ) : (
+          <p className="text-caption text-slate">{lockoutHint(lockoutMinutes)}</p>
+        )}
         <button type="submit" disabled={busy} className={`${appBtnPrimary} mt-1 w-full`}>
           <Busy busy={busy} idle="Unlock" working="Checking…" />
         </button>

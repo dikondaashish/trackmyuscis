@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { BellRing, ChevronDown, FileBadge, FolderOpen, Lock, Plus, Search } from "lucide-react";
+import { BellRing, ChevronDown, FileBadge, FolderOpen, Lock, Plus, Search, Settings } from "lucide-react";
+import { Dialog } from "@/components/app/Dialog";
 import { FormMessage } from "@/components/auth/FormMessage";
+import { Spinner } from "@/components/ui/Spinner";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   DOCUMENT_TYPES,
@@ -16,14 +18,14 @@ import {
   type SortKey,
   type VaultDocument,
 } from "@/lib/documents/types";
-import { appBtnPrimary, appBtnSecondary, appCard, appField, appLink, appTitle, focusRing } from "@/lib/ui";
+import { appBtnDanger, appBtnPrimary, appBtnSecondary, appCard, appField, appLink, appTitle, focusRing } from "@/lib/ui";
 import { DocumentCard, TYPE_ICONS } from "./DocumentCard";
 import { DocumentDialog } from "./DocumentDialog";
 import { SetupScreen, UnlockScreen } from "./PasscodeScreens";
 import { UploadDialog } from "./UploadDialog";
 import { api } from "./shared";
 
-type Vault = { hasPasscode: boolean; unlocked: boolean; lockedUntil: string | null; autoLockMinutes: number };
+type Vault = { hasPasscode: boolean; unlocked: boolean; lockedUntil: string | null; autoLockMinutes: number; lockoutMinutes: number };
 type View = "loading" | "error" | "setup" | "locked" | "open";
 
 /**
@@ -98,7 +100,7 @@ export function DocumentsClient({ email, remindersOn }: { email: string; reminde
         </div>
       )}
       {view === "setup" && <SetupScreen onDone={unlocked} />}
-      {view === "locked" && <UnlockScreen lockedUntil={vault?.lockedUntil ?? null} onDone={unlocked} />}
+      {view === "locked" && <UnlockScreen lockedUntil={vault?.lockedUntil ?? null} lockoutMinutes={vault?.lockoutMinutes ?? 5} onDone={unlocked} />}
       {view === "open" && (
         <OpenVault
           docs={docs}
@@ -143,6 +145,14 @@ function OpenActions({ onLock, onUploaded }: { onLock: () => void; onUploaded: (
   const [uploading, setUploading] = useState(false);
   return (
     <div className="flex gap-2">
+      <Link
+        href="/dashboard/settings/preferences#documents"
+        aria-label="Documents settings"
+        title="Settings"
+        className={`${appBtnSecondary} w-10 px-0! sm:w-9`}
+      >
+        <Settings aria-hidden className="size-4 shrink-0" />
+      </Link>
       <button type="button" onClick={onLock} className={appBtnSecondary}>
         <Lock aria-hidden className="size-4" />
         Lock
@@ -178,6 +188,18 @@ function OpenVault({
   const [sort, setSort] = useState<SortKey>("expiring");
   const [openId, setOpenId] = useState<string | null>(null);
   const [editOnOpen, setEditOnOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  async function download(id: string) {
+    setDownloadError(null);
+    setDownloadingId(id);
+    const res = await api<{ downloadUrl?: string | null }>(`/api/documents/${id}`);
+    setDownloadingId(null);
+    if (res.ok && res.data.downloadUrl) window.location.assign(res.data.downloadUrl);
+    else setDownloadError(res.data.error ?? "We couldn't download that document. Please try again.");
+  }
 
   // Only the types this person has saved get a chip; anything uncommon falls under Other.
   const present = useMemo(() => new Set((docs ?? []).map((d) => typeGroup(d.category))), [docs]);
@@ -250,15 +272,24 @@ function OpenVault({
             )}
           </div>
 
+          {downloadError && (
+            <div className="mt-2">
+              <FormMessage tone="error">{downloadError}</FormMessage>
+            </div>
+          )}
+
           {list.length === 0 ? (
             <div className={`${appCard} mt-2 px-5 py-8 text-center text-small text-slate`}>No documents match.</div>
           ) : (
-            <ul className="mt-2 grid gap-3 sm:grid-cols-2">
+            <ul className="mt-2 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {list.map((d) => (
                 <li key={d.id} className="flex">
                   <DocumentCard
                     doc={d}
                     today={today}
+                    downloading={downloadingId === d.id}
+                    onDownload={() => void download(d.id)}
+                    onDelete={() => setDeleteId(d.id)}
                     onOpen={() => {
                       setEditOnOpen(false);
                       setOpenId(d.id);
@@ -274,6 +305,12 @@ function OpenVault({
           )}
         </>
       )}
+
+      <DeleteDialog
+        doc={docs.find((d) => d.id === deleteId) ?? null}
+        onClose={() => setDeleteId(null)}
+        onDeleted={(id) => onChange((l) => (l ?? []).filter((x) => x.id !== id))}
+      />
 
       <DocumentDialog
         doc={openDoc}
@@ -380,6 +417,59 @@ function Chip({ value, label, active, onClick }: { value: string; label: string;
       <Icon aria-hidden className={`size-3 ${active ? "text-white" : "text-blue"}`} />
       {label}
     </button>
+  );
+}
+
+/** "Delete this document?" from a card. The file and its details go for good. */
+function DeleteDialog({ doc, onClose, onDeleted }: { doc: VaultDocument | null; onClose: () => void; onDeleted: (id: string) => void }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function remove() {
+    if (!doc) return;
+    setError(null);
+    setBusy(true);
+    const res = await api(`/api/documents/${doc.id}`, { method: "DELETE" });
+    setBusy(false);
+    if (!res.ok) return setError(res.data.error ?? "We couldn't delete that document. Please try again.");
+    onDeleted(doc.id);
+    onClose();
+  }
+
+  return (
+    <Dialog
+      open={!!doc}
+      onClose={() => {
+        if (busy) return;
+        setError(null);
+        onClose();
+      }}
+      title="Delete this document?"
+    >
+      <p className="text-small text-slate">
+        <span className="font-medium text-midnight">{doc?.filename}</span> and its details will be deleted. You can&apos;t undo this.
+      </p>
+      {error && (
+        <div className="mt-3">
+          <FormMessage tone="error">{error}</FormMessage>
+        </div>
+      )}
+      <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" onClick={onClose} disabled={busy} className={appBtnSecondary} data-autofocus>
+          Cancel
+        </button>
+        <button type="button" onClick={() => void remove()} disabled={busy} className={appBtnDanger}>
+          {busy ? (
+            <>
+              <Spinner />
+              Deleting…
+            </>
+          ) : (
+            "Delete"
+          )}
+        </button>
+      </div>
+    </Dialog>
   );
 }
 

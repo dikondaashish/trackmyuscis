@@ -62,7 +62,7 @@ async function Preferences() {
         <h2 id="documents-title" className={appSectionTitle}>
           Documents
         </h2>
-        <p className="mt-0.5 text-small text-slate">Reminders before your saved documents expire, and the passcode lock.</p>
+        <p className="mt-0.5 text-small text-slate">Manage your document vault security and expiry reminders.</p>
         <div className="mt-2 divide-y divide-border">
           <PreferenceSwitch
             userId={account.id}

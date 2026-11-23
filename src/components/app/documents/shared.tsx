@@ -47,3 +47,9 @@ export function lockedUntilText(iso: string | null | undefined) {
   if (Number.isNaN(t.getTime())) return "Try again in a few minutes.";
   return `Try again at ${t.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}.`;
 }
+
+/** "You have 3 attempts before a 5-minute lockout." Shown under the passcode field. */
+export function lockoutHint(minutes: number) {
+  const length = minutes === 60 ? "1-hour" : `${minutes}-minute`;
+  return `You have 3 attempts before a ${length} lockout.`;
+}

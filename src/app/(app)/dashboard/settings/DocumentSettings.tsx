@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ShieldAlert, ShieldCheck } from "lucide-react";
 import { Dialog } from "@/components/app/Dialog";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Spinner } from "@/components/ui/Spinner";
-import { api, DigitsField } from "@/components/app/documents/shared";
+import { api, DigitsField, lockoutHint } from "@/components/app/documents/shared";
 import { AUTO_LOCK_CHOICES, LOCKOUT_CHOICES } from "@/lib/documents/types";
 import { appBtnPrimary, appBtnSecondary, appField, appFieldLabel } from "@/lib/ui";
 
@@ -48,38 +48,53 @@ export function DocumentLockSettings() {
   if (!vault) return <p className="py-3 text-small text-slate">Loading…</p>;
   if (!vault.hasPasscode) {
     return (
-      <p className="py-3 text-small text-slate">
-        You&apos;ll choose a passcode the first time you open Documents. Its lock settings appear here after that.
-      </p>
+      <div className="py-3">
+        <div className="flex items-center gap-3 rounded-lg bg-cloud p-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-amber/10 text-amber">
+            <ShieldAlert aria-hidden className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-small font-medium text-midnight">No passcode set</p>
+            <p className="text-small text-slate">You&apos;ll choose one the first time you open Documents.</p>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
     <div className="flex flex-col gap-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-cloud p-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-teal/10 text-teal">
+            <ShieldCheck aria-hidden className="size-5" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-small font-medium text-midnight">Passcode protected</p>
+            <p className="text-small text-slate">Your documents are secured</p>
+          </div>
+        </div>
+        <button type="button" onClick={() => setChanging(true)} className={appBtnSecondary}>
+          Change
+        </button>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Choice
-          label="Lock after no activity"
+          label="Auto-lock timeout"
+          hint="Documents lock after this much time with no activity"
           value={vault.autoLockMinutes}
           options={AUTO_LOCK_CHOICES}
           onChange={(v) => void save("autoLockMinutes", v)}
         />
         <Choice
-          label="Lockout after 3 wrong tries"
+          label="Failed attempts lockout"
+          hint={lockoutHint(vault.lockoutMinutes)}
           value={vault.lockoutMinutes}
           options={LOCKOUT_CHOICES}
           onChange={(v) => void save("lockoutMinutes", v)}
         />
       </div>
       {saved && <p className="text-caption text-slate" aria-live="polite">{saved}</p>}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-        <div>
-          <p className="text-small font-medium text-midnight">Passcode</p>
-          <p className="text-caption text-slate">Changing it needs your current passcode and a code we email you.</p>
-        </div>
-        <button type="button" onClick={() => setChanging(true)} className={appBtnSecondary}>
-          Change passcode
-        </button>
-      </div>
       <Dialog open={changing} onClose={() => setChanging(false)} title="Change your passcode">
         <ChangePasscode onDone={() => setChanging(false)} onCancel={() => setChanging(false)} />
       </Dialog>
@@ -89,11 +104,13 @@ export function DocumentLockSettings() {
 
 function Choice({
   label,
+  hint,
   value,
   options,
   onChange,
 }: {
   label: string;
+  hint: string;
   value: number;
   options: readonly number[];
   onChange: (v: number) => void;
@@ -107,6 +124,7 @@ function Choice({
       <div className="relative mt-1.5">
         <select
           id={id}
+          aria-describedby={`${id}-hint`}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
           className={`${appField} cursor-pointer appearance-none pr-9`}
@@ -119,6 +137,9 @@ function Choice({
         </select>
         <ChevronDown aria-hidden className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-slate" />
       </div>
+      <p id={`${id}-hint`} className="mt-1.5 text-caption text-slate">
+        {hint}
+      </p>
     </div>
   );
 }
