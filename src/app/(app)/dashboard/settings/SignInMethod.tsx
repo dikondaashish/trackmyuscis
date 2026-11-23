@@ -25,7 +25,7 @@ export function SignInMethod({
         <dt className="sr-only">Signs in with</dt>
         <dd className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="text-small font-semibold text-midnight">
-            {google ? "Google" : "Email and password"}
+            {google ? "Google" : "Email"}
           </span>
           <span className="inline-flex items-center gap-1 rounded-full bg-teal/10 px-2 py-0.5 text-caption font-medium text-teal">
             <span aria-hidden className="size-1.5 rounded-full bg-teal" />

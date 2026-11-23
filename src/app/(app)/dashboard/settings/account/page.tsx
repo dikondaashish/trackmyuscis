@@ -6,6 +6,8 @@ import { COMPANY } from "@/lib/company";
 import { pageMetadata } from "@/lib/seo";
 import { appBtnSecondary, appPanel, appSectionTitle, focusRing } from "@/lib/ui";
 import { SettingsSkeleton } from "@/components/app/Skeletons";
+import { createClient } from "@/lib/supabase/server";
+import { PasswordSettings } from "../PasswordSettings";
 import { SignInMethod } from "../SignInMethod";
 
 export const metadata = pageMetadata({
@@ -28,22 +30,17 @@ export default function AccountPage() {
 
 async function AccountSettings() {
   const account = await getAccount("/dashboard/settings/account");
+  const { data: hasPassword } = await (await createClient()).rpc("account_has_password");
   return (
     <div className="stagger flex flex-col gap-4">
       <section aria-labelledby="signin-title" className={panel}>
         <h2 id="signin-title" className={appSectionTitle}>
           Sign-in
         </h2>
-        <SignInMethod google={account.google} email={account.email} />
-        {!account.google && (
-          <p className="mt-3 text-small text-slate">
-            To change your password, use{" "}
-            <Link href="/forgot-password" className={inline}>
-              Forgot password
-            </Link>{" "}
-            after signing out.
-          </p>
-        )}
+        <div className="mt-3 flex flex-col gap-2">
+          <SignInMethod google={account.google} email={account.email} />
+          <PasswordSettings email={account.email} hasPassword={hasPassword === true} />
+        </div>
         <form action="/auth/sign-out" method="post" className="mt-4">
           <button type="submit" className={appBtnSecondary}>
             <LogOut aria-hidden className="size-3.5" />
