@@ -34,27 +34,27 @@ export function SecurityStrip() {
         </Link>
       </div>
 
-      <ul className="stagger mt-3 grid gap-2 sm:grid-cols-3 sm:gap-3 [--stagger-base:300ms]">
+      <ul className="stagger mt-2.5 grid gap-2 sm:grid-cols-3 [--stagger-base:300ms]">
         {PARTNERS.map((p) => (
           <li
             key={p.mark}
-            className={`${appCard} group flex items-center gap-3 p-3 transition-[border-color,translate] duration-200 hover:-translate-y-0.5 hover:border-blue/30 motion-reduce:hover:translate-y-0`}
+            className={`${appCard} group flex items-center gap-2.5 px-3 py-2 transition-[border-color,translate] duration-200 hover:-translate-y-0.5 hover:border-blue/30 motion-reduce:hover:translate-y-0`}
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border bg-white">
-              <BrandLogo mark={p.mark} className="size-6" />
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-white">
+              <BrandLogo mark={p.mark} className="size-[18px]" />
             </span>
             <div className="min-w-0">
-              <p className="text-small font-semibold text-midnight">{p.title}</p>
+              <p className="text-caption font-semibold text-midnight">{p.title}</p>
               <p className="text-caption text-slate">{p.text}</p>
             </div>
           </li>
         ))}
       </ul>
 
-      <ul className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-caption text-slate">
+      <ul className="mt-2.5 flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-caption text-slate">
         {FACTS.map((f) => (
           <li key={f.text} className="inline-flex items-center gap-1.5">
-            <f.icon aria-hidden className="size-3.5 text-teal" />
+            <f.icon aria-hidden className="size-3 text-teal" />
             {f.text}
           </li>
         ))}
