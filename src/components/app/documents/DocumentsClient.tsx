@@ -23,6 +23,7 @@ import { DocumentCard, TYPE_ICONS } from "./DocumentCard";
 import { DocumentDialog } from "./DocumentDialog";
 import { DocumentsIntro } from "./DocumentsIntro";
 import { UnlockScreen } from "./PasscodeScreens";
+import { SecurityStrip } from "./SecurityStrip";
 import { UploadDialog } from "./UploadDialog";
 import { api } from "./shared";
 
@@ -100,7 +101,12 @@ export function DocumentsClient({ email, remindersOn }: { email: string; reminde
           </button>
         </div>
       )}
-      {view === "setup" && <DocumentsIntro onDone={unlocked} />}
+      {view === "setup" && (
+        <>
+          <DocumentsIntro onDone={unlocked} />
+          <SecurityStrip />
+        </>
+      )}
       {view === "locked" && <UnlockScreen lockedUntil={vault?.lockedUntil ?? null} lockoutMinutes={vault?.lockoutMinutes ?? 5} onDone={unlocked} />}
       {view === "open" && (
         <OpenVault
