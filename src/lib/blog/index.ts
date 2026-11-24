@@ -4,6 +4,11 @@
  */
 import type { Block, BlogPost, BlogTopic } from "./types";
 import { decemberVisaBulletin2026 } from "./posts/december-2026-visa-bulletin";
+import { optProcessingTime2026 } from "./posts/opt-processing-time-2026";
+import { stemOptExtension2026 } from "./posts/stem-opt-extension-2026";
+import { optPremiumProcessing2026 } from "./posts/opt-premium-processing-2026";
+import { optUnemployment90Days } from "./posts/opt-unemployment-90-days";
+import { proposedOptFee2026 } from "./posts/proposed-opt-fee-2026";
 import { novemberVisaBulletin2026 } from "./posts/november-2026-visa-bulletin";
 import { greenCardRenewal } from "./posts/green-card-renewal-i-90";
 import { i140Status } from "./posts/i-140-status-check";
@@ -11,12 +16,22 @@ import { i140Status } from "./posts/i-140-status-check";
 export type { Block, BlogPost, BlogSection, BlogTopic } from "./types";
 
 /** Newest first; posts published the same day keep this list's order (the first is featured). */
-export const BLOG_POSTS: BlogPost[] = [decemberVisaBulletin2026, novemberVisaBulletin2026, i140Status, greenCardRenewal].sort((a, b) =>
+export const BLOG_POSTS: BlogPost[] = [
+  decemberVisaBulletin2026,
+  optProcessingTime2026,
+  stemOptExtension2026,
+  optPremiumProcessing2026,
+  optUnemployment90Days,
+  proposedOptFee2026,
+  novemberVisaBulletin2026,
+  i140Status,
+  greenCardRenewal,
+].sort((a, b) =>
   b.published.localeCompare(a.published),
 );
 
 /** Topics in the order the blog's filter shows them. */
-export const BLOG_TOPICS: BlogTopic[] = ["Visa Bulletin", "Green card", "Employment-based", "Case status"];
+export const BLOG_TOPICS: BlogTopic[] = ["Visa Bulletin", "Students & OPT", "Green card", "Employment-based", "Case status"];
 
 /** Newest `updated` date across posts, for the sitemap and the feed. */
 export const BLOG_UPDATED = BLOG_POSTS.reduce((max, p) => (p.updated > max ? p.updated : max), "2026-11-23");

@@ -70,7 +70,7 @@ export const novemberVisaBulletin2026: BlogPost = {
   topic: "Visa Bulletin",
   published: "2026-11-23",
   updated: "2026-11-24",
-  cover: { src: cover, alt: "Soft blue calendar tiles in a row, one raised in teal, with a path moving forward between them" },
+  cover: { src: cover, alt: "An older couple and their adult daughter study a tablet chart of date blocks for family and work categories, some rows moving forward" },
   answer:
     "In the November 2026 Visa Bulletin, most family categories moved forward a full year from October, and EB-2 for most countries moved forward three months. India and China moved little in employment categories. For November, USCIS accepts adjustment of status applications using the Dates for Filing chart for both family and employment cases.",
   takeaways: [

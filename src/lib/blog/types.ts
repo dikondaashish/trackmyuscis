@@ -6,7 +6,7 @@
  */
 import type { StaticImageData } from "next/image";
 
-export type BlogTopic = "Visa Bulletin" | "Green card" | "Employment-based" | "Case status";
+export type BlogTopic = "Visa Bulletin" | "Students & OPT" | "Green card" | "Employment-based" | "Case status";
 
 export type Block =
   /** A paragraph. */

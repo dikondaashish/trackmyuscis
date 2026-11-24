@@ -43,7 +43,7 @@ export const decemberVisaBulletin2026: BlogPost = {
   updated: "2026-11-24",
   cover: {
     src: cover,
-    alt: "Rows of pale blue calendar tiles, the last one outlined in blue beside a teal loading ring",
+    alt: "A woman at a kitchen table checks a chart of dates on her laptop while a wall calendar page turns and an update envelope arrives",
   },
   answer:
     "The December 2026 Visa Bulletin hasn't been published yet. On November 24, 2026 the State Department still listed it as “coming soon”. Until it appears, the latest official dates are November's. For November, USCIS accepts green card applications filed from inside the U.S. using the Dates for Filing chart for every family and employment category. The last three December bulletins were online by November 9 to 14, so this one is later than usual. We'll add every December date here the day it's out.",

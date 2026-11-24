@@ -17,7 +17,7 @@ export const i140Status: BlogPost = {
   topic: "Employment-based",
   published: "2026-11-23",
   updated: "2026-11-23",
-  cover: { src: cover, alt: "A stack of documents with a teal check mark and a dotted tracking path leading to a briefcase" },
+  cover: { src: cover, alt: "An engineer checks a three-step case tracker on her laptop, two steps done, with an approval envelope beside the keyboard" },
   answer:
     "To check your I-140 status, enter the 13-character receipt number from your I-797C notice in USCIS Case Status Online, or sign in to your USCIS online account. In 2026 the I-140 costs $715 on paper or $665 online, plus an Asylum Program Fee, and premium processing costs $2,965 for a decision in 15 or 45 business days.",
   takeaways: [

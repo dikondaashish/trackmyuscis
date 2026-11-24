@@ -16,7 +16,7 @@ export const greenCardRenewal: BlogPost = {
   topic: "Green card",
   published: "2026-11-23",
   updated: "2026-11-23",
-  cover: { src: cover, alt: "A blank card inside a circular renewal arrow beside a small calendar tile" },
+  cover: { src: cover, alt: "A woman takes a new card from her mailbox, with a wall calendar beside her door marking the renewal date" },
   answer:
     "To renew a 10-year green card, file Form I-90 when the card has expired or will expire within six months. In 2026 it costs $415 online or $465 on paper. Your I-90 receipt notice, together with the expired card, extends your proof of permanent residence for 36 months while USCIS makes the new card.",
   takeaways: [
