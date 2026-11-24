@@ -3,6 +3,7 @@
  * post are checked against the official sources listed on it; `updated` moves when they are.
  */
 import type { Block, BlogPost, BlogTopic } from "./types";
+import { decemberVisaBulletin2026 } from "./posts/december-2026-visa-bulletin";
 import { novemberVisaBulletin2026 } from "./posts/november-2026-visa-bulletin";
 import { greenCardRenewal } from "./posts/green-card-renewal-i-90";
 import { i140Status } from "./posts/i-140-status-check";
@@ -10,7 +11,7 @@ import { i140Status } from "./posts/i-140-status-check";
 export type { Block, BlogPost, BlogSection, BlogTopic } from "./types";
 
 /** Newest first; posts published the same day keep this list's order (the first is featured). */
-export const BLOG_POSTS: BlogPost[] = [novemberVisaBulletin2026, i140Status, greenCardRenewal].sort((a, b) =>
+export const BLOG_POSTS: BlogPost[] = [decemberVisaBulletin2026, novemberVisaBulletin2026, i140Status, greenCardRenewal].sort((a, b) =>
   b.published.localeCompare(a.published),
 );
 

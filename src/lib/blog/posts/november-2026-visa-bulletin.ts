@@ -1,12 +1,49 @@
 /**
  * Facts checked 2026-11-23 against the November and October 2026 Visa Bulletins on
  * travel.state.gov and the USCIS "Adjustment of Status Filing Charts" page (updated 11/02/2026).
- * When the December 2026 bulletin is published, update the tables, `updated` and the slug's sibling post.
+ * The December 2026 bulletin has its own post (december-2026-visa-bulletin), which reuses NOVEMBER_2026.
  */
 import cover from "@/assets/blog/november-2026-visa-bulletin.jpg";
 import type { BlogPost } from "../types";
 
-const COLS = ["Category", "Most countries", "China", "India", "Mexico", "Philippines"];
+export const BULLETIN_COLS = ["Category", "Most countries", "China", "India", "Mexico", "Philippines"];
+const COLS = BULLETIN_COLS;
+
+/** The November 2026 charts, exactly as the bulletin prints them. Shared with the December post. */
+export const NOVEMBER_2026 = {
+  employmentFinal: [
+    ["EB-1", "C", "01AUG23", "01FEB23", "C", "C"],
+    ["EB-2", "01APR25", "01OCT21", "01NOV13", "01APR25", "01APR25"],
+    ["EB-3", "15JUN24", "22JAN22", "22JAN14", "15JUN24", "15AUG23"],
+    ["Other workers", "01JUN22", "01OCT19", "22JAN14", "01JUN22", "01JAN22"],
+    ["EB-4", "15DEC22", "15DEC22", "15DEC22", "15DEC22", "15DEC22"],
+    ["EB-5 unreserved", "C", "01DEC16", "01DEC23", "C", "C"],
+    ["EB-5 set-asides", "C", "C", "C", "C", "C"],
+  ],
+  employmentFiling: [
+    ["EB-1", "C", "01JUL24", "01JUL24", "C", "C"],
+    ["EB-2", "15MAR26", "01JAN23", "15JAN15", "15MAR26", "15MAR26"],
+    ["EB-3", "01AUG24", "01APR24", "15JAN15", "01AUG24", "01JAN24"],
+    ["Other workers", "01JUL22", "01OCT20", "15JAN15", "01JUL22", "01JUN22"],
+    ["EB-4", "01JAN25", "01JAN25", "01JAN25", "01JAN25", "01JAN25"],
+    ["EB-5 unreserved", "C", "01MAR21", "01MAY24", "C", "C"],
+    ["EB-5 set-asides", "C", "C", "C", "C", "C"],
+  ],
+  familyFinal: [
+    ["F1", "22JAN21", "22JAN21", "22JAN21", "22SEP08", "01NOV13"],
+    ["F2A", "22OCT26", "22OCT26", "22OCT26", "22APR26", "22OCT26"],
+    ["F2B", "22AUG20", "22AUG20", "22AUG20", "15MAY10", "01OCT13"],
+    ["F3", "22OCT15", "22OCT15", "22OCT15", "15JUL01", "22JUL06"],
+    ["F4", "22OCT12", "22OCT12", "15DEC06", "22APR01", "15MAY08"],
+  ],
+  familyFiling: [
+    ["F1", "01FEB21", "01FEB21", "01FEB21", "01DEC08", "22APR15"],
+    ["F2A", "C", "C", "C", "C", "C"],
+    ["F2B", "01SEP20", "01SEP20", "01SEP20", "22MAR11", "01OCT14"],
+    ["F3", "01NOV15", "01NOV15", "01NOV15", "01DEC02", "22OCT06"],
+    ["F4", "01NOV12", "01NOV12", "01FEB07", "30APR01", "22MAR09"],
+  ],
+};
 
 const SRC = {
   november: {
@@ -32,7 +69,7 @@ export const novemberVisaBulletin2026: BlogPost = {
     "The November 2026 Visa Bulletin in plain English: every family and employment cut-off date, what moved since October, and which chart USCIS accepts.",
   topic: "Visa Bulletin",
   published: "2026-11-23",
-  updated: "2026-11-23",
+  updated: "2026-11-24",
   cover: { src: cover, alt: "Soft blue calendar tiles in a row, one raised in teal, with a path moving forward between them" },
   answer:
     "In the November 2026 Visa Bulletin, most family categories moved forward a full year from October, and EB-2 for most countries moved forward three months. India and China moved little in employment categories. For November, USCIS accepts adjustment of status applications using the Dates for Filing chart for both family and employment cases.",
@@ -41,7 +78,7 @@ export const novemberVisaBulletin2026: BlogPost = {
     "EB-2 for most countries moved from January 1, 2025 to April 1, 2025. EB-1 stays current for most countries.",
     "EB-2 India (November 1, 2013) and EB-2 China (October 1, 2021) did not move.",
     "USCIS says to use the Dates for Filing chart in November for both family and employment-based adjustment.",
-    "The December 2026 bulletin isn't out yet. USCIS usually names its chart within about a week of the bulletin.",
+    "The December 2026 bulletin isn't out yet. Follow it on our [December 2026 Visa Bulletin page](/blog/december-2026-visa-bulletin).",
   ],
   sections: [
     {
@@ -68,30 +105,14 @@ export const novemberVisaBulletin2026: BlogPost = {
           kind: "table",
           caption: "Final Action Dates, employment-based, November 2026",
           head: COLS,
-          rows: [
-            ["EB-1", "C", "01AUG23", "01FEB23", "C", "C"],
-            ["EB-2", "01APR25", "01OCT21", "01NOV13", "01APR25", "01APR25"],
-            ["EB-3", "15JUN24", "22JAN22", "22JAN14", "15JUN24", "15AUG23"],
-            ["Other workers", "01JUN22", "01OCT19", "22JAN14", "01JUN22", "01JAN22"],
-            ["EB-4", "15DEC22", "15DEC22", "15DEC22", "15DEC22", "15DEC22"],
-            ["EB-5 unreserved", "C", "01DEC16", "01DEC23", "C", "C"],
-            ["EB-5 set-asides", "C", "C", "C", "C", "C"],
-          ],
+          rows: NOVEMBER_2026.employmentFinal,
           note: "Dates are written as the bulletin writes them: 01APR25 is April 1, 2025. Source: [Visa Bulletin for November 2026](https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/2027/visa-bulletin-for-november-2026.html).",
         },
         {
           kind: "table",
           caption: "Dates for Filing, employment-based, November 2026",
           head: COLS,
-          rows: [
-            ["EB-1", "C", "01JUL24", "01JUL24", "C", "C"],
-            ["EB-2", "15MAR26", "01JAN23", "15JAN15", "15MAR26", "15MAR26"],
-            ["EB-3", "01AUG24", "01APR24", "15JAN15", "01AUG24", "01JAN24"],
-            ["Other workers", "01JUL22", "01OCT20", "15JAN15", "01JUL22", "01JUN22"],
-            ["EB-4", "01JAN25", "01JAN25", "01JAN25", "01JAN25", "01JAN25"],
-            ["EB-5 unreserved", "C", "01MAR21", "01MAY24", "C", "C"],
-            ["EB-5 set-asides", "C", "C", "C", "C", "C"],
-          ],
+          rows: NOVEMBER_2026.employmentFiling,
         },
       ],
     },
@@ -103,26 +124,14 @@ export const novemberVisaBulletin2026: BlogPost = {
           kind: "table",
           caption: "Final Action Dates, family-sponsored, November 2026",
           head: COLS,
-          rows: [
-            ["F1", "22JAN21", "22JAN21", "22JAN21", "22SEP08", "01NOV13"],
-            ["F2A", "22OCT26", "22OCT26", "22OCT26", "22APR26", "22OCT26"],
-            ["F2B", "22AUG20", "22AUG20", "22AUG20", "15MAY10", "01OCT13"],
-            ["F3", "22OCT15", "22OCT15", "22OCT15", "15JUL01", "22JUL06"],
-            ["F4", "22OCT12", "22OCT12", "15DEC06", "22APR01", "15MAY08"],
-          ],
+          rows: NOVEMBER_2026.familyFinal,
           note: "F1: unmarried adult children of U.S. citizens. F2A: spouses and children of permanent residents. F2B: unmarried adult children of permanent residents. F3: married children of U.S. citizens. F4: brothers and sisters of adult U.S. citizens.",
         },
         {
           kind: "table",
           caption: "Dates for Filing, family-sponsored, November 2026",
           head: COLS,
-          rows: [
-            ["F1", "01FEB21", "01FEB21", "01FEB21", "01DEC08", "22APR15"],
-            ["F2A", "C", "C", "C", "C", "C"],
-            ["F2B", "01SEP20", "01SEP20", "01SEP20", "22MAR11", "01OCT14"],
-            ["F3", "01NOV15", "01NOV15", "01NOV15", "01DEC02", "22OCT06"],
-            ["F4", "01NOV12", "01NOV12", "01FEB07", "30APR01", "22MAR09"],
-          ],
+          rows: NOVEMBER_2026.familyFiling,
         },
       ],
     },
@@ -182,7 +191,7 @@ export const novemberVisaBulletin2026: BlogPost = {
       id: "december",
       heading: "What to expect for December",
       blocks: [
-        "The December 2026 Visa Bulletin hadn't been published when we checked on November 23, 2026. When it is, the State Department posts it on [its Visa Bulletin page](https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html), and USCIS updates its filing-charts page, usually within about a week, to say which chart applies.",
+        "The December 2026 Visa Bulletin hadn't been published when we checked on November 24, 2026. Our [December 2026 Visa Bulletin page](/blog/december-2026-visa-bulletin) covers when it's expected and what to compare, and gets every December date the day it's out. When it is published, the State Department posts it on [its Visa Bulletin page](https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html), and USCIS updates its filing-charts page, usually within about a week, to say which chart applies.",
         "We don't publish predictions. Cut-off dates depend on demand the government doesn't make public in advance, and a wrong guess could lead to a rushed or rejected filing.",
       ],
     },
@@ -206,11 +215,12 @@ export const novemberVisaBulletin2026: BlogPost = {
     },
     {
       q: "When is the next Visa Bulletin published?",
-      a: "Usually around the middle of the month before it applies. The December 2026 bulletin wasn't out yet on November 23, 2026.",
+      a: "Usually around the middle of the month before it applies. The December 2026 bulletin wasn't out yet on November 24, 2026. See our December 2026 Visa Bulletin page for updates.",
     },
   ],
   sources: [SRC.november, SRC.october, SRC.charts, SRC.bulletin],
   links: [
+    { href: "/blog/december-2026-visa-bulletin", label: "December 2026 Visa Bulletin: release date and what to watch" },
     { href: "/forms/i-485", label: "Form I-485: apply for a green card from inside the U.S." },
     { href: "/forms/i-130", label: "Form I-130: petition for a relative" },
     { href: "/forms/i-140", label: "Form I-140: petition for a worker" },

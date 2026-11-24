@@ -25,13 +25,15 @@ TrackMyUSCIS itself had 1 impression in Search Console (new property, data since
 
 | Post | Target searches |
 |---|---|
+| [December 2026 Visa Bulletin](/blog/december-2026-visa-bulletin) (published early, before the bulletin) | visa bulletin december 2026, december visa bulletin, december visa bulletin predictions, when is december visa bulletin coming out |
 | [November 2026 Visa Bulletin](/blog/november-2026-visa-bulletin) | visa bulletin, november visa bulletin 2026, priority date |
 | [I-140 status check](/blog/i-140-status-check) | i-140 status, i140 tracker, i-140 premium processing fee |
 | [Green card renewal (I-90)](/blog/green-card-renewal-i-90) | green card renewal, i-90 fee, green card renewal processing |
 
 ## Next, in priority order
 
-1. **December 2026 Visa Bulletin.** Publish the day it appears on travel.state.gov (the page said "Coming soon" on 2026-11-23). Then one post every month.
+1. **Fill in the December 2026 Visa Bulletin post the day it's published** (still "Coming soon" on 2026-11-24). Add the charts and what moved, rewrite the answer, status section and first FAQs, and keep the slug. The file's header lists the steps.
+   From January 2027 on, publish each month's bulletin page early, around the 1st of the month before (the sister site's Search Console shows "december 2026" searches start weeks ahead), then fill it in on release day.
 2. **USCIS processing times in 2026, by form.** Covers I-130, I-485, N-400, I-765 and I-131 together. Needs the official numbers: egov.uscis.gov/processing-times asks for a human check, so read it in a normal browser first.
 3. **N-400 processing time and interview.** 10K to 100K searches.
 4. **Citizenship test questions.** 10K to 100K searches. Check the current civics test version on uscis.gov first.
