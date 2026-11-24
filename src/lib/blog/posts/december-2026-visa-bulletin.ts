@@ -6,7 +6,12 @@
  * - USCIS filing-charts page (updated 11/02/2026) and its December 2025 and October 2026 chart pages.
  * - Release timing: first Wayback Machine captures of the December 2023, 2024 and 2025 bulletins.
  *
- * On release day: add the December charts and a "what moved since November" section, rewrite
+ * Rechecked 2026-11-24 (evening): still not out. USCIS's filing-charts page named November 2026 and
+ * the Internet Archive had no copy of a December 2026 bulletin page.
+ *
+ * On release day: save the December and November bulletin pages from a normal browser and run
+ * `python3 scripts/visa-bulletin-charts.py <december.html> <november.html>` for the chart rows and
+ * every date that moved. Then add the December charts and a "what moved since November" section, rewrite
  * `answer`, `takeaways`, the status section and FAQ 1–3, bump `updated`, and add the USCIS chart
  * choice once USCIS posts it. Keep the slug.
  */
@@ -31,6 +36,24 @@ const SRC = {
     href: `${ARCHIVE}/2026/visa-bulletin-for-december-2025.html`,
   },
 };
+
+/** November 2026 dates (final action, dates for filing) for the categories people search for most. Shared with the January post. */
+export const WATCHED_NOVEMBER_2026 = [
+    ["EB-1 India", "01FEB23", "01JUL24"],
+    ["EB-1 China", "01AUG23", "01JUL24"],
+    ["EB-2 India", "01NOV13", "15JAN15"],
+    ["EB-2 China", "01OCT21", "01JAN23"],
+    ["EB-2 most countries", "01APR25", "15MAR26"],
+    ["EB-3 India", "22JAN14", "15JAN15"],
+    ["EB-3 China", "22JAN22", "01APR24"],
+    ["EB-3 most countries", "15JUN24", "01AUG24"],
+    ["EB-3 Philippines", "15AUG23", "01JAN24"],
+    ["F2A most countries", "22OCT26", "C"],
+    ["F4 most countries", "22OCT12", "01NOV12"],
+    ["F4 India", "15DEC06", "01FEB07"],
+    ["F4 Mexico", "22APR01", "30APR01"],
+    ["F4 Philippines", "15MAY08", "22MAR09"],
+  ];
 
 export const decemberVisaBulletin2026: BlogPost = {
   slug: "december-2026-visa-bulletin",
@@ -140,22 +163,7 @@ export const decemberVisaBulletin2026: BlogPost = {
           kind: "table",
           caption: "November 2026 dates for the most-watched categories",
           head: ["Category", "Final action", "Dates for filing"],
-          rows: [
-            ["EB-1 India", "01FEB23", "01JUL24"],
-            ["EB-1 China", "01AUG23", "01JUL24"],
-            ["EB-2 India", "01NOV13", "15JAN15"],
-            ["EB-2 China", "01OCT21", "01JAN23"],
-            ["EB-2 most countries", "01APR25", "15MAR26"],
-            ["EB-3 India", "22JAN14", "15JAN15"],
-            ["EB-3 China", "22JAN22", "01APR24"],
-            ["EB-3 most countries", "15JUN24", "01AUG24"],
-            ["EB-3 Philippines", "15AUG23", "01JAN24"],
-            ["F2A most countries", "22OCT26", "C"],
-            ["F4 most countries", "22OCT12", "01NOV12"],
-            ["F4 India", "15DEC06", "01FEB07"],
-            ["F4 Mexico", "22APR01", "30APR01"],
-            ["F4 Philippines", "15MAY08", "22MAR09"],
-          ],
+          rows: WATCHED_NOVEMBER_2026,
           note: "Most countries means every country except China (mainland born), India, Mexico and the Philippines, which have their own lines because demand from them is higher.",
         },
       ],
@@ -313,6 +321,7 @@ export const decemberVisaBulletin2026: BlogPost = {
   sources: [SRC.index, SRC.november, SRC.dec2025, SRC.nov2025, SRC.charts, SRC.archive],
   links: [
     { href: "/blog/november-2026-visa-bulletin", label: "November 2026 Visa Bulletin: what moved and which chart to use" },
+    { href: "/blog/january-2027-visa-bulletin", label: "January 2027 Visa Bulletin: release date and what to watch" },
     { href: "/forms/i-485", label: "Form I-485: apply for a green card from inside the U.S." },
     { href: "/forms/i-140", label: "Form I-140: petition for a worker" },
     { href: "/forms/i-130", label: "Form I-130: petition for a relative" },

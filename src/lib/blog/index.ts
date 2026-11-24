@@ -4,6 +4,7 @@
  */
 import type { Block, BlogPost, BlogTopic } from "./types";
 import { decemberVisaBulletin2026 } from "./posts/december-2026-visa-bulletin";
+import { januaryVisaBulletin2027 } from "./posts/january-2027-visa-bulletin";
 import { optProcessingTime2026 } from "./posts/opt-processing-time-2026";
 import { stemOptExtension2026 } from "./posts/stem-opt-extension-2026";
 import { optPremiumProcessing2026 } from "./posts/opt-premium-processing-2026";
@@ -26,6 +27,7 @@ export { AUTHORS, type AuthorId } from "./authors";
 /** Newest first; posts published the same day keep this list's order (the first is featured). */
 export const BLOG_POSTS: BlogPost[] = [
   decemberVisaBulletin2026,
+  januaryVisaBulletin2027,
   optProcessingTime2026,
   stemOptExtension2026,
   optPremiumProcessing2026,
@@ -73,8 +75,12 @@ export function readingMinutes(p: BlogPost) {
   return Math.max(2, Math.round(total / 220));
 }
 
-/** Same topic first, then the newest others. */
+/**
+ * Same topic first, then the others. The list starts just after the post itself and wraps
+ * round, so every post is linked from other posts instead of all of them linking to the same newest three.
+ */
 export function relatedPosts(p: BlogPost, count = 3) {
-  const others = BLOG_POSTS.filter((x) => x.slug !== p.slug);
-  return [...others.filter((x) => x.topic === p.topic), ...others.filter((x) => x.topic !== p.topic)].slice(0, count);
+  const at = BLOG_POSTS.findIndex((x) => x.slug === p.slug);
+  const after = [...BLOG_POSTS.slice(at + 1), ...BLOG_POSTS.slice(0, Math.max(at, 0))];
+  return [...after.filter((x) => x.topic === p.topic), ...after.filter((x) => x.topic !== p.topic)].slice(0, count);
 }

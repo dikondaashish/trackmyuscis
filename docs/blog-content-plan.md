@@ -26,6 +26,7 @@ TrackMyUSCIS itself had 1 impression in Search Console (new property, data since
 | Post | Target searches |
 |---|---|
 | [December 2026 Visa Bulletin](/blog/december-2026-visa-bulletin) (published early, before the bulletin) | visa bulletin december 2026, december visa bulletin, december visa bulletin predictions, when is december visa bulletin coming out |
+| [January 2027 Visa Bulletin](/blog/january-2027-visa-bulletin) (published early, 2026-11-24) | visa bulletin january 2027, january visa bulletin, january visa bulletin predictions, when is january visa bulletin coming out |
 | [OPT processing time 2026](/blog/opt-processing-time-2026) | opt processing time, opt ead processing time, how long does opt take |
 | [STEM OPT extension 2026](/blog/stem-opt-extension-2026) | stem opt processing time, stem opt extension, 180 day rule |
 | [OPT premium processing 2026](/blog/opt-premium-processing-2026) | opt premium processing, opt premium processing fee, 1780 |
@@ -65,6 +66,18 @@ The wider plan for every visa holder (H-1B, L-1, O-1, TN, family, citizenship, h
 9. **PERM processing time.** Use flag.dol.gov data.
 10. **Green card interview questions.**
 11. **Spanish posts.** "Boletín de visas" and "estatus de mi caso USCIS" already get impressions in Spanish.
+
+## Visa Bulletin release day (each month)
+
+travel.state.gov blocks automated reads (HTTP 403), so the bulletin has to be opened in a normal browser.
+
+1. Check the [Visa Bulletin index](https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html). When "Coming soon" becomes a link, open the new bulletin and save the page as HTML. Save last month's bulletin the same way (or from the Internet Archive).
+2. Run `python3 scripts/visa-bulletin-charts.py <new.html> <previous.html>`. It prints the four charts in the shape the posts use and every date that moved, with the number of days. Compare two or three rows with the bulletin by eye.
+3. In the month's post: add the charts and a "what moved" section, rewrite `answer`, `takeaways`, the status section and the first three FAQs, add the bulletin to `sources`, bump `updated`. Keep the slug. Read the bulletin's lettered notes at the end for anything about coming months and quote it if there is one.
+4. Update the "dates to compare against" in next month's early page so it uses the new bulletin.
+5. When USCIS names the chart (its filing-charts page, usually within a week), add it and bump `updated` again.
+6. Deploy, then `npm run indexnow -- /blog/<slug>` and request indexing for the post in Search Console.
+7. Around the 1st of each month, publish the following month's early page (copy the January 2027 post: release timing from the Internet Archive's first saved copies, last year's moves from the two archived bulletins, USCIS's chart choice that month).
 
 ## Rules for every post
 
