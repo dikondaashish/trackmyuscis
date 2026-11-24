@@ -3,6 +3,7 @@ import { FAQ, FORMS, GUIDES, STATUSES, USCIS_CASE_STATUS, USCIS_PROCESSING_TIMES
 import { ANSWERS } from "@/lib/answers";
 import { BLOG_POSTS } from "@/lib/blog";
 import { LEGAL_DOCS, POLICY_ORDER } from "@/lib/legal";
+import { PT_CHECKED, PT_FORMS, rangeSummary } from "@/lib/processing-times";
 
 /**
  * llms.txt (https://llmstxt.org): a plain summary of the site for AI assistants.
@@ -29,6 +30,11 @@ export function GET() {
     `- [Processing times](${url("/processing-times")}): How to check how long USCIS is taking for your form and office on the official USCIS tool, and how to read the number.`,
     `- [Find an immigration lawyer](${url("/lawyers")}): Where to find free or low-cost immigration legal help and how to check that a lawyer or representative is real. The TrackMyUSCIS lawyer directory is not open yet.`,
     `- [Case statuses explained](${url("/status-explained")}): Plain-English meaning of each common USCIS case status and what usually comes next.`,
+    "",
+    "## Processing times by form",
+    "",
+    `Official USCIS times (80% of cases finished within), read for every office on ${PT_CHECKED}:`,
+    ...PT_FORMS.map((p) => `- [Form ${p.form.form} processing time](${url(`/processing-times/${p.form.slug}`)}): ${rangeSummary(p)}.`),
     "",
     "## USCIS forms",
     "",

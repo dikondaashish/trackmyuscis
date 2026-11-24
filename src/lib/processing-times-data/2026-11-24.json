@@ -1,0 +1,2099 @@
+{
+ "checked": "2026-11-24",
+ "published": "November 20, 2026",
+ "period": "May 2026 to October 2026",
+ "notes": [
+  "Employment-based Form I-485 petitions are generally adjudicated by USCIS’ Field Office Directorate. To find processing times for employment-based Forms I-485 in the first (EB-1), second (EB-2), and third (EB-3) preference categories, use the filters for field office locations. The processing times listed for Service Center Operations are only for fourth preference (EB-4) and fifth preference (EB-5) Form I-485 employment-based cases. The processing times shown on the website do not include visa-regressed adjustment applications. If an applicant's priority date is not earlier than the applicable visa available cut-off date published in the Visa Bulletin (available at travel.state.gov), we cannot approve their adjustment of status application until a visa is available to them based on their priority date, preference category, and country of chargeability.",
+  "The Service Center Operations Directorate no longer receives Form I-485 applications based on a grant of asylum status. As of Sept. 28, 2020, the Field Operations Directorate receives all Form I-485 applications based on a grant of asylum status. If you have a case filed before that time that a service center is working on, you may ask for more information through the USCIS eRequest Service Tool online (egov.uscis.gov/e-request/Intro.do) or by calling the USCIS Contact Center.",
+  "The Service Center Operations Directorate no longer receives Form I-485 applications based on a grant of refugee status. As of Sept. 28, 2020, the Field Operations Directorate receives all Form I-485 applications based on a grant of refugee status. If you have a case filed before that time that a service center is working on, you may ask for more information through the USCIS eRequest Service Tool online (egov.uscis.gov/e-request/Intro.do) or by calling the USCIS Contact Center.",
+  "***Note: This calculation for the National Benefits Center’s processing time is specifically for adoption-based Form I-130s. The National Benefits Center adjudicates all adoption-based Form I-130s.***This processing time reflects statutory constraints on available immigrant visas, for which the wait times are typically much longer than the time it takes for USCIS to adjudicate the form.***USCIS service centers prioritize the processing of Form I-130 preference petitions for which an immigrant visa is available according to the Department of State Visa Bulletin. The visa bulletin, published monthly, lists available immigrant visas by priority date. We use the visa bulletin to determine the current visa categories and priority dates before processing Form I-130 preference petitions. We are prioritizing our adjudication efforts to focus on cases that have visas available.",
+  "***This processing time reflects statutory constraints on available immigrant visas, for which the wait times are typically much longer than the time it takes for USCIS to adjudicate the form.***USCIS service centers prioritize the processing of Form I-130 preference petitions for which an immigrant visa is available according to the Department of State Visa Bulletin. The visa bulletin, published monthly, lists available immigrant visas by priority date. We use the visa bulletin to determine the current visa categories and priority dates before processing Form I-130 preference petitions. We are prioritizing our adjudication efforts to focus on cases that have visas available.",
+  "***Note: This calculation for the National Benefits Center’s processing time is specifically for adoption-based Form I-130s. The National Benefits Center adjudicates all adoption-based Form I-130s.*** The Department of State visa bulletin, published monthly, lists available immigrant visas by priority date. USCIS uses the visa bulletin to determine the current visa categories and priority dates before processing a Form I-130 preference petition.",
+  "USCIS service centers are now prioritizing the processing of Form I-130 preference petitions for which the Department of State Visa Bulletin shows that an immigrant visa is available. The visa bulletin, published monthly, lists available immigrant visas by priority date. USCIS uses the visa bulletin to determine the current visa categories and priority dates before processing a Form I-130 preference petition. Service centers have prioritized our adjudication efforts so that we can focus on those cases that have visas available.",
+  "USCIS posts 1 processing time for any service center location that processes requests for an Employment Authorization Document based on a pending asylum application. We keep these requests in an electronic system that allows us generally to process adjudication-ready cases in the order USCIS receives them, regardless of where the case is pending or where the adjudicator is.",
+  "USCIS posts 1 processing time for any service center location that processes requests for an initial Employment Authorization Document based on a pending asylum application. We keep these requests in an electronic system that allows us generally to process adjudication-ready cases in the order USCIS receives them, regardless of where the case is pending or where the adjudicator is.",
+  "USCIS Service Center Operations (SCOPS) prioritizes processing of Form I-140, Immigrant Petition for Alien Workers, when the Department of State Visa Bulletin shows an immigrant visa is available. The Visa Bulletin, published monthly, lists available immigrant visas by priority date. We use the visa bulletin to determine the current visa categories and priority dates. SCOPS has prioritized our adjudications so we can focus on cases with visas available and can move related Applications to Register Permanent Residence or Adjust Status (Form I-485) to the National Benefits Center. This prioritization supports the USCIS-wide effort to use all employment-based visas available during the fiscal year. It does not affect premium processed petitions, which we will manage in the associated time frame for premium processing service.",
+  "Processing time represents the number of elapsed days between the received date and the first adjudicative decision, which may include RFE response days. We do not include reopened cases.",
+  "Processing time represents the number of elapsed days between the received date and the first adjudicative decision, which may include RFE response days. We do not include reopened cases. *** If you are a petitioner for an H-2A Temporary Agricultural Worker and your Form I-129 has been pending longer than 15 days and you have not received a decision or a Request for Evidence, you may contact USCIS at (1-800) 375-5283 to inquire about your petition.",
+  "Since October 2025, H-2A petitioners seeking unnamed beneficiaries can electronically file an H-2A petition with USCIS after the U.S. Department of Labor (DOL) issues a notice of acceptance of the application for temporary labor certification (TLC) and before DOL approves a TLC. However, USCIS will not approve these petitions until after DOL has approved the corresponding TLC. This concurrent processing has contributed to longer H-2A petition processing times because USCIS must now wait until DOL approves the corresponding TLC before we can process the H-2A petition."
+ ],
+ "forms": {
+  "I-485": [
+   {
+    "code": "131A",
+    "name": "Employment-based adjustment applications",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 47,
+      "unit": "Months",
+      "inquiry": "2022-09-04",
+      "note": 0
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 10.5,
+      "unit": "Months",
+      "inquiry": "2025-02-17"
+     }
+    ]
+   },
+   {
+    "code": "131A-FAM",
+    "name": "Family-based adjustment applications",
+    "offices": [
+     {
+      "code": "AGA",
+      "name": "Agana GU",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2024-01-21"
+     },
+     {
+      "code": "ALB",
+      "name": "Albany NY",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2024-08-06"
+     },
+     {
+      "code": "ABQ",
+      "name": "Albuquerque NM",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2024-05-08"
+     },
+     {
+      "code": "ANC",
+      "name": "Anchorage AK",
+      "value": 19.5,
+      "unit": "Months",
+      "inquiry": "2024-02-18"
+     },
+     {
+      "code": "ATL",
+      "name": "Atlanta GA",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2024-05-04"
+     },
+     {
+      "code": "BAL",
+      "name": "Baltimore MD",
+      "value": 19.5,
+      "unit": "Months",
+      "inquiry": "2024-05-10"
+     },
+     {
+      "code": "BOI",
+      "name": "Boise ID",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2023-10-12"
+     },
+     {
+      "code": "BOS",
+      "name": "Boston MA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2024-07-29"
+     },
+     {
+      "code": "BNY",
+      "name": "Brooklyn NY",
+      "value": 19.5,
+      "unit": "Months",
+      "inquiry": "2023-07-26"
+     },
+     {
+      "code": "BUF",
+      "name": "Buffalo NY",
+      "value": 11.5,
+      "unit": "Months",
+      "inquiry": "2025-04-17"
+     },
+     {
+      "code": "STA",
+      "name": "Burlington VT",
+      "value": 10.5,
+      "unit": "Months",
+      "inquiry": "2025-07-20"
+     },
+     {
+      "code": "CHL",
+      "name": "Charleston SC",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-01-15"
+     },
+     {
+      "code": "CHA",
+      "name": "Charlotte Amalie VI",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-03-11"
+     },
+     {
+      "code": "CLT",
+      "name": "Charlotte NC",
+      "value": 17,
+      "unit": "Months",
+      "inquiry": "2024-08-28"
+     },
+     {
+      "code": "CHI",
+      "name": "Chicago IL",
+      "value": 22,
+      "unit": "Months",
+      "inquiry": "2023-01-20"
+     },
+     {
+      "code": "CHR",
+      "name": "Christiansted VI",
+      "value": 18,
+      "unit": "Months",
+      "inquiry": "2023-11-26"
+     },
+     {
+      "code": "CIN",
+      "name": "Cincinnati OH",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-01-17"
+     },
+     {
+      "code": "CLE",
+      "name": "Cleveland OH",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2024-07-09"
+     },
+     {
+      "code": "CLM",
+      "name": "Columbus OH",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-04-26"
+     },
+     {
+      "code": "NJC",
+      "name": "Cranbury NJ",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-06-09"
+     },
+     {
+      "code": "DAL",
+      "name": "Dallas TX",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2024-06-10"
+     },
+     {
+      "code": "DEN",
+      "name": "Denver CO",
+      "value": 23.5,
+      "unit": "Months",
+      "inquiry": "2023-08-15"
+     },
+     {
+      "code": "DSM",
+      "name": "Des Moines IA",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-01-24"
+     },
+     {
+      "code": "DET",
+      "name": "Detroit MI",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2024-02-13"
+     },
+     {
+      "code": "ELP",
+      "name": "El Paso TX",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-01-10"
+     },
+     {
+      "code": "OFM",
+      "name": "Fort Myers FL",
+      "value": 22.5,
+      "unit": "Months",
+      "inquiry": "2024-04-08"
+     },
+     {
+      "code": "FSA",
+      "name": "Fort Smith AR",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-03-28"
+     },
+     {
+      "code": "FRE",
+      "name": "Fresno CA",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2023-08-31"
+     },
+     {
+      "code": "GRR",
+      "name": "Greer SC",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-02-04"
+     },
+     {
+      "code": "HLG",
+      "name": "Harlingen TX",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-02-28"
+     },
+     {
+      "code": "HAR",
+      "name": "Hartford CT",
+      "value": 18,
+      "unit": "Months",
+      "inquiry": "2023-12-03"
+     },
+     {
+      "code": "HEL",
+      "name": "Helena MT",
+      "value": 9.5,
+      "unit": "Months",
+      "inquiry": "2025-09-09"
+     },
+     {
+      "code": "HIA",
+      "name": "Hialeah FL",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-01-11"
+     },
+     {
+      "code": "HHW",
+      "name": "Honolulu HI",
+      "value": 24,
+      "unit": "Months",
+      "inquiry": "2023-06-21"
+     },
+     {
+      "code": "HOU",
+      "name": "Houston TX",
+      "value": 20.5,
+      "unit": "Months",
+      "inquiry": "2023-10-31"
+     },
+     {
+      "code": "IMP",
+      "name": "Imperial CA",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2024-09-18"
+     },
+     {
+      "code": "INP",
+      "name": "Indianapolis IN",
+      "value": 24.5,
+      "unit": "Months",
+      "inquiry": "2023-08-18"
+     },
+     {
+      "code": "JAC",
+      "name": "Jacksonville FL",
+      "value": 20.5,
+      "unit": "Months",
+      "inquiry": "2024-01-13"
+     },
+     {
+      "code": "KAN",
+      "name": "Kansas City MO",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2024-06-16"
+     },
+     {
+      "code": "KND",
+      "name": "Kendall FL",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-09-22"
+     },
+     {
+      "code": "LVG",
+      "name": "Las Vegas NV",
+      "value": 22.5,
+      "unit": "Months",
+      "inquiry": "2023-10-23"
+     },
+     {
+      "code": "LAW",
+      "name": "Lawrence MA",
+      "value": 22.5,
+      "unit": "Months",
+      "inquiry": "2023-04-28"
+     },
+     {
+      "code": "LNY",
+      "name": "Long Island NY",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2024-06-21"
+     },
+     {
+      "code": "LOS",
+      "name": "Los Angeles CA",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2024-04-01"
+     },
+     {
+      "code": "LAC",
+      "name": "Los Angeles County CA",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2024-02-19"
+     },
+     {
+      "code": "LOU",
+      "name": "Louisville KY",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-01-31"
+     },
+     {
+      "code": "MAN",
+      "name": "Manchester NH",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-02-07"
+     },
+     {
+      "code": "MEM",
+      "name": "Memphis TN",
+      "value": 23,
+      "unit": "Months",
+      "inquiry": "2024-02-04"
+     },
+     {
+      "code": "MIA",
+      "name": "Miami FL",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2023-07-28"
+     },
+     {
+      "code": "MIL",
+      "name": "Milwaukee WI",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2023-09-18"
+     },
+     {
+      "code": "SPM",
+      "name": "Minneapolis-St. Paul MN",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2024-01-29"
+     },
+     {
+      "code": "MGA",
+      "name": "Montgomery AL",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2024-12-30"
+     },
+     {
+      "code": "MTL",
+      "name": "Mount Laurel NJ",
+      "value": 21,
+      "unit": "Months",
+      "inquiry": "2024-05-06"
+     },
+     {
+      "code": "NTN",
+      "name": "Nashville TN",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2024-06-10"
+     },
+     {
+      "code": "NEW",
+      "name": "Newark NJ",
+      "value": 22,
+      "unit": "Months",
+      "inquiry": "2023-10-14"
+     },
+     {
+      "code": "NOL",
+      "name": "New Orleans LA",
+      "value": 24,
+      "unit": "Months",
+      "inquiry": "2023-09-25"
+     },
+     {
+      "code": "NYC",
+      "name": "New York City NY",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2024-07-18"
+     },
+     {
+      "code": "NOR",
+      "name": "Norfolk VA",
+      "value": 20,
+      "unit": "Months",
+      "inquiry": "2023-09-05"
+     },
+     {
+      "code": "OKL",
+      "name": "Oakland Park FL",
+      "value": 23,
+      "unit": "Months",
+      "inquiry": "2023-06-03"
+     },
+     {
+      "code": "OKC",
+      "name": "Oklahoma City OK",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2024-03-12"
+     },
+     {
+      "code": "OMA",
+      "name": "Omaha NE",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-01-18"
+     },
+     {
+      "code": "ORL",
+      "name": "Orlando FL",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2024-05-24"
+     },
+     {
+      "code": "PHI",
+      "name": "Philadelphia PA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2024-06-25"
+     },
+     {
+      "code": "PHO",
+      "name": "Phoenix AZ",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-02-23"
+     },
+     {
+      "code": "PIT",
+      "name": "Pittsburgh PA",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2024-09-27"
+     },
+     {
+      "code": "POM",
+      "name": "Portland ME",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2023-12-23"
+     },
+     {
+      "code": "POO",
+      "name": "Portland OR",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-01-14"
+     },
+     {
+      "code": "PRO",
+      "name": "Providence RI",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-03-07"
+     },
+     {
+      "code": "QNS",
+      "name": "Queens NY",
+      "value": 21,
+      "unit": "Months",
+      "inquiry": "2023-08-08"
+     },
+     {
+      "code": "RAL",
+      "name": "Raleigh NC",
+      "value": 25,
+      "unit": "Months",
+      "inquiry": "2023-08-04"
+     },
+     {
+      "code": "REN",
+      "name": "Reno NV",
+      "value": 20,
+      "unit": "Months",
+      "inquiry": "2023-11-13"
+     },
+     {
+      "code": "SAC",
+      "name": "Sacramento CA",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-01-16"
+     },
+     {
+      "code": "STL",
+      "name": "Saint Louis MO",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2024-10-06"
+     },
+     {
+      "code": "SLC",
+      "name": "Salt Lake City UT",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-02-01"
+     },
+     {
+      "code": "SNA",
+      "name": "San Antonio TX",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2024-11-20"
+     },
+     {
+      "code": "SBD",
+      "name": "San Bernardino CA",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2024-07-22"
+     },
+     {
+      "code": "SND",
+      "name": "San Diego CA",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2024-02-17"
+     },
+     {
+      "code": "SFV",
+      "name": "San Fernando Valley CA",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2023-10-29"
+     },
+     {
+      "code": "SFR",
+      "name": "San Francisco CA",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2023-08-28"
+     },
+     {
+      "code": "SNJ",
+      "name": "San Jose CA",
+      "value": 27,
+      "unit": "Months",
+      "inquiry": "2023-04-27"
+     },
+     {
+      "code": "SAJ",
+      "name": "San Juan PR",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2024-08-19"
+     },
+     {
+      "code": "SAA",
+      "name": "Santa Ana CA",
+      "value": 30,
+      "unit": "Months",
+      "inquiry": "2023-04-13"
+     },
+     {
+      "code": "SEA",
+      "name": "Seattle WA",
+      "value": 38.5,
+      "unit": "Months",
+      "inquiry": "2022-03-17"
+     },
+     {
+      "code": "SPO",
+      "name": "Spokane WA",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-07-16"
+     },
+     {
+      "code": "TAM",
+      "name": "Tampa FL",
+      "value": 19.5,
+      "unit": "Months",
+      "inquiry": "2024-03-20"
+     },
+     {
+      "code": "TUC",
+      "name": "Tucson AZ",
+      "value": 11,
+      "unit": "Months",
+      "inquiry": "2025-09-15"
+     },
+     {
+      "code": "WAS",
+      "name": "Washington DC",
+      "value": 18.5,
+      "unit": "Months",
+      "inquiry": "2024-11-26"
+     },
+     {
+      "code": "WPB",
+      "name": "West Palm Beach FL",
+      "value": 18,
+      "unit": "Months",
+      "inquiry": "2024-04-28"
+     },
+     {
+      "code": "WIC",
+      "name": "Wichita KS",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2024-05-05"
+     },
+     {
+      "code": "YAK",
+      "name": "Yakima WA",
+      "value": 27,
+      "unit": "Months",
+      "inquiry": "2022-01-02"
+     }
+    ]
+   },
+   {
+    "code": "131B",
+    "name": "Based on grant of asylum more than 1 year ago",
+    "offices": [
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 36,
+      "unit": "Months",
+      "inquiry": "2023-02-03",
+      "note": 1
+     }
+    ]
+   },
+   {
+    "code": "131C",
+    "name": "Based on refugee admission more than 1 year ago",
+    "offices": [
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 31.5,
+      "unit": "Months",
+      "inquiry": "2021-06-03",
+      "note": 2
+     }
+    ]
+   },
+   {
+    "code": "131T",
+    "name": "Based on an approved T Visa",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 43.5,
+      "unit": "Months",
+      "inquiry": "2022-12-12"
+     }
+    ]
+   },
+   {
+    "code": "131U",
+    "name": "Based on an approved U Visa",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 26.5,
+      "unit": "Months",
+      "inquiry": "2024-06-22"
+     }
+    ]
+   }
+  ],
+  "I-130": [
+   {
+    "code": "134A-F21",
+    "name": "Permanent resident filing for a spouse or child under 21",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 51.5,
+      "unit": "Months",
+      "inquiry": "2022-05-07",
+      "note": 3
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 36,
+      "unit": "Months",
+      "inquiry": "2022-10-17",
+      "note": 4
+     }
+    ]
+   },
+   {
+    "code": "134A-IR",
+    "name": "U.S. citizen filing for a spouse, parent, or child under 21",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 51.5,
+      "unit": "Months",
+      "inquiry": "2022-03-07",
+      "note": 5
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 29.5,
+      "unit": "Months",
+      "inquiry": "2023-02-14",
+      "note": 6
+     }
+    ]
+   },
+   {
+    "code": "134B-F11",
+    "name": "U.S. citizen filing for unmarried son/daughter 21 or older",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 50.5,
+      "unit": "Months",
+      "inquiry": "2022-05-07",
+      "note": 3
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 75,
+      "unit": "Months",
+      "inquiry": "2018-11-08",
+      "note": 4
+     }
+    ]
+   },
+   {
+    "code": "134B-F24",
+    "name": "Permanent resident for unmarried son or daughter 21 or older",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 49.5,
+      "unit": "Months",
+      "inquiry": "2022-05-16",
+      "note": 3
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 61,
+      "unit": "Months",
+      "inquiry": "2020-05-19",
+      "note": 4
+     }
+    ]
+   },
+   {
+    "code": "134B-F31",
+    "name": "U.S. citizen filing for a married son or daughter",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 62,
+      "unit": "Months",
+      "inquiry": "2021-01-18",
+      "note": 3
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 119,
+      "unit": "Months",
+      "inquiry": "2014-04-18",
+      "note": 4
+     }
+    ]
+   },
+   {
+    "code": "134B-F41",
+    "name": "U.S. citizen filing for a brother or sister",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 66.5,
+      "unit": "Months",
+      "inquiry": "2015-03-02",
+      "note": 3
+     },
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 164,
+      "unit": "Months",
+      "inquiry": "2012-03-06",
+      "note": 4
+     }
+    ]
+   }
+  ],
+  "I-765": [
+   {
+    "code": "147-539C26",
+    "name": "Based on being an H-4 spouse of an H-1B nonimmigrant (filed with I-539 H4) [(c)(26)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 7,
+      "unit": "Months",
+      "inquiry": "2026-01-18"
+     }
+    ]
+   },
+   {
+    "code": "147-A18",
+    "name": "Based on being an L-2 spouse of an L-1 nonimmigrant [(a)(18)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 18,
+      "unit": "Months",
+      "inquiry": "2025-04-01"
+     }
+    ]
+   },
+   {
+    "code": "147-A3",
+    "name": "Based on being admitted as a Refugee [(a)(3)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 1,
+      "unit": "Weeks",
+      "inquiry": "2025-02-12"
+     }
+    ]
+   },
+   {
+    "code": "147-A5",
+    "name": "Based on an approved asylum application [(a)(5)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 2,
+      "unit": "Months",
+      "inquiry": "2025-06-26"
+     }
+    ]
+   },
+   {
+    "code": "147-C10",
+    "name": "Application for Suspension of Deportation/Sec.244/NACARA/Cancel of Removal [(c)(10)]",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-04-01"
+     }
+    ]
+   },
+   {
+    "code": "147-C11",
+    "name": "Based on parole",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2025-04-04"
+     }
+    ]
+   },
+   {
+    "code": "147-C18",
+    "name": "Alien with Final Order of Deportation Under an OSUP [(c)(18)]",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2025-05-01"
+     }
+    ]
+   },
+   {
+    "code": "147-C26",
+    "name": "Based on being an H-4 spouse of an H-1B nonimmigrant (Standalone; not filed with I-539 H4) [(c)(26)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 18.5,
+      "unit": "Months",
+      "inquiry": "2025-04-22"
+     }
+    ]
+   },
+   {
+    "code": "147-C3",
+    "name": "Based on a request by a qualified F-1 academic student [(c)(3)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 6,
+      "unit": "Months",
+      "inquiry": "2026-05-09"
+     }
+    ]
+   },
+   {
+    "code": "147-C8",
+    "name": "Based on a pending asylum application [(c)(8)] -renewal/replacement",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2025-02-11",
+      "note": 7
+     }
+    ]
+   },
+   {
+    "code": "147-C8I",
+    "name": "Based on a pending asylum application [(c)(8)] – Initial Application",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 1,
+      "unit": "Months",
+      "inquiry": "2026-10-30",
+      "note": 8
+     }
+    ]
+   },
+   {
+    "code": "147-C9",
+    "name": "Based on a pending I-485 adjustment application [(c)(9)]",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-06-18"
+     },
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-07-20"
+     }
+    ]
+   },
+   {
+    "code": "147-ELSAL",
+    "name": "Based on TPS for El Salvador [(c)(19), (a)(12)]",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2025-04-15"
+     }
+    ]
+   },
+   {
+    "code": "147-OTH",
+    "name": "All other applications for employment authorization",
+    "offices": [
+     {
+      "code": "NBC",
+      "name": "National Benefits Center",
+      "value": 10.5,
+      "unit": "Months",
+      "inquiry": "2025-08-12"
+     },
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 18.5,
+      "unit": "Months",
+      "inquiry": "2025-03-15"
+     }
+    ]
+   }
+  ],
+  "I-140": [
+   {
+    "code": "136A-E11",
+    "name": "Extraordinary ability (E11)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 36,
+      "unit": "Months",
+      "inquiry": "2023-10-25",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-E12",
+    "name": "Outstanding professor or researcher (E12)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-03-27",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-E13",
+    "name": "Multinational executive or manager (E13)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 29.5,
+      "unit": "Months",
+      "inquiry": "2024-04-27",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-E21",
+    "name": "Advanced degree or exceptional ability (E21)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 3.5,
+      "unit": "Months",
+      "inquiry": "2026-05-07",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-E31",
+    "name": "Skilled worker or professional (E31; E32)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 4.5,
+      "unit": "Months",
+      "inquiry": "2026-03-22",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-EW3",
+    "name": "Unskilled worker (EW3)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 8.5,
+      "unit": "Months",
+      "inquiry": "2025-07-17",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-NIW",
+    "name": "Advanced degree or exceptional ability requesting a National Interest Waiver (NIW)",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 32,
+      "unit": "Months",
+      "inquiry": "2023-12-02",
+      "note": 9
+     }
+    ]
+   },
+   {
+    "code": "136A-NUR",
+    "name": "Schedule A Nurses",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 26.5,
+      "unit": "Months",
+      "inquiry": "2024-07-27",
+      "note": 9
+     }
+    ]
+   }
+  ],
+  "I-131": [
+   {
+    "code": "141A-RT",
+    "name": "Re-entry permit or refugee travel document",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2025-02-24"
+     }
+    ]
+   },
+   {
+    "code": "141B-OTH",
+    "name": "Advance parole",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-03-18"
+     }
+    ]
+   }
+  ],
+  "I-751": [
+   {
+    "code": "148A",
+    "name": "Removal of lawful permanent resident conditions (spouses of U.S. citizens and lawful permanent residents)",
+    "offices": [
+     {
+      "code": "FOD",
+      "name": "All Field Offices",
+      "value": 35,
+      "unit": "Months",
+      "inquiry": "2022-08-02"
+     }
+    ]
+   }
+  ],
+  "I-90": [
+   {
+    "code": "140A",
+    "name": "Initial issuance or replacement",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 6.5,
+      "unit": "Months",
+      "inquiry": "2026-02-01"
+     }
+    ]
+   },
+   {
+    "code": "140B",
+    "name": "10-year renewal",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 10,
+      "unit": "Months",
+      "inquiry": "2025-11-06"
+     }
+    ]
+   }
+  ],
+  "I-129": [
+   {
+    "code": "137-E",
+    "name": "E - Treaty traders and investors",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 21.5,
+      "unit": "Months",
+      "inquiry": "2024-11-06"
+     }
+    ]
+   },
+   {
+    "code": "137-E3",
+    "name": "E3 - Specialty occupation workers from Australia",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 5,
+      "unit": "Months",
+      "inquiry": "2026-04-17",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-H1B1",
+    "name": "H-1B - Specialty occupation - Visa to be issued abroad",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-07-30",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-H1B2",
+    "name": "H-1B - Specialty occupation - Change of status in the U.S.",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 5,
+      "unit": "Months",
+      "inquiry": "2026-01-02",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-H1B3",
+    "name": "H-1B - Specialty occupation - Extension of stay in the U.S.",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 11.5,
+      "unit": "Months",
+      "inquiry": "2025-10-16",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-H2AN",
+    "name": "H-2A - Temporary agricultural workers - Named Beneficiary",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 15,
+      "unit": "Days",
+      "inquiry": "2026-07-27",
+      "note": 11
+     }
+    ]
+   },
+   {
+    "code": "137-H2AU",
+    "name": "H-2A - Temporary agricultural workers - Unnamed Beneficiary",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 15,
+      "unit": "Days",
+      "inquiry": "2026-07-27",
+      "note": 12
+     }
+    ]
+   },
+   {
+    "code": "137-H2B",
+    "name": "H-2B - Temporary nonagricultural workers",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 4.5,
+      "unit": "Months",
+      "inquiry": "2026-05-17",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-H3",
+    "name": "H-3 - Temporary trainees",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 22,
+      "unit": "Months",
+      "inquiry": "2024-11-30",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-L",
+    "name": "Intracompany transferees and blanket L",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 5.5,
+      "unit": "Months",
+      "inquiry": "2026-01-07",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-O",
+    "name": "O - Extraordinary ability",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-04-21"
+     }
+    ]
+   },
+   {
+    "code": "137-P",
+    "name": "P - Athletes, artists, and entertainers",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-08-21"
+     }
+    ]
+   },
+   {
+    "code": "137-Q",
+    "name": "Q - Cultural exchange visitors",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-04-14",
+      "note": 10
+     }
+    ]
+   },
+   {
+    "code": "137-R",
+    "name": "R - Religious occupation",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 10,
+      "unit": "Months",
+      "inquiry": "2025-10-24"
+     }
+    ]
+   },
+   {
+    "code": "137-TN",
+    "name": "TN - United States-Mexico-Canada Agreement (USMCA, formerly NAFTA) professional",
+    "offices": [
+     {
+      "code": "SCD",
+      "name": "Service Center Operations (SCOPS)",
+      "value": 5,
+      "unit": "Months",
+      "inquiry": "2026-04-26"
+     }
+    ]
+   }
+  ],
+  "N-400": [
+   {
+    "code": "160A",
+    "name": "Application for Naturalization",
+    "offices": [
+     {
+      "code": "AGA",
+      "name": "Agana GU",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-05-12"
+     },
+     {
+      "code": "ALB",
+      "name": "Albany NY",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-08-13"
+     },
+     {
+      "code": "ABQ",
+      "name": "Albuquerque NM",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-08-18"
+     },
+     {
+      "code": "ANC",
+      "name": "Anchorage AK",
+      "value": 18.5,
+      "unit": "Months",
+      "inquiry": "2024-11-22"
+     },
+     {
+      "code": "ATL",
+      "name": "Atlanta GA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-04-13"
+     },
+     {
+      "code": "BAL",
+      "name": "Baltimore MD",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-03-28"
+     },
+     {
+      "code": "BOI",
+      "name": "Boise ID",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-05-25"
+     },
+     {
+      "code": "BOS",
+      "name": "Boston MA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-06-01"
+     },
+     {
+      "code": "BNY",
+      "name": "Brooklyn NY",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-05-17"
+     },
+     {
+      "code": "BUF",
+      "name": "Buffalo NY",
+      "value": 17.5,
+      "unit": "Months",
+      "inquiry": "2025-04-09"
+     },
+     {
+      "code": "STA",
+      "name": "Burlington VT",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-08-28"
+     },
+     {
+      "code": "CHL",
+      "name": "Charleston SC",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-07-18"
+     },
+     {
+      "code": "CHA",
+      "name": "Charlotte Amalie VI",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-07-26"
+     },
+     {
+      "code": "CLT",
+      "name": "Charlotte NC",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-07-24"
+     },
+     {
+      "code": "CHI",
+      "name": "Chicago IL",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-02-20"
+     },
+     {
+      "code": "CHR",
+      "name": "Christiansted VI",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-08-04"
+     },
+     {
+      "code": "CIN",
+      "name": "Cincinnati OH",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-07-16"
+     },
+     {
+      "code": "CLE",
+      "name": "Cleveland OH",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-05-29"
+     },
+     {
+      "code": "CLM",
+      "name": "Columbus OH",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-04-19"
+     },
+     {
+      "code": "NJC",
+      "name": "Cranbury NJ",
+      "value": 11.5,
+      "unit": "Months",
+      "inquiry": "2025-09-29"
+     },
+     {
+      "code": "DAL",
+      "name": "Dallas TX",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-07-16"
+     },
+     {
+      "code": "DEN",
+      "name": "Denver CO",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-03-21"
+     },
+     {
+      "code": "DSM",
+      "name": "Des Moines IA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-06-12"
+     },
+     {
+      "code": "DET",
+      "name": "Detroit MI",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-04-03"
+     },
+     {
+      "code": "ELP",
+      "name": "El Paso TX",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-08-23"
+     },
+     {
+      "code": "OFM",
+      "name": "Fort Myers FL",
+      "value": 19,
+      "unit": "Months",
+      "inquiry": "2025-02-06"
+     },
+     {
+      "code": "FSA",
+      "name": "Fort Smith AR",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-08-27"
+     },
+     {
+      "code": "FRE",
+      "name": "Fresno CA",
+      "value": 17,
+      "unit": "Months",
+      "inquiry": "2025-03-08"
+     },
+     {
+      "code": "GRR",
+      "name": "Greer SC",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-10-15"
+     },
+     {
+      "code": "HLG",
+      "name": "Harlingen TX",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-08-31"
+     },
+     {
+      "code": "HAR",
+      "name": "Hartford CT",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-07-09"
+     },
+     {
+      "code": "HEL",
+      "name": "Helena MT",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-09-26"
+     },
+     {
+      "code": "HIA",
+      "name": "Hialeah FL",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-09-26"
+     },
+     {
+      "code": "HHW",
+      "name": "Honolulu HI",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2024-12-26"
+     },
+     {
+      "code": "HOU",
+      "name": "Houston TX",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-08-04"
+     },
+     {
+      "code": "IMP",
+      "name": "Imperial CA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-05-12"
+     },
+     {
+      "code": "INP",
+      "name": "Indianapolis IN",
+      "value": 17,
+      "unit": "Months",
+      "inquiry": "2025-04-30"
+     },
+     {
+      "code": "JAC",
+      "name": "Jacksonville FL",
+      "value": 17,
+      "unit": "Months",
+      "inquiry": "2025-04-05"
+     },
+     {
+      "code": "KAN",
+      "name": "Kansas City MO",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-07-25"
+     },
+     {
+      "code": "KND",
+      "name": "Kendall FL",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-07-22"
+     },
+     {
+      "code": "LVG",
+      "name": "Las Vegas NV",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-04-02"
+     },
+     {
+      "code": "LAW",
+      "name": "Lawrence MA",
+      "value": 20,
+      "unit": "Months",
+      "inquiry": "2025-01-10"
+     },
+     {
+      "code": "LNY",
+      "name": "Long Island NY",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-03-10"
+     },
+     {
+      "code": "LOS",
+      "name": "Los Angeles CA",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2024-08-13"
+     },
+     {
+      "code": "LAC",
+      "name": "Los Angeles County CA",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-06-24"
+     },
+     {
+      "code": "LOU",
+      "name": "Louisville KY",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-06-06"
+     },
+     {
+      "code": "MAN",
+      "name": "Manchester NH",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-07-25"
+     },
+     {
+      "code": "MEM",
+      "name": "Memphis TN",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-06-12"
+     },
+     {
+      "code": "MIA",
+      "name": "Miami FL",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-06-09"
+     },
+     {
+      "code": "MIL",
+      "name": "Milwaukee WI",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-04-08"
+     },
+     {
+      "code": "SPM",
+      "name": "Minneapolis-St. Paul MN",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-02-11"
+     },
+     {
+      "code": "MGA",
+      "name": "Montgomery AL",
+      "value": 11,
+      "unit": "Months",
+      "inquiry": "2025-09-16"
+     },
+     {
+      "code": "MTL",
+      "name": "Mount Laurel NJ",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-08-16"
+     },
+     {
+      "code": "NTN",
+      "name": "Nashville TN",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2025-05-13"
+     },
+     {
+      "code": "NEW",
+      "name": "Newark NJ",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-05-13"
+     },
+     {
+      "code": "NOL",
+      "name": "New Orleans LA",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2024-12-08"
+     },
+     {
+      "code": "NYC",
+      "name": "New York City NY",
+      "value": 11.5,
+      "unit": "Months",
+      "inquiry": "2025-09-26"
+     },
+     {
+      "code": "NOR",
+      "name": "Norfolk VA",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-07-16"
+     },
+     {
+      "code": "OKL",
+      "name": "Oakland Park FL",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-02-18"
+     },
+     {
+      "code": "OKC",
+      "name": "Oklahoma City OK",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-07-25"
+     },
+     {
+      "code": "OMA",
+      "name": "Omaha NE",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-05-12"
+     },
+     {
+      "code": "ORL",
+      "name": "Orlando FL",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2025-01-17"
+     },
+     {
+      "code": "PHI",
+      "name": "Philadelphia PA",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-06-26"
+     },
+     {
+      "code": "PHO",
+      "name": "Phoenix AZ",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-07-31"
+     },
+     {
+      "code": "PIT",
+      "name": "Pittsburgh PA",
+      "value": 12,
+      "unit": "Months",
+      "inquiry": "2025-07-02"
+     },
+     {
+      "code": "POM",
+      "name": "Portland ME",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-11-16"
+     },
+     {
+      "code": "POO",
+      "name": "Portland OR",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-05-07"
+     },
+     {
+      "code": "PRO",
+      "name": "Providence RI",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-05-06"
+     },
+     {
+      "code": "QNS",
+      "name": "Queens NY",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-03-23"
+     },
+     {
+      "code": "RAL",
+      "name": "Raleigh NC",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2025-05-03"
+     },
+     {
+      "code": "REN",
+      "name": "Reno NV",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-06-09"
+     },
+     {
+      "code": "SAC",
+      "name": "Sacramento CA",
+      "value": 18,
+      "unit": "Months",
+      "inquiry": "2024-10-21"
+     },
+     {
+      "code": "STL",
+      "name": "Saint Louis MO",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-07-20"
+     },
+     {
+      "code": "SLC",
+      "name": "Salt Lake City UT",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-05-20"
+     },
+     {
+      "code": "SNA",
+      "name": "San Antonio TX",
+      "value": 12.5,
+      "unit": "Months",
+      "inquiry": "2025-08-28"
+     },
+     {
+      "code": "SBD",
+      "name": "San Bernardino CA",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-07-02"
+     },
+     {
+      "code": "SND",
+      "name": "San Diego CA",
+      "value": 17,
+      "unit": "Months",
+      "inquiry": "2024-11-15"
+     },
+     {
+      "code": "SFV",
+      "name": "San Fernando Valley CA",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-06-24"
+     },
+     {
+      "code": "SFR",
+      "name": "San Francisco CA",
+      "value": 16,
+      "unit": "Months",
+      "inquiry": "2024-06-03"
+     },
+     {
+      "code": "SNJ",
+      "name": "San Jose CA",
+      "value": 17,
+      "unit": "Months",
+      "inquiry": "2024-06-28"
+     },
+     {
+      "code": "SAJ",
+      "name": "San Juan PR",
+      "value": 11.5,
+      "unit": "Months",
+      "inquiry": "2025-11-03"
+     },
+     {
+      "code": "SAA",
+      "name": "Santa Ana CA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-05-14"
+     },
+     {
+      "code": "SEA",
+      "name": "Seattle WA",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-07-14"
+     },
+     {
+      "code": "SPO",
+      "name": "Spokane WA",
+      "value": 13,
+      "unit": "Months",
+      "inquiry": "2025-06-25"
+     },
+     {
+      "code": "TAM",
+      "name": "Tampa FL",
+      "value": 16.5,
+      "unit": "Months",
+      "inquiry": "2025-05-01"
+     },
+     {
+      "code": "TUC",
+      "name": "Tucson AZ",
+      "value": 13.5,
+      "unit": "Months",
+      "inquiry": "2025-07-18"
+     },
+     {
+      "code": "WAS",
+      "name": "Washington DC",
+      "value": 14,
+      "unit": "Months",
+      "inquiry": "2025-07-23"
+     },
+     {
+      "code": "WPB",
+      "name": "West Palm Beach FL",
+      "value": 15,
+      "unit": "Months",
+      "inquiry": "2024-12-11"
+     },
+     {
+      "code": "WIC",
+      "name": "Wichita KS",
+      "value": 14.5,
+      "unit": "Months",
+      "inquiry": "2025-07-08"
+     },
+     {
+      "code": "YAK",
+      "name": "Yakima WA",
+      "value": 15.5,
+      "unit": "Months",
+      "inquiry": "2025-05-29"
+     }
+    ]
+   }
+  ]
+ }
+}

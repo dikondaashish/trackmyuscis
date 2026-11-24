@@ -5,6 +5,7 @@ import { ANSWERS, ANSWERS_UPDATED } from "@/lib/answers";
 import { BLOG_POSTS, BLOG_UPDATED } from "@/lib/blog";
 import { LEGAL_DOCS } from "@/lib/legal";
 import { CONTENT_UPDATED } from "@/lib/seo";
+import { PT_CHECKED, PT_FORMS } from "@/lib/processing-times";
 
 type Entry = { path: string; priority: number; freq: MetadataRoute.Sitemap[number]["changeFrequency"]; updated?: string };
 
@@ -13,7 +14,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const legalDate = new Date(LEGAL_UPDATED).toISOString().slice(0, 10);
   const entries: Entry[] = [
     { path: "", priority: 1, freq: "weekly" },
-    { path: "/processing-times", priority: 0.9, freq: "weekly" },
+    { path: "/processing-times", priority: 0.9, freq: "weekly", updated: PT_CHECKED },
+    ...PT_FORMS.map((p) => ({ path: `/processing-times/${p.form.slug}`, priority: 0.9, freq: "monthly" as const, updated: PT_CHECKED })),
     { path: "/status-explained", priority: 0.9, freq: "monthly" },
     { path: "/forms", priority: 0.8, freq: "monthly" },
     { path: "/guides", priority: 0.8, freq: "weekly" },

@@ -8,9 +8,10 @@ import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { ExternalLink } from "@/components/ui/ExternalLink";
 import { getAnswer } from "@/lib/answers";
-import { FORM_RELATED, FORMS, FORMS_UPDATED, getForm, getGuide, officialFormUrl, USCIS_FEE_SCHEDULE, USCIS_PROCESSING_TIMES } from "@/lib/content";
+import { FORM_RELATED, FORMS, FORMS_UPDATED, getForm, getGuide, officialFormUrl, USCIS_FEE_SCHEDULE } from "@/lib/content";
 import { btnPrimary, container, focusRing, panel, rowPad, rows, section } from "@/lib/ui";
 import Link from "next/link";
+import { getPtForm } from "@/lib/processing-times";
 
 const titleCase = (s: string) => s.replace(/\b[a-z]/g, (c) => c.toUpperCase());
 
@@ -142,7 +143,14 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
                 <Link href="/#track" className={btnPrimary}>
                   Track Case
                 </Link>
-                <ExternalLink href={USCIS_PROCESSING_TIMES}>Official processing times</ExternalLink>
+                {getPtForm(f.slug) && (
+                  <Link
+                    href={`/processing-times/${f.slug}`}
+                    className={`link-draw inline-flex min-h-11 items-center rounded text-small font-semibold text-blue ${focusRing}`}
+                  >
+                    Form {f.form} processing time
+                  </Link>
+                )}
                 <ExternalLink href={officialFormUrl(f)}>{f.form} on uscis.gov</ExternalLink>
               </div>
             </div>

@@ -50,6 +50,9 @@ Official numbers read on 2026-11-24: I-765 (c)(3) 6 months, I-765 (c)(26) standa
 
 ## Next, in priority order
 
+The wider plan for every visa holder (H-1B, L-1, O-1, TN, family, citizenship, humanitarian, Spanish), with volumes and tool ideas, is in [keyword-research-all-visas.md](keyword-research-all-visas.md). It takes priority over the list below once the student topics are done.
+
+
 1. **Fill in the December 2026 Visa Bulletin post the day it's published** (still "Coming soon" on 2026-11-24). Add the charts and what moved, rewrite the answer, status section and first FAQs, and keep the slug. The file's header lists the steps.
    From January 2027 on, publish each month's bulletin page early, around the 1st of the month before (the sister site's Search Console shows "december 2026" searches start weeks ahead), then fill it in on release day.
 2. **Student topics next:** OPT denied (check the I-765 motion rules and I-290B fee on uscis.gov first), OPT biometrics, second master's OPT, E-Verify number vs EIN on the I-983, Real ID for students, renewing an F-1 visa on OPT, changing employers on STEM OPT, OPT to H-1B.

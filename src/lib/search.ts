@@ -5,6 +5,7 @@
 import { ANSWERS } from "@/lib/answers";
 import { BLOG_POSTS } from "@/lib/blog";
 import { FAQ, FORMS, GUIDES, STATUSES, statusId } from "@/lib/content";
+import { PT_FORMS, rangeSummary } from "@/lib/processing-times";
 
 export type SearchKind = "Status" | "Form" | "Answer" | "Guide" | "Article" | "Help" | "Page";
 
@@ -72,6 +73,13 @@ export function buildSearchIndex(): SearchEntry[] {
       text: f.about,
       href: `/forms/${f.slug}`,
       more: [f.label, ...f.sections.map((s) => s.heading), ...f.milestones].join(" "),
+    })),
+    ...PT_FORMS.map((p) => ({
+      kind: "Page" as const,
+      title: `Form ${p.form.form} processing time`,
+      text: `Official USCIS time: ${rangeSummary(p)}.`,
+      href: `/processing-times/${p.form.slug}`,
+      more: `how long wait ${p.form.label} ${p.form.title} office field office service center ${p.categories.map((c) => c.name).join(" ")}`,
     })),
     ...GUIDES.map((g) => ({
       kind: "Guide" as const,
