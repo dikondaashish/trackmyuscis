@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/forms", priority: 0.8, freq: "monthly" },
     { path: "/guides", priority: 0.8, freq: "weekly" },
     { path: "/lawyers", priority: 0.8, freq: "monthly" },
+    { path: "/lawyers/join", priority: 0.6, freq: "monthly", updated: legalDate },
     ...FORMS.map((f) => ({ path: `/forms/${f.slug}`, priority: 0.8, freq: "monthly" as const, updated: formsDate })),
     ...GUIDES.map((g) => ({ path: `/guides/${g.slug}`, priority: 0.7, freq: "monthly" as const })),
     { path: "/answers", priority: 0.8, freq: "weekly", updated: ANSWERS_UPDATED },

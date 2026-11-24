@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { LawyerSearch, LawyerSearchWithResult } from "@/components/LawyerSearch";
 import { PageIntro } from "@/components/ui/PageIntro";
@@ -82,12 +82,22 @@ export default function LawyersPage() {
 
           <h2 className="mt-12 text-h3 font-semibold text-midnight">Our lawyer directory</h2>
           <p className="mt-4 text-body text-slate">
-            <RichText text="The directory is not open yet, so a search returns no listings today. When it opens, every attorney's state bar license is checked before they appear, and paid placements carry a Sponsored label. See [how listings work](/advertising)." />
+            <RichText text="The directory is not open yet, so a search returns no listings today. We are taking applications from lawyers now. When it opens, every attorney's state bar license is checked before they appear. Lawyers pay a flat yearly fee to be listed, and it never changes the order of results. See [how listings work](/advertising)." />
           </p>
           <div className={`mt-6 ${panel}`}>
             <Suspense fallback={<LawyerSearch />}>
               <LawyerSearchWithResult />
             </Suspense>
+          </div>
+          <div className={`mt-12 flex flex-col items-start gap-3 ${panel} sm:p-8`}>
+            <h2 className="text-title text-midnight">Are you an immigration lawyer?</h2>
+            <p className="text-body text-slate">
+              Attorneys and DOJ-accredited representatives can apply to be listed. It&apos;s free while the directory is launching.
+            </p>
+            <Link href="/lawyers/join" className={`mt-1 ${textLink}`}>
+              List your practice
+              <ArrowRight aria-hidden className="size-4" />
+            </Link>
           </div>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { FAQ, FORMS, GUIDES, USCIS_CASE_STATUS, USCIS_PROCESSING_TIMES } from "@
 import { ANSWERS } from "@/lib/answers";
 import { BLOG_POSTS } from "@/lib/blog";
 import { LEGAL_DOCS, POLICY_ORDER } from "@/lib/legal";
+import { DIRECTORY, directoryFee } from "@/lib/directory";
 import { PT_CHECKED, PT_FORMS, PT_OFFICE_FORMS, officePages, rangeSummary } from "@/lib/processing-times";
 import { FEE_SCHEDULE_EDITION, FORM_FACTS, feeSentence } from "@/lib/form-facts";
 import { STATUS_PAGES, statusHref } from "@/lib/statuses";
@@ -85,6 +86,7 @@ export function GET() {
     "",
     `- [About](${url("/about")}): What TrackMyUSCIS does, where its information comes from and how it is paid for.`,
     `- [Contact](${url("/contact")}): ${COMPANY.email.support}`,
+    `- [List your immigration practice](${url("/lawyers/join")}): For lawyers. Licensed immigration attorneys and DOJ-accredited representatives can apply to be listed in the TrackMyUSCIS lawyer directory. ${DIRECTORY.freeAtLaunch ? `Free while the directory is launching, then a flat ${directoryFee}.` : `A flat ${directoryFee}.`} It is an advertising fee, never a fee per client or a share of legal fees, and every license is checked before a listing appears.`,
     ...POLICY_ORDER.map((k) => `- [${LEGAL_DOCS[k].title}](${url(`/${k}`)}): ${LEGAL_DOCS[k].summary}`),
     "",
   ];

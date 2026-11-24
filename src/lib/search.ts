@@ -39,6 +39,13 @@ const PAGES: SearchEntry[] = [
   },
   {
     kind: "Page",
+    title: "List your immigration practice",
+    text: "For attorneys and DOJ-accredited representatives: apply to be listed in the lawyer directory. Free during launch.",
+    href: "/lawyers/join",
+    more: "lawyer directory join apply listing fee advertise attorney accredited representative",
+  },
+  {
+    kind: "Page",
     title: "Avoid immigration scams",
     text: "Rules to avoid immigration scams, the warning signs, and where to report a scam.",
     href: "/scams",

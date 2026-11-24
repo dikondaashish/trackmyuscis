@@ -6,6 +6,7 @@
  * are linked automatically. A string[] inside `body` renders as a bullet list.
  */
 import { COMPANY, LEGAL_UPDATED } from "@/lib/company";
+import { DIRECTORY, directoryFee } from "@/lib/directory";
 import { DISCLAIMER } from "@/lib/site";
 
 export type LegalSection = { id: string; heading: string; body: (string | string[])[] };
@@ -119,10 +120,11 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
       },
       {
         id: "lawyer-directory",
-        heading: "7. Lawyer directory and sponsored listings",
+        heading: "7. Lawyer directory and paid listings",
         body: [
           "Attorneys supply the information in their listings. We check that each attorney is licensed before the listing appears, but we do not recommend or guarantee any attorney, their fees or their results. Any agreement you make with a lawyer is between you and that lawyer.",
-          "Some listings are paid placements. They always carry a Sponsored label. Our [Advertising and Lawyer Directory](/advertising) page explains how listings work.",
+          "Lawyers pay a flat yearly fee to be listed, and listings are free while the directory is launching. The fee doesn't change the order of results. Our [Advertising and Lawyer Directory](/advertising) page explains how listings work.",
+          "If you apply to be listed, you confirm that the information you give is accurate, that you are licensed and in good standing (or accredited by the Department of Justice), and that your listing follows the advertising rules of every bar you belong to. We may decline, edit or remove a listing.",
         ],
       },
       {
@@ -258,6 +260,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "Your choices in Settings > Preferences: whether we may email you about case updates, and whether your community profile and activity status may be shown to other users once community features launch (both off unless you turn them on).",
             "If you use Documents: the files you upload (for example a passport, green card, work permit or USCIS notice), the type, dates, one-line summary and key details read from each one (which can include your name, document numbers and date of birth), your 6-digit passcode (stored only as a secure hash), your lock settings and whether expiry reminders are on. Documents is optional; nothing is uploaded unless you choose a file.",
             "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
+            "If you are a lawyer or accredited representative applying to our directory: your name, firm or organization, work email, phone, website, the state bar and bar number you give, your office city and state, languages, the kinds of cases you take and the description you write. Once a listing is approved and the directory is open, those details are shown publicly, apart from your bar number and email.",
             "For each saved case: the status, description and status history USCIS returns, when it last changed and when we last checked it, and your email and privacy choices in Settings.",
           ],
           "Information collected automatically:",
@@ -292,6 +295,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "to run the Service and show you the results you ask for",
             "to reply when you contact us",
             "to check your saved cases with USCIS and, if case emails are on, email you when a status changes",
+            "if you apply to the lawyer directory: to check your license, publish your listing, and contact and bill you about it",
             "to store the documents you upload, read their type, dates and key details with AI, and, if reminders are on, email you before they expire",
             "to send the account messages you need",
             "to protect the Service, our users and us from fraud, abuse and security threats",
@@ -336,6 +340,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
           [
             "Server logs: up to 90 days, unless we need them longer to investigate abuse.",
             "Emails with us: up to 24 months after the conversation ends.",
+            "Lawyer directory applications and listings: while the listing is active, and up to 24 months after it is declined or removed.",
             "Documents: until you delete them or your account. Resetting a forgotten Documents passcode deletes them too.",
             "Account information: while your account is open. When you delete it, we delete your information within 30 days, apart from backups, which are overwritten within a further 90 days, and anything the law requires us to keep.",
           ],
@@ -561,8 +566,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
   advertising: {
     title: "Advertising and Lawyer Directory",
     description:
-      "How TrackMyUSCIS makes money, how lawyers in the directory are license-checked and how sponsored listings are labeled so you always know what is an ad.",
-    summary: "How we make money, how lawyers are checked and how sponsored listings are labeled.",
+      "How TrackMyUSCIS makes money, how lawyers in the directory are license-checked and what lawyers pay to be listed, so you always know what is an ad.",
+    summary: "How we make money, how lawyers are checked and what they pay to be listed.",
     updated: LEGAL_UPDATED,
     policy: true,
     sections: [
@@ -570,15 +575,17 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         id: "how-we-earn",
         heading: "How we make money",
         body: [
-          `${product} is free to use. We plan to earn money from sponsored placements in the lawyer directory and, later, from optional paid features. We never sell your personal information.`,
-          "Sponsors never pay for, review or change our guides, status explanations or processing-time information.",
+          `${product} is free for people following a case. We earn money from a flat yearly fee that lawyers pay to be listed in our directory, which is free while the directory is launching. Later we may offer optional paid features. We never sell your personal information.`,
+          "Lawyers never pay for, review or change our guides, status explanations or processing-time information.",
         ],
       },
       {
         id: "sponsored",
-        heading: "Sponsored listings",
+        heading: "Paid listings",
         body: [
-          "A sponsored listing is a paid placement. Every one carries a clear Sponsored label, so you always know what is an ad. Other results are ordered by how well they match your search, such as location and case type.",
+          `Lawyers pay to appear in the directory. After launch, every attorney and accredited representative listed pays the same flat fee of ${directoryFee}. While the directory is launching, listings are free.`,
+          "The fee is for advertising. We are not paid per client, per lead or per referral, and we never share in a lawyer's fees.",
+          "Paying doesn't change the order of results. Listings are ordered by how well they match your search, such as location and case type. If we ever sell a higher position, it will carry a clear Sponsored label.",
         ],
       },
       {
@@ -587,7 +594,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         body: [
           "Before a listing appears, we confirm the attorney is licensed and in good standing with at least one U.S. state bar. Immigration law is federal, so a lawyer licensed in any state can handle immigration cases anywhere in the country. Accredited representatives must appear on the Department of Justice roster.",
           "We re-check every listing at least once a year and remove listings that no longer qualify.",
-          "Being listed, verified or sponsored is not a recommendation. Choose a lawyer the way you would any professional: ask about fees in writing, check reviews and confirm their license yourself.",
+          "Being listed or verified is not a recommendation. Choose a lawyer the way you would any professional: ask about fees in writing, check reviews and confirm their license yourself.",
         ],
       },
       {
@@ -620,7 +627,9 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         id: "for-lawyers",
         heading: "For lawyers",
         body: [
-          `Listings must be accurate and follow the advertising rules of every bar you belong to. We may edit or remove any listing that doesn't. To join the directory, email ${email.support}.`,
+          "To join the directory, [apply here](/lawyers/join). We check your license before a listing appears.",
+          "Listings must be accurate and follow the advertising rules of every bar you belong to. We may decline, edit or remove any listing that doesn't.",
+          `After launch a listing is ${directoryFee}, sent as an invoice by email. We email you at least ${DIRECTORY.noticeDays} days before the first invoice, and you can leave the directory instead of paying. To change or remove a listing, email ${email.support}.`,
         ],
       },
     ],

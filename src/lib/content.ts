@@ -578,7 +578,7 @@ export const TEXT_PAGES: Record<string, TextPage> = {
       {
         heading: "How the site is paid for",
         body: [
-          "Everything here is free. We plan to earn money from clearly labeled sponsored placements in the lawyer directory when it opens. Sponsors never pay for, review or change our explanations. We never sell your personal information. See [Advertising and Lawyer Directory](/advertising).",
+          "Everything here is free for people following a case. We earn money from a flat yearly fee that lawyers pay to be listed in the lawyer directory, which is free while it is launching. Lawyers never pay for, review or change our explanations. We never sell your personal information. See [Advertising and Lawyer Directory](/advertising).",
         ],
       },
       {
