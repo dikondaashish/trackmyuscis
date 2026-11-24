@@ -4,8 +4,10 @@
  */
 import { ANSWERS } from "@/lib/answers";
 import { BLOG_POSTS } from "@/lib/blog";
-import { FAQ, FORMS, GUIDES, STATUSES, statusId } from "@/lib/content";
-import { PT_FORMS, rangeSummary } from "@/lib/processing-times";
+import { FAQ, FORMS, GUIDES } from "@/lib/content";
+import { FORM_FACTS } from "@/lib/form-facts";
+import { STATUS_PAGES, statusHref } from "@/lib/statuses";
+import { formatTime, PT_FORMS, PT_OFFICE_PAGES, rangeSummary } from "@/lib/processing-times";
 
 export type SearchKind = "Status" | "Form" | "Answer" | "Guide" | "Article" | "Help" | "Page";
 
@@ -45,7 +47,7 @@ const PAGES: SearchEntry[] = [
   {
     kind: "Page",
     title: "Check a receipt number",
-    text: "Check that a receipt number is written correctly and see which USCIS office issued it.",
+    text: "Check that a receipt number is written correctly and see which USCIS office issued it. To see its status, save it in a free account.",
     href: "/#track",
     more: "track case tracker decode prefix office",
   },
@@ -53,12 +55,12 @@ const PAGES: SearchEntry[] = [
 
 export function buildSearchIndex(): SearchEntry[] {
   return [
-    ...STATUSES.map((s) => ({
+    ...STATUS_PAGES.map((s) => ({
       kind: "Status" as const,
       title: s.name,
       text: s.meaning,
-      href: `/status-explained#${statusId(s.name)}`,
-      more: "case status meaning",
+      href: statusHref(s),
+      more: ["case status meaning", ...(s.alsoShownAs ?? []), ...(s.faq ?? []).map((f) => f.q)].join(" "),
     })),
     ...ANSWERS.map((a) => ({
       kind: "Answer" as const,
@@ -72,7 +74,7 @@ export function buildSearchIndex(): SearchEntry[] {
       title: `Form ${f.form}: ${f.title}`,
       text: f.about,
       href: `/forms/${f.slug}`,
-      more: [f.label, ...f.sections.map((s) => s.heading), ...f.milestones].join(" "),
+      more: [f.label, "fee cost documents checklist who files edition", FORM_FACTS[f.slug]?.who ?? "", ...f.sections.map((s) => s.heading), ...f.milestones].join(" "),
     })),
     ...PT_FORMS.map((p) => ({
       kind: "Page" as const,
@@ -80,6 +82,13 @@ export function buildSearchIndex(): SearchEntry[] {
       text: `Official USCIS time: ${rangeSummary(p)}.`,
       href: `/processing-times/${p.form.slug}`,
       more: `how long wait ${p.form.label} ${p.form.title} office field office service center ${p.categories.map((c) => c.name).join(" ")}`,
+    })),
+    ...PT_OFFICE_PAGES.map((o) => ({
+      kind: "Page" as const,
+      title: `Form ${o.p.form.form} processing time in ${o.name}`,
+      text: `Official USCIS time at this field office: ${formatTime(o.office)}.`,
+      href: `/processing-times/${o.p.form.slug}/${o.slug}`,
+      more: `how long wait field office ${o.p.form.label} ${o.category.name}`,
     })),
     ...GUIDES.map((g) => ({
       kind: "Guide" as const,

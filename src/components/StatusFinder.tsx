@@ -3,10 +3,9 @@
 import { useId, useState } from "react";
 import { Search, X } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { statusId, type Tone } from "@/lib/content";
+import Link from "next/link";
+import { statusId, TONE_LABEL, type Tone } from "@/lib/statuses";
 import { appCard, appField, field, fieldLabel, focusRing, rowPad, rows } from "@/lib/ui";
-
-const TONE_LABEL = { info: "Update", success: "Good news", warning: "Action needed", error: "Decision" } as const;
 
 /**
  * Every status stays in the page (for search engines and screen readers); typing only
@@ -16,7 +15,8 @@ export function StatusFinder({
   statuses,
   compact = false,
 }: {
-  statuses: { name: string; tone: Tone; meaning: string }[];
+  /** With `href`, the status name links to its full page. */
+  statuses: { name: string; tone: Tone; meaning: string; href?: string }[];
   /** The dashboard size: a 36px field and tighter rows. */
   compact?: boolean;
 }) {
@@ -84,7 +84,16 @@ export function StatusFinder({
             }`}
           >
             <dt>
-              <span className={`block font-semibold text-midnight ${compact ? "text-small" : "text-title"}`}>{s.name}</span>
+              {s.href ? (
+                <Link
+                  href={s.href}
+                  className={`link-draw -my-2 inline-flex min-h-11 items-center rounded font-semibold text-blue ${compact ? "text-small" : "text-title"} ${focusRing}`}
+                >
+                  {s.name}
+                </Link>
+              ) : (
+                <span className={`block font-semibold text-midnight ${compact ? "text-small" : "text-title"}`}>{s.name}</span>
+              )}
               <span className={`block ${compact ? "mt-1" : "mt-2"}`}>
                 <StatusBadge tone={s.tone}>{TONE_LABEL[s.tone]}</StatusBadge>
               </span>

@@ -6,6 +6,7 @@
  * Older snapshots stay, so each page can show how the time has moved.
  */
 import { FORMS, type UscisForm } from "@/lib/content";
+import { longDate } from "@/lib/seo";
 import snapshot20261124 from "@/lib/processing-times-data/2026-11-24.json";
 
 export type PtOffice = {
@@ -124,20 +125,83 @@ export function rangeTextOf(list: PtRow[]) {
 }
 
 /**
- * The category most people filing the form are in, led with in the short answer when a form has
- * several categories with very different times. `who` finishes "For …".
+ * The categories most people filing the form are in. The first leads the short answer when a form
+ * has several categories with very different times; both lead the search description.
+ * `who` finishes "For …"; `label` follows the time in a list ("6 months for F-1 OPT").
  */
-const HEADLINE: Record<string, { code: string; who: string }> = {
-  "I-130": { code: "134A-IR", who: "a U.S. citizen's spouse, parent or child under 21" },
-  "I-485": { code: "131A-FAM", who: "family-based applications" },
+type Lead = { code: string; who: string; label: string };
+const HEADLINE: Record<string, Lead[]> = {
+  "I-130": [{ code: "134A-IR", who: "a U.S. citizen's spouse, parent or child under 21", label: "for a U.S. citizen's spouse, parent or child under 21" }],
+  "I-485": [
+    { code: "131A-FAM", who: "family-based applications", label: "for family-based cases" },
+    { code: "131A", who: "employment-based applications", label: "for employment-based cases" },
+  ],
+  "I-765": [
+    { code: "147-C9", who: "a work permit based on a pending green card application, category (c)(9)", label: "with a pending I-485, (c)(9)" },
+    { code: "147-C3", who: "F-1 students applying for OPT, category (c)(3)", label: "for F-1 OPT, (c)(3)" },
+  ],
+  "I-140": [
+    { code: "136A-E21", who: "advanced degree or exceptional ability petitions (E21)", label: "for advanced degree petitions (E21)" },
+    { code: "136A-NIW", who: "national interest waiver petitions", label: "for national interest waivers" },
+  ],
+  "I-129": [
+    { code: "137-H1B3", who: "H-1B extensions of stay", label: "for H-1B extensions" },
+    { code: "137-H1B2", who: "H-1B changes of status", label: "for H-1B changes of status" },
+  ],
 };
 
+/** The lead categories of a form that have times in the latest snapshot, each with its rows (fastest first). */
+export function leads(p: PtForm) {
+  if (p.categories.length < 2) return [];
+  return (HEADLINE[p.form.form] ?? []).flatMap((h) => {
+    const rows = allRows(p).filter((r) => r.category.code === h.code && !isPartial(r));
+    return rows.length ? [{ ...h, rows }] : [];
+  });
+}
+
+/** "for family-based cases" for a lead category; undefined for any other. */
+export const leadLabel = (form: string, code: string) => HEADLINE[form]?.find((h) => h.code === code)?.label;
+
 /** The lead category of a form and its rows (fastest first), if it has one. */
-export function headline(p: PtForm) {
-  const h = HEADLINE[p.form.form];
-  if (!h || p.categories.length < 2) return undefined;
-  const rows = allRows(p).filter((r) => r.category.code === h.code);
-  return rows.length ? { who: h.who, rows } : undefined;
+export const headline = (p: PtForm) => leads(p)[0];
+
+/** The direct answer for a form: its lead category first when it has one, then the full range. */
+export function ptShortAnswer(p: PtForm) {
+  const f = p.form;
+  const { fastest, slowest, count } = range(p);
+  const meaning = `That's how long it took USCIS to finish 80% of these cases over the past six months, as shown on ${longDate(PT_CHECKED)}.`;
+  if (count === 1) return `USCIS's official processing time for Form ${f.form} is ${formatTime(fastest)}. ${meaning}`;
+  const lead = headline(p);
+  if (lead) {
+    const r = rangeOf(lead.rows);
+    const office = officeName(r.fastest.name);
+    const where = r.count > 1 ? ", depending on the office" : office === "All field offices" ? " at USCIS field offices" : ` at ${office}`;
+    return `For ${lead.who}, USCIS's official Form ${f.form} processing time is ${rangeTextOf(lead.rows)}${where}. ${meaning} Across all ${p.categories.length} categories it runs from ${rangeText(p)}.`;
+  }
+  const by = dependsOnLabel(p);
+  const ends =
+    by === "office" ? ` The fastest office is ${officeName(fastest.name)} and the slowest is ${officeName(slowest.name)}.` : "";
+  return `USCIS's official processing time for Form ${f.form} is ${rangeText(p)}, depending on the ${by}. ${meaning}${ends}`;
+}
+
+/**
+ * Search description, 160 characters at most. Forms with very different categories lead with the
+ * ones most people file ("16 months with a pending I-485, 6 months for F-1 OPT") instead of the
+ * full range, which says little ("1 week to 19 months").
+ */
+export function ptDescription(p: PtForm) {
+  const f = p.form.form;
+  const by = dependsOnLabel(p);
+  const see = by === "nothing" ? "See" : `See every ${by},`;
+  const tail = ["what the number means and what to do if you're past it.", "and what to do if you're past it.", "and what to do next."];
+  const lead = leads(p);
+  const starts = [
+    ...(lead.length > 1 ? [`Official ${f} processing time: ${lead.map((l) => `${rangeTextOf(l.rows)} ${l.label}`).join(", ")}.`] : []),
+    ...(lead.length > 0 ? [`Official ${f} processing time: ${rangeTextOf(lead[0].rows)} ${lead[0].label}.`] : []),
+    `USCIS's official ${f} processing time is ${rangeSummary(p)}.`,
+  ];
+  for (const start of starts) for (const end of tail) if (`${start} ${see} ${end}`.length <= 160) return `${start} ${see} ${end}`;
+  return starts[starts.length - 1];
 }
 
 /** Categories handled at a single office (shown together in one table) and those handled at many offices. */
@@ -160,4 +224,71 @@ export function dependsOnLabel(p: PtForm) {
 export function rangeSummary(p: PtForm) {
   const by = dependsOnLabel(p);
   return by === "nothing" ? rangeText(p) : `${rangeText(p)}, depending on the ${by}`;
+}
+
+/* ----------------------------------------------------------- office pages */
+
+/** Service centers and "all offices" rows are not a place someone's case is assigned to by where they live. */
+const isLocalOffice = (o: PtOffice) => !/^All Field Offices$|Service Center|National Benefits Center/i.test(o.name);
+
+/** "Seattle WA" → "seattle-wa"; "Minneapolis-St. Paul MN" → "minneapolis-st-paul-mn". */
+export const officeSlug = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/** "Seattle WA" → "WA"; undefined when the name doesn't end in a state or territory code. */
+export const officeState = (name: string) => name.match(/\s([A-Z]{2})$/)?.[1];
+
+export type PtOfficePage = {
+  p: PtForm;
+  slug: string;
+  /** "Seattle, WA". */
+  name: string;
+  state?: string;
+  /** The category decided office by office (family-based for I-485; the only one for N-400). */
+  category: PtCategory;
+  office: PtOffice;
+  /** Every local office of that category, fastest first. */
+  peers: PtOffice[];
+};
+
+/** The category of a form that USCIS reports office by office, if it has one. */
+function localCategory(p: PtForm) {
+  return p.categories.find((c) => c.offices.filter(isLocalOffice).length > 8);
+}
+
+/** Forms whose times differ by field office, so each office gets a page. */
+export const PT_OFFICE_FORMS = PT_FORMS.filter((p) => localCategory(p) !== undefined);
+
+export function officePages(p: PtForm): PtOfficePage[] {
+  const category = localCategory(p);
+  if (!category) return [];
+  const peers = category.offices.filter(isLocalOffice).sort((a, b) => inMonths(a) - inMonths(b) || a.name.localeCompare(b.name));
+  return [...peers]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((office) => ({ p, slug: officeSlug(office.name), name: officeName(office.name), state: officeState(office.name), category, office, peers }));
+}
+
+export const PT_OFFICE_PAGES: PtOfficePage[] = PT_OFFICE_FORMS.flatMap(officePages);
+
+export const getOfficePage = (formSlug: string, slug: string) => PT_OFFICE_PAGES.find((o) => o.p.form.slug === formSlug && o.slug === slug);
+
+/** Path of an office's page for a form, or undefined when that office has no page. */
+export function officeHref(formSlug: string, officeNameRaw: string) {
+  const page = getOfficePage(formSlug, officeSlug(officeNameRaw));
+  return page ? `/processing-times/${formSlug}/${page.slug}` : undefined;
+}
+
+/** How an office compares with the others for the same form and category. */
+export function officeStanding(o: PtOfficePage) {
+  const mine = inMonths(o.office);
+  const faster = o.peers.filter((x) => inMonths(x) < mine).length;
+  const slower = o.peers.filter((x) => inMonths(x) > mine).length;
+  const middle = o.peers[Math.floor((o.peers.length - 1) / 2)];
+  return { faster, slower, same: o.peers.length - faster - slower - 1, total: o.peers.length, fastest: o.peers[0], slowest: o.peers[o.peers.length - 1], middle };
+}
+
+/** Times for the same form that USCIS reports for all field offices together (for example employment-based I-485). */
+export function allFieldOfficeRows(p: PtForm, except: PtCategory) {
+  return p.categories
+    .filter((c) => c.code !== except.code)
+    .flatMap((c) => c.offices.filter((x) => x.name === "All Field Offices").map((x) => ({ category: c, office: x })));
 }

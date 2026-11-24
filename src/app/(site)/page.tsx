@@ -7,7 +7,8 @@ import { LinkRows } from "@/components/ui/LinkRows";
 import { SectionIntro } from "@/components/ui/SectionIntro";
 import { RichText } from "@/components/ui/RichText";
 import { ANSWERS } from "@/lib/answers";
-import { FORMS, USCIS_CASE_STATUS } from "@/lib/content";
+import { BLOG_POSTS } from "@/lib/blog";
+import { FORMS } from "@/lib/content";
 import { JsonLd } from "@/components/JsonLd";
 import { pageMetadata, webApplicationSchema, webPageSchema } from "@/lib/seo";
 import { cardLink, container, display, lead, rowArrow, section, textLink } from "@/lib/ui";
@@ -15,7 +16,7 @@ import { cardLink, container, display, lead, rowArrow, section, textLink } from 
 export const metadata = pageMetadata({
   title: "TrackMyUSCIS: USCIS Case Tracker and Status Meanings",
   description:
-    "Free and independent: check your USCIS receipt number, see what each case status means in plain English and find the official processing time for your form.",
+    "Free and independent: track your USCIS case status in a free account, check a receipt number, and read what each status and processing time means.",
   path: "/",
   absoluteTitle: true,
 });
@@ -32,9 +33,9 @@ const TOP_ANSWERS = [
 
 
 /**
- * Four sections, one job each: check a receipt number, pick your form, read the answer to
- * your question, then the few things people ask about us. Everything else is one click away
- * in the header.
+ * Five sections, one job each: check a receipt number, pick your form, read the answer to
+ * your question, the few things people ask about us, then the newest posts. Everything else
+ * is one click away in the header.
  */
 export default function Home() {
   return (
@@ -42,7 +43,7 @@ export default function Home() {
       <JsonLd
         data={[
           webApplicationSchema,
-          webPageSchema({ name: "TrackMyUSCIS: free USCIS case tracker", description: "Check a USCIS receipt number, understand case statuses and find official processing times.", path: "/" }),
+          webPageSchema({ name: "TrackMyUSCIS: free USCIS case tracker", description: "Track a USCIS case in a free account, check a receipt number, understand case statuses and find official processing times.", path: "/" }),
         ]}
       />
       {/* 1. Hero: one job, check a receipt number */}
@@ -69,7 +70,7 @@ export default function Home() {
                 <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
                 <span>
                   <RichText
-                    text={`Live status isn't shown here yet. For your latest status, use the [official USCIS case status page](${USCIS_CASE_STATUS}).`}
+                    text="This check runs in your browser and doesn't show your status. To see it, [create a free account](/sign-up): we check each saved case with USCIS about once a day."
                   />
                 </span>
               </p>
@@ -131,6 +132,24 @@ export default function Home() {
         <div className={`${container} grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-20`}>
           <SectionIntro id="faq-title" title="About TrackMyUSCIS" />
           <FaqList />
+        </div>
+      </section>
+
+      {/* 5. The newest posts */}
+      <section id="latest" aria-labelledby="latest-title" className={`bg-cloud ${section}`}>
+        <div className={`${container} grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-20`}>
+          <div>
+            <SectionIntro
+              id="latest-title"
+              title="Latest updates"
+              description="New rules, fees and timelines, each checked against official sources."
+            />
+            <Link href="/blog" className={`mt-6 ${textLink}`}>
+              See all posts
+              <ArrowRight aria-hidden className="size-4" />
+            </Link>
+          </div>
+          <LinkRows items={BLOG_POSTS.slice(0, 5).map((p) => ({ href: `/blog/${p.slug}`, title: p.seoTitle ?? p.title }))} />
         </div>
       </section>
     </>

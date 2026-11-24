@@ -5,6 +5,7 @@
 
 import { COMPANY } from "@/lib/company";
 import { DISCLAIMER } from "@/lib/site";
+import { STATUS_PAGES, type Tone } from "@/lib/statuses";
 
 export const USCIS_PROCESSING_TIMES = "https://egov.uscis.gov/processing-times/";
 
@@ -346,24 +347,10 @@ export const officialFormUrl = (f: UscisForm) => `https://www.uscis.gov/${f.slug
 
 /* --------------------------------------------------------------- statuses */
 
-export type Tone = "info" | "success" | "warning" | "error";
+export { statusId, type Tone } from "@/lib/statuses";
 
-/** Anchor id of a status on /status-explained, e.g. "case-was-received". */
-export const statusId = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
-export const STATUSES: { name: string; tone: Tone; meaning: string }[] = [
-  { name: "Case Was Received", tone: "info", meaning: "USCIS accepted your filing and mailed a receipt notice with your receipt number." },
-  { name: "Fingerprints Were Taken", tone: "info", meaning: "Your biometrics appointment is done. Background and identity checks run next." },
-  { name: "Case Is Being Actively Reviewed", tone: "info", meaning: "Your case is in review. It can show for months and needs nothing from you unless a notice arrives." },
-  { name: "Request for Evidence Was Sent", tone: "warning", meaning: "USCIS needs more documents. Answer by the deadline printed on the notice." },
-  { name: "Response to Request for Evidence Was Received", tone: "info", meaning: "USCIS has your documents and the review continues." },
-  { name: "Interview Was Scheduled", tone: "info", meaning: "A notice with the date, time and office of your interview is in the mail." },
-  { name: "Case Was Transferred", tone: "info", meaning: "Another office is handling your case now, often to balance workload. Processing times follow the new office." },
-  { name: "Case Was Approved", tone: "success", meaning: "Your case was approved. An approval notice is on its way." },
-  { name: "New Card Is Being Produced", tone: "success", meaning: "Your card or document is being printed." },
-  { name: "Card Was Mailed To Me", tone: "success", meaning: "Your card is in the mail, often with a tracking number." },
-  { name: "Case Was Denied", tone: "error", meaning: "The decision notice explains why and your options. Talk to an immigration attorney about next steps." },
-];
+/** Name, tone and one-line meaning of each status, for lists, search and the dashboard. Pages live in statuses.ts. */
+export const STATUSES: { name: string; tone: Tone; meaning: string }[] = STATUS_PAGES.map(({ name, tone, meaning }) => ({ name, tone, meaning }));
 
 /* ------------------------------------------------------------------ guides */
 
@@ -502,7 +489,11 @@ export const getGuide = (slug: string) => GUIDES.find((g) => g.slug === slug);
 export const FAQ: { q: string; a: string }[] = [
   {
     q: "What does the receipt number check do?",
-    a: "It checks that your receipt number is written correctly, tells you which USCIS office issued it and links you to the official USCIS page for its current status. The check runs in your browser, so the number is not sent to us or stored. Live status is not shown here yet.",
+    a: "It checks that your receipt number is written correctly and tells you which USCIS office issued it. The check runs in your browser, so the number is not sent to us or stored, and it doesn't show your status. To see your status, save the number in a free account.",
+  },
+  {
+    q: "Can I see my live case status here?",
+    a: "Yes, in a free account. Save your receipt number and we check it with the official USCIS Case Status API about once a day, then show the current status and its history on your dashboard. Email alerts for status changes are not switched on yet.",
   },
   {
     q: "What is a USCIS receipt number?",
@@ -544,16 +535,19 @@ export const TEXT_PAGES: Record<string, TextPage> = {
   alerts: {
     title: "Case alerts",
     noindex: true,
-    lead: "We'll email you when your case status changes, once our authorized data connection is in place.",
-    body: ["Until then, the official USCIS Case Status Online page shows your latest status."],
-    action: { label: "Open USCIS Case Status Online", href: USCIS_CASE_STATUS, external: true },
+    lead: "Email alerts for status changes are not switched on yet.",
+    body: [
+      "Your dashboard already shows the latest status: save a receipt number in a free account and we check it with USCIS about once a day.",
+      "You can choose now, in Settings, whether you want emails when alerts start.",
+    ],
+    action: { label: "Create free account", href: "/sign-up" },
   },
   about: {
     title: "About TrackMyUSCIS",
     seoTitle: "About TrackMyUSCIS: Who We Are and How We Check Facts",
     description:
-      "TrackMyUSCIS is a free, independent site that explains USCIS cases in plain English. What it does, where its information comes from and how it is paid for.",
-    lead: "A free, independent site that explains USCIS cases in plain English.",
+      "TrackMyUSCIS is a free, independent case tracker that explains USCIS cases in plain English. What it does, where its facts come from and how it is paid for.",
+    lead: "A free, independent case tracker that explains USCIS cases in plain English.",
     body: [
       "USCIS tells you a lot in very few words. A status line or a notice can decide what you do next, and it is often hard to tell what it means. This site explains those words and sends you to the official page for anything that is specific to your case.",
     ],
@@ -561,7 +555,8 @@ export const TEXT_PAGES: Record<string, TextPage> = {
       {
         heading: "What you can do here",
         body: [
-          "[Check a receipt number](/#track) to confirm its format and see which USCIS office issued it. The check runs in your browser, so the number is not sent to us or stored.",
+          "[Create a free account](/sign-up) to save your receipt numbers. We check each saved case with the official USCIS Case Status API about once a day and show its current status and history.",
+          "[Check a receipt number](/#track) without an account to confirm its format and see which USCIS office issued it. That check runs in your browser, so the number is not sent to us or stored.",
           "Read [what each case status means](/status-explained), the usual steps for [each form](/forms), and short [answers to common USCIS questions](/answers).",
           "Find the official [processing time](/processing-times) for your form and office, and learn how to read it.",
         ],
@@ -576,7 +571,7 @@ export const TEXT_PAGES: Record<string, TextPage> = {
       {
         heading: "What we don't do",
         body: [
-          "We can't see or change your case, and live case status is not shown here yet. For your current status, use [USCIS Case Status Online](https://egov.uscis.gov/).",
+          "We can't change your case or speed it up, and we see only what USCIS publishes about it: the status and its history. Email alerts for status changes are not switched on yet. [USCIS Case Status Online](https://egov.uscis.gov/) is always the official record.",
           "We are not a law firm and we don't give legal advice. For advice about your case, talk to a licensed immigration attorney or a DOJ-accredited representative.",
         ],
       },

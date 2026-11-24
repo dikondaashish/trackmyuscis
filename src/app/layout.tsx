@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(COMPANY.siteUrl),
   title: { default: "TrackMyUSCIS", template: "%s | TrackMyUSCIS" },
   description:
-    "Free and independent: check your USCIS receipt number, see what each case status means in plain English and find the official processing time for your form.",
+    "Free and independent: track your USCIS case status in a free account, check a receipt number, and read what each status and processing time means.",
   applicationName: "TrackMyUSCIS",
   publisher: "TrackMyUSCIS",
   openGraph: { siteName: "TrackMyUSCIS", type: "website", locale: "en_US" },

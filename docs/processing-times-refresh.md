@@ -13,3 +13,11 @@ The pages under `/processing-times/<form>` read `src/lib/processing-times-data/<
 7. Run `npx next build`, open two or three pages, then commit.
 
 Rules: only numbers read from the tool on the day; no estimates or predictions.
+
+## What updates by itself, and what doesn't
+
+- The field office pages (`/processing-times/<form>/<office>`), the sitemap, llms.txt, site search and the "How long it takes" block on each form page all read the newest snapshot, so step 6 updates them too. An office that USCIS drops from the tool loses its page (a real 404); add a redirect if that page had traffic.
+- The lead categories used in search descriptions and short answers are in `HEADLINE` in `src/lib/processing-times.ts`. If USCIS renames a category code, update it there.
+- **Fees, documents and form editions do not come from this tool.** They live in `src/lib/form-facts.ts`. Each month, open the USCIS Fee Schedule (https://www.uscis.gov/g-1055, the PDF's footer shows its edition date) and each form's uscis.gov page ("Edition Date"), and update the rows, `FEE_SCHEDULE_EDITION` and `FORM_FACTS_CHECKED` together. Never estimate a fee.
+- Case status pages are in `src/lib/statuses.ts` (`STATUSES_UPDATED`). Recheck them when USCIS changes its mail, biometrics, RFE or appeals guidance.
+

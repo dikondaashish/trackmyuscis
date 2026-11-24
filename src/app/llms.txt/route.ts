@@ -1,9 +1,11 @@
 import { COMPANY } from "@/lib/company";
-import { FAQ, FORMS, GUIDES, STATUSES, USCIS_CASE_STATUS, USCIS_PROCESSING_TIMES } from "@/lib/content";
+import { FAQ, FORMS, GUIDES, USCIS_CASE_STATUS, USCIS_PROCESSING_TIMES } from "@/lib/content";
 import { ANSWERS } from "@/lib/answers";
 import { BLOG_POSTS } from "@/lib/blog";
 import { LEGAL_DOCS, POLICY_ORDER } from "@/lib/legal";
-import { PT_CHECKED, PT_FORMS, rangeSummary } from "@/lib/processing-times";
+import { PT_CHECKED, PT_FORMS, PT_OFFICE_FORMS, officePages, rangeSummary } from "@/lib/processing-times";
+import { FEE_SCHEDULE_EDITION, FORM_FACTS, feeSentence } from "@/lib/form-facts";
+import { STATUS_PAGES, statusHref } from "@/lib/statuses";
 
 /**
  * llms.txt (https://llmstxt.org): a plain summary of the site for AI assistants.
@@ -15,30 +17,48 @@ export function GET() {
   const lines = [
     "# TrackMyUSCIS",
     "",
-    "> TrackMyUSCIS is a free, independent website that helps people follow a U.S. Citizenship and Immigration Services (USCIS) case in plain English: decoding receipt numbers, explaining case statuses and the usual steps for each form, pointing to official processing times and helping people find immigration legal help. It is not affiliated with USCIS or the U.S. government and does not give legal advice; USCIS notices and uscis.gov are the official source.",
+    "> TrackMyUSCIS is a free, independent USCIS case tracker. With a free account, people save their U.S. Citizenship and Immigration Services (USCIS) receipt numbers and see each case's current status and history, checked with the official USCIS Case Status API about once a day. The site also explains every case status, each form's fee, documents and steps, and the official processing time for every form and office, in plain English. It is not affiliated with USCIS or the U.S. government and does not give legal advice; USCIS notices and uscis.gov are the official source.",
     "",
     "Key facts:",
     "- A USCIS receipt number is 13 characters: a 3-letter office code (such as IOE, MSC, EAC, WAC, LIN, SRC) followed by 10 digits. It is printed on the receipt notice, Form I-797C.",
-    "- The receipt number check on TrackMyUSCIS runs in the browser; the number is not sent to TrackMyUSCIS or stored.",
+    "- Case tracking is free and needs an account: saved receipt numbers are checked with USCIS about once a day and the dashboard shows the status and its history. Email alerts for status changes are not switched on yet.",
+    "- The quick receipt number check on the home page needs no account and runs in the browser; that number is not sent to TrackMyUSCIS or stored, and the check does not show a status.",
     `- Official case status: ${USCIS_CASE_STATUS}`,
     `- Official processing times: ${USCIS_PROCESSING_TIMES}`,
     "- Only licensed attorneys and DOJ-accredited representatives may give immigration legal advice.",
     "",
     "## Tools",
     "",
-    `- [Receipt number check](${url("/#track")}): Checks a USCIS receipt number's format and tells you which office issued it.`,
-    `- [Processing times](${url("/processing-times")}): How to check how long USCIS is taking for your form and office on the official USCIS tool, and how to read the number.`,
+    `- [Case tracker](${url("/sign-up")}): Free account that saves USCIS receipt numbers and shows each case's current status and history, checked about once a day.`,
+    `- [Receipt number check](${url("/#track")}): Checks a USCIS receipt number's format and tells you which office issued it. No account needed.`,
+    `- [Processing times](${url("/processing-times")}): The official USCIS processing time for each form, category and office, read every month, and how to read the number.`,
     `- [Find an immigration lawyer](${url("/lawyers")}): Where to find free or low-cost immigration legal help and how to check that a lawyer or representative is real. The TrackMyUSCIS lawyer directory is not open yet.`,
-    `- [Case statuses explained](${url("/status-explained")}): Plain-English meaning of each common USCIS case status and what usually comes next.`,
+    `- [Case statuses explained](${url("/status-explained")}): Plain-English meaning of each common USCIS case status, what to do and what usually comes next. Each status has its own page.`,
     "",
     "## Processing times by form",
     "",
     `Official USCIS times (80% of cases finished within), read for every office on ${PT_CHECKED}:`,
     ...PT_FORMS.map((p) => `- [Form ${p.form.form} processing time](${url(`/processing-times/${p.form.slug}`)}): ${rangeSummary(p)}.`),
     "",
+    "## Processing times by field office",
+    "",
+    ...PT_OFFICE_FORMS.flatMap((p) => {
+      const pages = officePages(p);
+      return [
+        `Form ${p.form.form} has a page for each of ${pages.length} USCIS field offices at ${url(`/processing-times/${p.form.slug}/`)}<office>, for example:`,
+        ...pages.filter((o) => ["new-york-city-ny", "los-angeles-ca", "houston-tx", "chicago-il", "miami-fl", "seattle-wa"].includes(o.slug)).map((o) => `- [Form ${p.form.form} processing time in ${o.name}](${url(`/processing-times/${p.form.slug}/${o.slug}`)})`),
+        "",
+      ];
+    }),
+    "",
     "## USCIS forms",
     "",
-    ...FORMS.map((f) => `- [Form ${f.form}: ${f.title}](${url(`/forms/${f.slug}`)}): ${f.about}`),
+    `Fees are from the USCIS Fee Schedule (Form G-1055), edition ${FEE_SCHEDULE_EDITION}.`,
+    ...FORMS.map((f) => {
+      const fee = feeSentence(f.slug);
+      const facts = FORM_FACTS[f.slug];
+      return `- [Form ${f.form}: ${f.title}](${url(`/forms/${f.slug}`)}): ${f.about}${fee ? ` General filing fee: ${fee}.` : ""}${facts ? ` Current edition: ${facts.edition}.` : ""}`;
+    }),
     "",
     "## Guides",
     "",
@@ -55,7 +75,7 @@ export function GET() {
     "",
     "## Case statuses",
     "",
-    ...STATUSES.map((s) => `- ${s.name}: ${s.meaning}`),
+    ...STATUS_PAGES.map((s) => `- [${s.name}](${url(statusHref(s))}): ${s.short ?? s.meaning}`),
     "",
     "## Common questions",
     "",

@@ -6,15 +6,16 @@ import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 
 export const metadata = pageMetadata({
-  title: "Pricing: Free USCIS Case Tools",
-  description: "TrackMyUSCIS is free: receipt number checks, case status meanings, help reading processing times and answers to common USCIS questions, with no account needed.",
+  title: "Pricing: Free USCIS Case Tracker",
+  description: "TrackMyUSCIS is free: track your case status in a free account, check receipt numbers and read case status meanings and processing times. No card needed.",
   path: "/pricing",
 });
 
 const FREE = [
-  "Check and decode receipt numbers",
+  "Save your cases in a free account and see each one's USCIS status, checked about once a day",
+  "Check and decode receipt numbers, no account needed",
   "Plain-language case status meanings",
-  "How to read official processing times",
+  "Official processing times for every office",
   "Answers to common USCIS questions",
   "Where to find free and low-cost legal help",
 ];
@@ -30,7 +31,7 @@ export default function PricingPage() {
             <div className="flex flex-col p-5 sm:p-6">
               <h2 className="text-title text-midnight">Free</h2>
               <p className="mt-3 text-h1 text-midnight tabular-nums">$0</p>
-              <p className="mt-2 text-body text-slate">No account and no card needed.</p>
+              <p className="mt-2 text-body text-slate">No card needed. An account is only for saving your cases.</p>
               <Link href="/#track" className={`mt-8 sm:mt-auto ${btnPrimary}`}>
                 Track Case
               </Link>

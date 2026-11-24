@@ -154,7 +154,7 @@ export const webApplicationSchema = {
   operatingSystem: "Web",
   browserRequirements: "Requires a modern web browser",
   description:
-    "Free tool that checks a USCIS receipt number's format and issuing office, with plain-English case status meanings and links to official processing times.",
+    "Free USCIS case tracker. Save a receipt number in a free account to see its current status, checked with USCIS about once a day, with plain-English status meanings and official processing times for every office.",
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   publisher: { "@id": ORG_ID },
 };

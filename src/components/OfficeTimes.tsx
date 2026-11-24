@@ -1,10 +1,11 @@
 "use client";
 
 import { useId, useState } from "react";
+import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { field, fieldLabel, focusRing } from "@/lib/ui";
 
-type Row = { key: string; label: string; sub?: string; cells: string[] };
+type Row = { key: string; label: string; sub?: string; cells: string[]; /** The row's own page, when it has one. */ href?: string };
 
 /**
  * A table of official times, one row per office or category. With `filter`, a field above
@@ -86,7 +87,16 @@ export function OfficeTimes({
             {rows.map((r) => (
               <tr key={r.key} className={`border-b border-border last:border-0 even:bg-cloud/50 ${matches(r) ? "" : "hidden"}`}>
                 <th scope="row" className="px-3 py-2.5 font-medium [overflow-wrap:anywhere] text-midnight sm:px-4">
-                  {r.label}
+                  {r.href ? (
+                    <Link
+                      href={r.href}
+                      className={`link-draw -my-2.5 inline-flex min-h-11 items-center rounded text-blue ${focusRing}`}
+                    >
+                      {r.label}
+                    </Link>
+                  ) : (
+                    r.label
+                  )}
                   {r.sub && <span className="block font-normal text-slate">{r.sub}</span>}
                 </th>
                 {r.cells.map((c, i) => (

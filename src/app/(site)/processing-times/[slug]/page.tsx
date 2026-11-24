@@ -14,21 +14,20 @@ import {
   dependsOnLabel,
   formatTime,
   getPtForm,
-  headline,
   noteText,
+  officeHref,
+  ptDescription,
+  ptShortAnswer,
   officeLabel,
   officeName,
   PT_CHECKED,
   PT_LATEST,
   PT_FORMS,
   range,
-  rangeOf,
-  rangeSummary,
-  rangeText,
-  rangeTextOf,
   splitCategories,
   type PtForm,
 } from "@/lib/processing-times";
+import { postsForForm } from "@/lib/related";
 import { breadcrumbSchema, faqSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
 import { btnPrimary, container, focusRing, panel, rowPad, rows, section } from "@/lib/ui";
 
@@ -73,28 +72,10 @@ function UscisNotes({ p }: { p: PtForm }) {
 const HEAD_TIME = "80% done within";
 const HEAD_INQUIRY = "Case inquiry date";
 
-function shortAnswer(p: PtForm) {
-  const f = p.form;
-  const { fastest, slowest, count } = range(p);
-  const meaning = `That's how long it took USCIS to finish 80% of these cases over the past six months, as shown on ${longDate(PT_CHECKED)}.`;
-  if (count === 1) return `USCIS's official processing time for Form ${f.form} is ${formatTime(fastest)}. ${meaning}`;
-  const lead = headline(p);
-  if (lead) {
-    const r = rangeOf(lead.rows);
-    const office = officeName(r.fastest.name);
-    const where = r.count > 1 ? ", depending on the office" : office === "All field offices" ? " at USCIS field offices" : ` at ${office}`;
-    return `For ${lead.who}, USCIS's official Form ${f.form} processing time is ${rangeTextOf(lead.rows)}${where}. ${meaning} Across all ${p.categories.length} categories it runs from ${rangeText(p)}.`;
-  }
-  const by = dependsOnLabel(p);
-  const ends =
-    by === "office" ? ` The fastest office is ${officeName(fastest.name)} and the slowest is ${officeName(slowest.name)}.` : "";
-  return `USCIS's official processing time for Form ${f.form} is ${rangeText(p)}, depending on the ${by}. ${meaning}${ends}`;
-}
-
 function faq(p: PtForm) {
   const f = p.form;
   const { fastest, slowest, count } = range(p);
-  const items = [{ q: `How long does Form ${f.form} take right now?`, a: shortAnswer(p) }];
+  const items = [{ q: `How long does Form ${f.form} take right now?`, a: ptShortAnswer(p) }];
   if (count > 1 && dependsOnLabel(p) === "office") {
     items.push({
       q: `Which USCIS office is fastest for Form ${f.form}?`,
@@ -124,10 +105,9 @@ export async function generateMetadata({ params }: PageProps<"/processing-times/
   const f = p.form;
   const by = dependsOnLabel(p);
   const byTitle = by === "office" ? " by Office" : by === "nothing" ? "" : " by Category";
-  const see = by === "nothing" ? "See" : `See every ${by},`;
   return pageMetadata({
     title: `${f.form} Processing Time (${monthYear(PT_CHECKED)})${byTitle}`,
-    description: `USCIS's official ${f.form} processing time is ${rangeSummary(p)}. ${see} what the number means and what to do if you're past it.`,
+    description: ptDescription(p),
     path: `/processing-times/${f.slug}`,
     type: "article",
   });
@@ -140,9 +120,10 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
   const path = `/processing-times/${f.slug}`;
   const { single, multi } = splitCategories(p);
   const singleOffices = new Set(single.map((c) => c.offices[0].name));
-  const answer = shortAnswer(p);
+  const answer = ptShortAnswer(p);
   const questions = faq(p);
   const others = PT_FORMS.filter((o) => o.form.slug !== f.slug);
+  const posts = postsForForm(f.slug);
   const multiHeading = (name: string) => (p.categories.length > 1 ? name : `Form ${f.form} by office`);
 
   const toc = [
@@ -226,7 +207,7 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
                   head={["Office", HEAD_TIME, HEAD_INQUIRY]}
                   rows={[...c.offices]
                     .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((o) => ({ key: o.code, label: officeLabel(o), cells: [formatTime(o), shortDate(o.inquiry)] }))}
+                    .map((o) => ({ key: o.code, label: officeLabel(o), cells: [formatTime(o), shortDate(o.inquiry)], href: officeHref(f.slug, o.name) }))}
                 />
               </div>
             ))}
@@ -310,6 +291,13 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
               General information, not legal advice. USCIS notices and uscis.gov are the official source.
             </p>
 
+            {posts.length > 0 && (
+              <div className="mt-12">
+                <h2 className="text-h3 font-semibold text-midnight">More on Form {f.form}</h2>
+                <LinkRows compact className="mt-5" items={posts.map((b) => ({ href: `/blog/${b.slug}`, title: b.title }))} />
+              </div>
+            )}
+
             <div className="mt-12">
               <h2 className="text-h3 font-semibold text-midnight">Other processing times</h2>
               <LinkRows
@@ -347,7 +335,7 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
                   href={`/forms/${f.slug}`}
                   className={`link-draw inline-flex min-h-11 items-center rounded text-small font-semibold text-blue ${focusRing}`}
                 >
-                  Form {f.form} steps after filing
+                  Form {f.form}: fee, documents and steps
                 </Link>
                 <ExternalLink href={USCIS_PROCESSING_TIMES}>Official processing times</ExternalLink>
               </div>
