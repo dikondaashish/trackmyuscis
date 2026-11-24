@@ -13,7 +13,8 @@ export const optPremiumProcessing2026: BlogPost = {
   description:
     "OPT and STEM OPT premium processing costs $1,780 in 2026 for action within 30 business days. How to request it, when the clock starts and whether it's worth it.",
   topic: "Students & OPT",
-  published: "2026-11-24",
+  published: "2026-11-20",
+  author: "kiran",
   updated: "2026-11-24",
   cover: {
     src: cover,

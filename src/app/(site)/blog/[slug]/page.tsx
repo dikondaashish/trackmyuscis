@@ -5,13 +5,14 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, ChevronDown, Info, ShieldCheck } from "lucide-react";
 import { BlogBlocks } from "@/components/blog/BlogBlocks";
 import { BlogCard } from "@/components/blog/BlogCard";
+import { toBlogCard } from "@/lib/blog/card";
 import { CopyLink } from "@/components/blog/CopyLink";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { JsonLd } from "@/components/JsonLd";
 import { OfficialSources } from "@/components/OfficialSources";
 import { LinkRows } from "@/components/ui/LinkRows";
 import { RichText } from "@/components/ui/RichText";
-import { BLOG_POSTS, getPost, readingMinutes, relatedPosts } from "@/lib/blog";
+import { AUTHORS, BLOG_POSTS, getPost, readingMinutes, relatedPosts } from "@/lib/blog";
 import { abs, blogPostingSchema, breadcrumbSchema, faqSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
 import { TRACK_CASE_HREF } from "@/lib/site";
 import { container, docContainer, focusRing } from "@/lib/ui";
@@ -44,15 +45,8 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
   const path = `/blog/${p.slug}`;
   const minutes = readingMinutes(p);
   const toc = p.sections.map((s) => ({ id: s.id, heading: s.heading }));
-  const more = relatedPosts(p).map((r) => ({
-    slug: r.slug,
-    title: r.title,
-    description: r.description,
-    topic: r.topic,
-    date: longDate(r.updated),
-    minutes: readingMinutes(r),
-    cover: r.cover,
-  }));
+  const more = relatedPosts(p).map(toBlogCard);
+  const author = AUTHORS[p.author];
 
   return (
     <>
@@ -67,6 +61,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
             published: p.published,
             modified: p.updated,
             section: p.topic,
+            author: author.name,
             wordCount: minutes * 220,
           }),
           faqSchema(p.faq),
@@ -93,11 +88,22 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
             <p className="mt-4 max-w-2xl text-lead text-slate">{p.description}</p>
             <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <Image src="/brand/logo-app.png" alt="" width={40} height={40} className="size-10 rounded-full" />
+                <span
+                  aria-hidden
+                  className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ice text-small font-semibold text-blue"
+                >
+                  {author.initials}
+                </span>
                 <div className="text-small">
-                  <p className="font-semibold text-midnight">TrackMyUSCIS editorial team</p>
+                  <p className="font-semibold text-midnight">By {author.name}</p>
                   <p className="text-slate tabular-nums">
-                    <time dateTime={p.updated}>Updated {longDate(p.updated)}</time> · {minutes} min read
+                    <time dateTime={p.published}>{longDate(p.published)}</time>
+                    {p.updated !== p.published && (
+                      <>
+                        {" "}· Updated <time dateTime={p.updated}>{longDate(p.updated)}</time>
+                      </>
+                    )}{" "}
+                    · {minutes} min read
                   </p>
                 </div>
               </div>

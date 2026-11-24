@@ -14,6 +14,7 @@ import { greenCardRenewal } from "./posts/green-card-renewal-i-90";
 import { i140Status } from "./posts/i-140-status-check";
 
 export type { Block, BlogPost, BlogSection, BlogTopic } from "./types";
+export { AUTHORS, type AuthorId } from "./authors";
 
 /** Newest first; posts published the same day keep this list's order (the first is featured). */
 export const BLOG_POSTS: BlogPost[] = [

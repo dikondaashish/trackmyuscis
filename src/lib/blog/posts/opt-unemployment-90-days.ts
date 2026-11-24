@@ -16,7 +16,8 @@ export const optUnemployment90Days: BlogPost = {
   description:
     "On post-completion OPT you can be unemployed for 90 days in total, or 150 with STEM OPT. How SEVIS counts the days, what counts as a job and how to report it.",
   topic: "Students & OPT",
-  published: "2026-11-24",
+  published: "2026-11-19",
+  author: "charlie",
   updated: "2026-11-24",
   cover: {
     src: cover,

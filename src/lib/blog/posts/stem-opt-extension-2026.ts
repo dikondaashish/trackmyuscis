@@ -13,7 +13,8 @@ export const stemOptExtension2026: BlogPost = {
   description:
     "Who qualifies for the 24-month STEM OPT extension, when to file, the documents you need, how the 180-day rule works and USCIS's current processing time.",
   topic: "Students & OPT",
-  published: "2026-11-24",
+  published: "2026-11-21",
+  author: "kiran",
   updated: "2026-11-24",
   cover: {
     src: cover,

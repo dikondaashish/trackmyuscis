@@ -15,7 +15,8 @@ export const proposedOptFee2026: BlogPost = {
   description:
     "DHS proposed a $70,000 fee for a student's first OPT and $30,000 for later OPT, paid by schools. It isn't in effect. What the proposal says and what to do now.",
   topic: "Students & OPT",
-  published: "2026-11-24",
+  published: "2026-11-23",
+  author: "surya",
   updated: "2026-11-24",
   cover: {
     src: cover,

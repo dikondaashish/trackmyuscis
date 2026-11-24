@@ -40,6 +40,7 @@ export const decemberVisaBulletin2026: BlogPost = {
     "Is the December 2026 Visa Bulletin out? When it's expected, the dates in effect now, what moved last December and which chart USCIS uses. Updated on release day.",
   topic: "Visa Bulletin",
   published: "2026-11-24",
+  author: "karthik",
   updated: "2026-11-24",
   cover: {
     src: cover,

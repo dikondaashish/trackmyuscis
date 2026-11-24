@@ -68,7 +68,8 @@ export const novemberVisaBulletin2026: BlogPost = {
   description:
     "The November 2026 Visa Bulletin in plain English: every family and employment cut-off date, what moved since October, and which chart USCIS accepts.",
   topic: "Visa Bulletin",
-  published: "2026-11-23",
+  published: "2026-11-18",
+  author: "surya",
   updated: "2026-11-24",
   cover: { src: cover, alt: "An older couple and their adult daughter study a tablet chart of date blocks for family and work categories, some rows moving forward" },
   answer:

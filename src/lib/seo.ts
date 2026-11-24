@@ -168,7 +168,7 @@ export function definedTermSetSchema(name: string, path: string, terms: { name: 
   };
 }
 
-/** A blog post: real published and modified dates, the cover image, and the site as author and publisher. */
+/** A blog post: real published and modified dates, the cover image, the byline as author and the site as publisher. */
 export function blogPostingSchema({
   headline,
   description,
@@ -177,6 +177,7 @@ export function blogPostingSchema({
   published,
   modified,
   section,
+  author,
   wordCount,
 }: {
   headline: string;
@@ -186,6 +187,8 @@ export function blogPostingSchema({
   published: string;
   modified: string;
   section: string;
+  /** The byline's name; the site stays the publisher. */
+  author: string;
   wordCount?: number;
 }) {
   return {
@@ -202,7 +205,7 @@ export function blogPostingSchema({
     ...(wordCount ? { wordCount } : {}),
     inLanguage: "en-US",
     isPartOf: { "@id": `${SITE_URL}/blog#blog` },
-    author: { "@id": ORG_ID },
+    author: { "@type": "Person", name: author },
     publisher: { "@id": ORG_ID },
   };
 }

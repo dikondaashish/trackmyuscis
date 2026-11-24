@@ -1,4 +1,4 @@
-import { BLOG_POSTS, BLOG_UPDATED } from "@/lib/blog";
+import { AUTHORS, BLOG_POSTS, BLOG_UPDATED } from "@/lib/blog";
 import { abs } from "@/lib/seo";
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -12,13 +12,14 @@ export function GET() {
       <link>${abs(`/blog/${p.slug}`)}</link>
       <guid isPermaLink="true">${abs(`/blog/${p.slug}`)}</guid>
       <pubDate>${rfc822(p.published)}</pubDate>
+      <dc:creator>${esc(AUTHORS[p.author].name)}</dc:creator>
       <category>${esc(p.topic)}</category>
       <description>${esc(p.answer)}</description>
     </item>`,
   ).join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>TrackMyUSCIS blog</title>
     <link>${abs("/blog")}</link>

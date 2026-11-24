@@ -5,6 +5,7 @@
  * Inline syntax in any text: [link text](/path or https://…).
  */
 import type { StaticImageData } from "next/image";
+import type { AuthorId } from "./authors";
 
 export type BlogTopic = "Visa Bulletin" | "Students & OPT" | "Green card" | "Employment-based" | "Case status";
 
@@ -38,6 +39,8 @@ export type BlogPost = {
   topic: BlogTopic;
   /** ISO dates (YYYY-MM-DD). */
   published: string;
+  /** Byline, from authors.ts. */
+  author: AuthorId;
   updated: string;
   cover: { src: StaticImageData; alt: string };
   /** The direct answer, two or three sentences. Shown first; AI assistants quote it. */

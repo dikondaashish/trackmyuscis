@@ -13,7 +13,8 @@ export const optProcessingTime2026: BlogPost = {
   description:
     "USCIS says 80% of OPT work permit applications finish within 6 months. See when to file, the $1,780 premium option, card delivery and what to do while you wait.",
   topic: "Students & OPT",
-  published: "2026-11-24",
+  published: "2026-11-22",
+  author: "karthik",
   updated: "2026-11-24",
   cover: {
     src: cover,

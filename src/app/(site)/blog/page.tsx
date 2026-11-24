@@ -2,9 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Rss } from "lucide-react";
 import { BlogIndex } from "@/components/blog/BlogIndex";
+import { toBlogCard } from "@/lib/blog/card";
 import { JsonLd } from "@/components/JsonLd";
-import { BLOG_POSTS, BLOG_TOPICS, readingMinutes } from "@/lib/blog";
-import { abs, breadcrumbSchema, itemListSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
+import { BLOG_POSTS, BLOG_TOPICS } from "@/lib/blog";
+import { abs, breadcrumbSchema, itemListSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 import { container, focusRing } from "@/lib/ui";
 
 export const metadata = pageMetadata({
@@ -14,15 +15,7 @@ export const metadata = pageMetadata({
   path: "/blog",
 });
 
-const card = (p: (typeof BLOG_POSTS)[number]) => ({
-  slug: p.slug,
-  title: p.title,
-  description: p.description,
-  topic: p.topic,
-  date: longDate(p.updated),
-  minutes: readingMinutes(p),
-  cover: p.cover,
-});
+const card = toBlogCard;
 
 /**
  * The blog: the newest post as a large feature, then every other post with topic chips and
@@ -97,8 +90,8 @@ export default function BlogPage() {
                 </Link>
               </h2>
               <p className="mt-3 text-body text-slate">{f.description}</p>
-              <p className="mt-5 flex items-center gap-2 text-small text-slate tabular-nums">
-                {f.date} · {f.minutes} min read
+              <p className="mt-5 text-small text-slate tabular-nums">
+                <span className="font-medium text-midnight">{f.author}</span> · {f.date} · {f.minutes} min read
               </p>
               <span className="mt-6 inline-flex items-center gap-1.5 text-small font-semibold text-blue">
                 Read the post

@@ -7,6 +7,7 @@ export type BlogCardData = {
   title: string;
   description: string;
   topic: string;
+  author: string;
   date: string;
   minutes: number;
   cover: { src: StaticImageData; alt: string };
@@ -38,7 +39,7 @@ export function BlogCard({ post, priority = false }: { post: BlogCardData; prior
       </h3>
       <p className="mt-2 line-clamp-2 text-small text-slate">{post.description}</p>
       <p className="mt-3 text-small text-slate tabular-nums">
-        {post.date} · {post.minutes} min read
+        <span className="font-medium text-midnight">{post.author}</span> · {post.date} · {post.minutes} min read
       </p>
     </article>
   );
