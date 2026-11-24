@@ -1,6 +1,7 @@
 import { COMPANY } from "@/lib/company";
 import { FAQ, FORMS, GUIDES, STATUSES, USCIS_CASE_STATUS, USCIS_PROCESSING_TIMES } from "@/lib/content";
 import { ANSWERS } from "@/lib/answers";
+import { BLOG_POSTS } from "@/lib/blog";
 import { LEGAL_DOCS, POLICY_ORDER } from "@/lib/legal";
 
 /**
@@ -37,6 +38,10 @@ export function GET() {
     "",
     ...GUIDES.map((g) => `- [${g.title}](${url(`/guides/${g.slug}`)}): ${g.summary}`),
     `- [Avoid immigration scams](${url("/scams")}): ${LEGAL_DOCS.scams.summary}`,
+    "",
+    "## Blog",
+    "",
+    ...BLOG_POSTS.map((p) => `- [${p.title}](${url(`/blog/${p.slug}`)}): ${p.answer}`),
     "",
     "## Answers",
     "",

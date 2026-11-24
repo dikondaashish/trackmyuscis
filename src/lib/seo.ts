@@ -167,3 +167,42 @@ export function definedTermSetSchema(name: string, path: string, terms: { name: 
     hasDefinedTerm: terms.map((t) => ({ "@type": "DefinedTerm", name: t.name, description: t.description, inDefinedTermSet: abs(path) })),
   };
 }
+
+/** A blog post: real published and modified dates, the cover image, and the site as author and publisher. */
+export function blogPostingSchema({
+  headline,
+  description,
+  path,
+  image,
+  published,
+  modified,
+  section,
+  wordCount,
+}: {
+  headline: string;
+  description: string;
+  path: string;
+  image: string;
+  published: string;
+  modified: string;
+  section: string;
+  wordCount?: number;
+}) {
+  return {
+    "@type": "BlogPosting",
+    "@id": `${abs(path)}#article`,
+    headline,
+    description,
+    url: abs(path),
+    mainEntityOfPage: { "@id": `${abs(path)}#webpage` },
+    image: abs(image),
+    datePublished: published,
+    dateModified: modified,
+    articleSection: section,
+    ...(wordCount ? { wordCount } : {}),
+    inLanguage: "en-US",
+    isPartOf: { "@id": `${SITE_URL}/blog#blog` },
+    author: { "@id": ORG_ID },
+    publisher: { "@id": ORG_ID },
+  };
+}

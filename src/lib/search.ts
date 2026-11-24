@@ -3,9 +3,10 @@
  * form, answer or guide is searchable as soon as it is added.
  */
 import { ANSWERS } from "@/lib/answers";
+import { BLOG_POSTS } from "@/lib/blog";
 import { FAQ, FORMS, GUIDES, STATUSES, statusId } from "@/lib/content";
 
-export type SearchKind = "Status" | "Form" | "Answer" | "Guide" | "Help" | "Page";
+export type SearchKind = "Status" | "Form" | "Answer" | "Guide" | "Article" | "Help" | "Page";
 
 export type SearchEntry = {
   kind: SearchKind;
@@ -78,6 +79,13 @@ export function buildSearchIndex(): SearchEntry[] {
       text: g.summary,
       href: `/guides/${g.slug}`,
       more: [g.seoTitle ?? "", ...g.sections.map((s) => s.heading)].join(" "),
+    })),
+    ...BLOG_POSTS.map((p) => ({
+      kind: "Article" as const,
+      title: p.title,
+      text: p.description,
+      href: `/blog/${p.slug}`,
+      more: [p.topic, p.seoTitle ?? "", ...p.sections.map((s) => s.heading), ...p.faq.map((f) => f.q)].join(" "),
     })),
     ...FAQ.map((f) => ({ kind: "Help" as const, title: f.q, text: f.a, href: "/help", more: "help center" })),
     ...PAGES,

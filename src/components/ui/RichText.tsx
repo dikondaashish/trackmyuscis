@@ -2,8 +2,8 @@ import Link from "next/link";
 import { focusRing } from "@/lib/ui";
 import { inAppHref } from "@/lib/in-app";
 
-/** [text](href) links and bare email addresses, nothing else. */
-const TOKEN = /\[([^\]]+)\]\(([^)\s]+)\)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+/** [text](href) links, **bold** key terms and bare email addresses, nothing else. */
+const TOKEN = /\[([^\]]+)\]\(([^)\s]+)\)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|\*\*([^*]+)\*\*/g;
 
 const linkClass = `rounded-sm font-medium text-blue underline decoration-blue/30 underline-offset-4 transition-colors duration-200 hover:decoration-blue ${focusRing}`;
 
@@ -17,8 +17,14 @@ export function RichText({ text, inApp = false }: { text: string; inApp?: boolea
   for (const m of text.matchAll(TOKEN)) {
     const i = m.index ?? 0;
     if (i > last) parts.push(text.slice(last, i));
-    const [, label, href, mail] = m;
-    if (mail) {
+    const [, label, href, mail, bold] = m;
+    if (bold) {
+      parts.push(
+        <strong key={i} className="font-semibold text-midnight">
+          {bold}
+        </strong>,
+      );
+    } else if (mail) {
       parts.push(
         <a key={i} href={`mailto:${mail}`} className={linkClass}>
           {mail}

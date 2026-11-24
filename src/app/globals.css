@@ -334,6 +334,20 @@ dd {
   }
 }
 
+/* Blog: a thin bar at the top fills as you read, driven by scroll position (no JavaScript).
+   Browsers without scroll-driven animations simply don't show it. */
+.reading-progress {
+  display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .reading-progress {
+    display: block;
+    transform-origin: left;
+    animation: grow-x linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
 /* Skeletons stay visible (no motion) for reduced-motion users; the shimmer is extra. */
 .skeleton {
   border-radius: 0.5rem;

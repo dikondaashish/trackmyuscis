@@ -30,6 +30,7 @@ export const HEADER_NAV: NavEntry[] = [
     items: [
       { href: "/answers", label: "Answers", note: "Quick answers to USCIS questions" },
       { href: "/guides", label: "Guides", note: "Step-by-step explainers in plain English" },
+      { href: "/blog", label: "Blog", note: "Visa Bulletin, fees and USCIS updates" },
       { href: "/lawyers", label: "Find a Lawyer", note: "Licensed attorneys and accredited reps" },
       { href: "/scams", label: "Avoid Scams", note: "Warning signs and where to report" },
       { href: "/help", label: "Help Center", note: "How TrackMyUSCIS works" },

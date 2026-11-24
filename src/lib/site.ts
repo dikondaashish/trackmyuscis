@@ -44,6 +44,7 @@ export const FOOTER_GROUPS: { title: string; links: NavLink[] }[] = [
       { href: "/answers", label: "USCIS Answers" },
       { href: "/forms", label: "USCIS Forms" },
       { href: "/guides", label: "Immigration Guides" },
+      { href: "/blog", label: "Blog" },
       { href: "/lawyers", label: "Find a Lawyer" },
       { href: "/scams", label: "Avoid Scams" },
       { href: "/help", label: "Help Center" },

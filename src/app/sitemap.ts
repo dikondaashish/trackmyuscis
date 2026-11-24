@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { COMPANY, LEGAL_UPDATED } from "@/lib/company";
 import { FORMS, GUIDES, TEXT_PAGES } from "@/lib/content";
 import { ANSWERS, ANSWERS_UPDATED } from "@/lib/answers";
+import { BLOG_POSTS, BLOG_UPDATED } from "@/lib/blog";
 import { LEGAL_DOCS } from "@/lib/legal";
 import { CONTENT_UPDATED } from "@/lib/seo";
 
@@ -21,6 +22,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...GUIDES.map((g) => ({ path: `/guides/${g.slug}`, priority: 0.7, freq: "monthly" as const })),
     { path: "/answers", priority: 0.8, freq: "weekly", updated: ANSWERS_UPDATED },
     ...ANSWERS.map((a) => ({ path: `/answers/${a.slug}`, priority: 0.7, freq: "monthly" as const, updated: ANSWERS_UPDATED })),
+    { path: "/blog", priority: 0.8, freq: "weekly", updated: BLOG_UPDATED },
+    ...BLOG_POSTS.map((p) => ({ path: `/blog/${p.slug}`, priority: 0.8, freq: "weekly" as const, updated: p.updated })),
     { path: "/help", priority: 0.6, freq: "monthly" },
     { path: "/pricing", priority: 0.5, freq: "monthly" },
     ...Object.keys(TEXT_PAGES)

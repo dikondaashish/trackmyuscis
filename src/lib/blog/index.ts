@@ -1,0 +1,49 @@
+/**
+ * The blog: every post, newest first, plus reading time and related posts. Facts in each
+ * post are checked against the official sources listed on it; `updated` moves when they are.
+ */
+import type { Block, BlogPost, BlogTopic } from "./types";
+import { novemberVisaBulletin2026 } from "./posts/november-2026-visa-bulletin";
+import { greenCardRenewal } from "./posts/green-card-renewal-i-90";
+import { i140Status } from "./posts/i-140-status-check";
+
+export type { Block, BlogPost, BlogSection, BlogTopic } from "./types";
+
+/** Newest first; posts published the same day keep this list's order (the first is featured). */
+export const BLOG_POSTS: BlogPost[] = [novemberVisaBulletin2026, i140Status, greenCardRenewal].sort((a, b) =>
+  b.published.localeCompare(a.published),
+);
+
+/** Topics in the order the blog's filter shows them. */
+export const BLOG_TOPICS: BlogTopic[] = ["Visa Bulletin", "Green card", "Employment-based", "Case status"];
+
+/** Newest `updated` date across posts, for the sitemap and the feed. */
+export const BLOG_UPDATED = BLOG_POSTS.reduce((max, p) => (p.updated > max ? p.updated : max), "2026-11-23");
+
+export const getPost = (slug: string) => BLOG_POSTS.find((p) => p.slug === slug);
+
+const words = (text: string) => text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*/g, "").split(/\s+/).filter(Boolean).length;
+
+function blockWords(b: Block): number {
+  if (typeof b === "string") return words(b);
+  if (Array.isArray(b)) return b.reduce((n, s) => n + words(s), 0);
+  if (b.kind === "steps") return b.items.reduce((n, s) => n + words(s.title) + words(s.text), 0);
+  if (b.kind === "table") return b.rows.flat().reduce((n, s) => n + words(s), 0) / 2;
+  return words(b.title) + words(b.text);
+}
+
+/** Minutes at 220 words a minute, never under 2. */
+export function readingMinutes(p: BlogPost) {
+  const total =
+    words(p.answer) +
+    p.takeaways.reduce((n, t) => n + words(t), 0) +
+    p.sections.reduce((n, s) => n + s.blocks.reduce((m, b) => m + blockWords(b), 0), 0) +
+    p.faq.reduce((n, f) => n + words(f.q) + words(f.a), 0);
+  return Math.max(2, Math.round(total / 220));
+}
+
+/** Same topic first, then the newest others. */
+export function relatedPosts(p: BlogPost, count = 3) {
+  const others = BLOG_POSTS.filter((x) => x.slug !== p.slug);
+  return [...others.filter((x) => x.topic === p.topic), ...others.filter((x) => x.topic !== p.topic)].slice(0, count);
+}
