@@ -12,7 +12,7 @@ export const greenCardRenewal: BlogPost = {
   title: "Green card renewal in 2026: cost, steps and the 36-month extension",
   seoTitle: "Green Card Renewal 2026: Form I-90 Cost and Steps",
   description:
-    "How to renew a 10-year green card with Form I-90 in 2026: who should file, the $415 online fee, each step, and how your receipt notice extends your card 36 months.",
+    "How to renew a 10-year green card with Form I-90 in 2026: who files, the $415 online fee, each step, and how your receipt notice extends your card 36 months.",
   topic: "Green card",
   published: "2026-11-16",
   author: "surya",

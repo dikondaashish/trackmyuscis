@@ -54,4 +54,31 @@ export const OPT_SRC = {
     label: "Federal Register: Removal of automatic extensions for certain EADs, final rule (October 14, 2026)",
     href: "https://www.federalregister.gov/documents/2026/10/14/2026-20955/removal-of-automatic-extensions-for-certain-employment-authorization-documents",
   },
+  h4ead: {
+    label: "USCIS: Employment authorization for certain H-4 dependent spouses",
+    href: "https://www.uscis.gov/working-in-the-united-states/temporary-workers/h-1b-specialty-occupations/employment-authorization-for-certain-h-4-dependent-spouses",
+  },
+  autoExtension: {
+    label: "USCIS: Automatic EAD extension (archived page with the October 30, 2025 alert)",
+    href: "https://www.uscis.gov/working-in-the-united-states/information-for-employers-and-employees/automatic-employment-authorization-document-ead-extension",
+  },
+  iceTravel: { label: "ICE: Travel for F and M students", href: "https://www.ice.gov/sevis/travel" },
+  stemCip: {
+    label: "Study in the States (DHS): Eligible CIP codes for the STEM OPT extension",
+    href: "https://studyinthestates.dhs.gov/stem-opt-hub/additional-resources/eligible-cip-codes-for-the-stem-opt-extension",
+  },
+  stemList: { label: "ICE: STEM Designated Degree Program List (PDF)", href: "https://www.ice.gov/doclib/sevis/pdf/stemList2024.pdf" },
+  stemUpdate2024: {
+    label: "Federal Register: Update to the DHS STEM Designated Degree Program List (July 23, 2024)",
+    href: "https://www.federalregister.gov/documents/2024/07/23/2024-16127/update-to-the-department-of-homeland-security-stem-designated-degree-program-list",
+  },
+  stemUpdate2023: {
+    label: "Federal Register: Update to the DHS STEM Designated Degree Program List (July 12, 2023)",
+    href: "https://www.federalregister.gov/documents/2023/07/12/2023-14807/update-to-the-department-of-homeland-security-stem-designated-degree-program-list",
+  },
+  h1bModernization: {
+    label: "Federal Register: Modernizing H-1B requirements, final rule (December 18, 2024), including cap-gap",
+    href: "https://www.federalregister.gov/documents/2024/12/18/2024-29354/modernizing-h-1b-requirements-providing-flexibility-in-the-f-1-program-and-program-improvements",
+  },
+  caseInquiry: { label: "USCIS: e-Request self-service tools", href: "https://egov.uscis.gov/e-request/Intro.do" },
 };

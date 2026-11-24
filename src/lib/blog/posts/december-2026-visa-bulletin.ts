@@ -37,7 +37,7 @@ export const decemberVisaBulletin2026: BlogPost = {
   title: "December 2026 Visa Bulletin: release date, current dates and what to watch",
   seoTitle: "December 2026 Visa Bulletin: Release Date and Updates",
   description:
-    "Is the December 2026 Visa Bulletin out? When it's expected, the dates in effect now, what moved last December and which chart USCIS uses. Updated on release day.",
+    "Is the December 2026 Visa Bulletin out? When it's expected, the dates in effect now, what moved last December and which chart USCIS uses. Updated on release.",
   topic: "Visa Bulletin",
   published: "2026-11-24",
   author: "karthik",

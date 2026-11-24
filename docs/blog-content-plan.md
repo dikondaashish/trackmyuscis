@@ -31,6 +31,13 @@ TrackMyUSCIS itself had 1 impression in Search Console (new property, data since
 | [OPT premium processing 2026](/blog/opt-premium-processing-2026) | opt premium processing, opt premium processing fee, 1780 |
 | [OPT 90-day unemployment rule](/blog/opt-unemployment-90-days) | 90 day unemployment rule opt, opt unemployment days, stem 150 days |
 | [Proposed $70,000 OPT fee](/blog/proposed-opt-fee-2026) | opt fee 70000, opt fee proposed rule |
+| [F-1 fixed admission rule on hold](/blog/f1-fixed-admission-rule-on-hold) | f1 duration of status rule, fixed admission period |
+| [H-4 EAD 2026](/blog/h4-ead-2026) | h4 ead processing time, h4 ead automatic extension |
+| [EAD delays](/blog/ead-delays-2026) | ead pending, ead delay, ead card not received |
+| [Travel on OPT](/blog/travel-on-opt-2026) | can you travel on opt, travel while opt pending |
+| [Is my degree STEM eligible](/blog/stem-degree-eligible-cip-code) | stem cip code, is my degree stem |
+| [Start work before EAD](/blog/start-work-before-ead) | can i work before ead arrives |
+| [F-1 60-day grace period](/blog/f1-grace-period-60-days) | f1 grace period, 60 day grace period |
 | [November 2026 Visa Bulletin](/blog/november-2026-visa-bulletin) | visa bulletin, november visa bulletin 2026, priority date |
 | [I-140 status check](/blog/i-140-status-check) | i-140 status, i140 tracker, i-140 premium processing fee |
 | [Green card renewal (I-90)](/blog/green-card-renewal-i-90) | green card renewal, i-90 fee, green card renewal processing |
@@ -45,7 +52,7 @@ Official numbers read on 2026-11-24: I-765 (c)(3) 6 months, I-765 (c)(26) standa
 
 1. **Fill in the December 2026 Visa Bulletin post the day it's published** (still "Coming soon" on 2026-11-24). Add the charts and what moved, rewrite the answer, status section and first FAQs, and keep the slug. The file's header lists the steps.
    From January 2027 on, publish each month's bulletin page early, around the 1st of the month before (the sister site's Search Console shows "december 2026" searches start weeks ahead), then fill it in on release day.
-2. **Student topics next:** H-4 EAD status and processing time (18.5 months on 2026-11-24), EAD pending and delayed cases, travel on OPT, is my degree STEM eligible (CIP codes), OPT denied, 60-day grace period, start work before the EAD arrives, F-1 fixed admission rule (on hold since the September 14, 2026 court order).
+2. **Student topics next:** OPT denied (check the I-765 motion rules and I-290B fee on uscis.gov first), OPT biometrics, second master's OPT, E-Verify number vs EIN on the I-983, Real ID for students, renewing an F-1 visa on OPT, changing employers on STEM OPT, OPT to H-1B.
 3. **USCIS processing times in 2026, by form.** Covers I-130, I-485, N-400, I-765 and I-131 together. Needs the official numbers: egov.uscis.gov/processing-times asks for a human check, so read it in a normal browser first.
 4. **N-400 processing time and interview.** 10K to 100K searches.
 5. **Citizenship test questions.** 10K to 100K searches. Check the current civics test version on uscis.gov first.

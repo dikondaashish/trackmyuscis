@@ -9,6 +9,13 @@ import { stemOptExtension2026 } from "./posts/stem-opt-extension-2026";
 import { optPremiumProcessing2026 } from "./posts/opt-premium-processing-2026";
 import { optUnemployment90Days } from "./posts/opt-unemployment-90-days";
 import { proposedOptFee2026 } from "./posts/proposed-opt-fee-2026";
+import { f1FixedAdmissionRuleOnHold } from "./posts/f1-fixed-admission-rule-on-hold";
+import { h4Ead2026 } from "./posts/h4-ead-2026";
+import { eadDelays2026 } from "./posts/ead-delays-2026";
+import { travelOnOpt2026 } from "./posts/travel-on-opt-2026";
+import { stemDegreeEligibleCipCode } from "./posts/stem-degree-eligible-cip-code";
+import { startWorkBeforeEad } from "./posts/start-work-before-ead";
+import { f1GracePeriod60Days } from "./posts/f1-grace-period-60-days";
 import { novemberVisaBulletin2026 } from "./posts/november-2026-visa-bulletin";
 import { greenCardRenewal } from "./posts/green-card-renewal-i-90";
 import { i140Status } from "./posts/i-140-status-check";
@@ -27,6 +34,13 @@ export const BLOG_POSTS: BlogPost[] = [
   novemberVisaBulletin2026,
   i140Status,
   greenCardRenewal,
+  f1FixedAdmissionRuleOnHold,
+  h4Ead2026,
+  eadDelays2026,
+  travelOnOpt2026,
+  stemDegreeEligibleCipCode,
+  startWorkBeforeEad,
+  f1GracePeriod60Days,
 ].sort((a, b) =>
   b.published.localeCompare(a.published),
 );
