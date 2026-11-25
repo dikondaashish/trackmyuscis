@@ -8,12 +8,13 @@ import { CONTENT_UPDATED } from "@/lib/seo";
 import { PT_CHECKED, PT_FORMS, PT_OFFICE_PAGES } from "@/lib/processing-times";
 import { FORMS_UPDATED } from "@/lib/content";
 import { FORM_FACTS_CHECKED } from "@/lib/form-facts";
+import { listedLawyers } from "@/lib/directory-listings";
 import { STATUS_DETAIL_PAGES, statusHref, STATUSES_UPDATED } from "@/lib/statuses";
 
 type Entry = { path: string; priority: number; freq: MetadataRoute.Sitemap[number]["changeFrequency"]; updated?: string };
 
 /** Every public page with a fixed last-modified date (never "now", so dates only move when content does). */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const legalDate = new Date(LEGAL_UPDATED).toISOString().slice(0, 10);
   const formsDate = FORMS_UPDATED > FORM_FACTS_CHECKED ? FORMS_UPDATED : FORM_FACTS_CHECKED;
   const entries: Entry[] = [
@@ -27,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/guides", priority: 0.8, freq: "weekly" },
     { path: "/lawyers", priority: 0.8, freq: "monthly" },
     { path: "/lawyers/join", priority: 0.6, freq: "monthly", updated: legalDate },
+    ...(await listedLawyers()).map((l) => ({ path: `/lawyers/${l.slug}`, priority: 0.6, freq: "monthly" as const, updated: l.updated })),
     ...FORMS.map((f) => ({ path: `/forms/${f.slug}`, priority: 0.8, freq: "monthly" as const, updated: formsDate })),
     ...GUIDES.map((g) => ({ path: `/guides/${g.slug}`, priority: 0.7, freq: "monthly" as const })),
     { path: "/answers", priority: 0.8, freq: "weekly", updated: ANSWERS_UPDATED },

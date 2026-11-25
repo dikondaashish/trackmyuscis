@@ -1,16 +1,18 @@
 import { Suspense } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
-import { LawyerSearch, LawyerSearchWithResult } from "@/components/LawyerSearch";
+import { LawyerDirectory, LawyerDirectoryWithSearch } from "@/components/LawyerSearch";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { RichText } from "@/components/ui/RichText";
 import { DOJ_ROSTER, EOIR_PRO_BONO, USCIS_FIND_LEGAL } from "@/lib/content";
 import { panel, readContainer, rowPad, rows, section, textLink } from "@/lib/ui";
 import { JsonLd } from "@/components/JsonLd";
-import { breadcrumbSchema, pageMetadata, webPageSchema } from "@/lib/seo";
+import { abs, breadcrumbSchema, pageMetadata, webPageSchema } from "@/lib/seo";
+import { DIRECTORY, directoryFee, PRACTICE_AREAS } from "@/lib/directory";
+import { listedLawyers, type Listing } from "@/lib/directory-listings";
 
 const DESCRIPTION =
-  "Where to find free or low-cost immigration legal help, and how to check that a lawyer or accredited representative is real before you pay anyone.";
+  "Find a license-checked immigration lawyer or accredited representative by state and kind of case, free legal help, and how to check someone before you pay.";
 
 export const metadata = pageMetadata({
   title: "How to Find an Immigration Lawyer You Can Trust",
@@ -18,7 +20,7 @@ export const metadata = pageMetadata({
   path: "/lawyers",
 });
 
-/** Official places to find help today. Our own directory is not open yet, and the page says so. */
+/** Official places to find help, besides our own directory. */
 const WHERE = [
   {
     title: "Free or low-cost help",
@@ -41,18 +43,64 @@ const CHECKS = [
   "A notario, notary or immigration consultant is not allowed to give immigration legal advice in the United States.",
 ];
 
-export default function LawyersPage() {
+/** The listed lawyers as schema.org LegalService entries: only what the page shows. */
+function listingsSchema(listings: Listing[]) {
+  return {
+    "@type": "ItemList",
+    name: "Immigration lawyers listed on TrackMyUSCIS",
+    url: abs("/lawyers"),
+    itemListElement: listings.map((l, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "LegalService",
+        "@id": `${abs(`/lawyers/${l.slug}`)}#practice`,
+        url: abs(`/lawyers/${l.slug}`),
+        name: l.firmName,
+        description: l.bio,
+        telephone: l.phone,
+        address: { "@type": "PostalAddress", addressLocality: l.officeCity, addressRegion: l.officeState, addressCountry: "US" },
+        knowsLanguage: l.languages.split(/\s*,\s*/).filter(Boolean),
+        knowsAbout: l.practiceAreas.map((v) => PRACTICE_AREAS.find((p) => p.value === v)?.label).filter(Boolean),
+        employee: { "@type": "Person", name: l.fullName, jobTitle: l.role === "attorney" ? "Immigration attorney" : "DOJ-accredited representative" },
+      },
+    })),
+  };
+}
+
+export default async function LawyersPage() {
+  const listings = await listedLawyers();
   return (
     <>
-      <JsonLd data={[webPageSchema({ name: "Find an immigration lawyer", description: DESCRIPTION, path: "/lawyers" }), breadcrumbSchema([{ name: "Find a lawyer", path: "/lawyers" }])]} />
+      <JsonLd
+        data={[
+          webPageSchema({ name: "Find an immigration lawyer", description: DESCRIPTION, path: "/lawyers" }),
+          breadcrumbSchema([{ name: "Find a lawyer", path: "/lawyers" }]),
+          ...(listings.length > 0 ? [listingsSchema(listings)] : []),
+        ]}
+      />
       <PageIntro
         title="Find an immigration lawyer"
-        description="Where to find real legal help today, and how to check someone before you pay them."
+        description="Search license-checked immigration lawyers, find free help, and check anyone before you pay them."
         width={readContainer}
       />
       <section className={section}>
         <div className={readContainer}>
-          <h2 className="text-h3 font-semibold text-midnight">Where to look</h2>
+          <h2 id="directory" className="jump-target scroll-mt-28 text-h3 font-semibold text-midnight">
+            Immigration lawyers on TrackMyUSCIS
+          </h2>
+          <p className="mt-3 text-body text-slate">
+            <RichText
+              text={`We check every listing before it appears: attorneys with their state bar, accredited representatives on the [Department of Justice roster](${DOJ_ROSTER}). Lawyers ${DIRECTORY.freeAtLaunch ? `will pay a flat ${directoryFee} to be listed once the directory's launch period ends` : `pay a flat ${directoryFee} to be listed`}, and paying never changes the order. See [how listings work](/advertising).`}
+            />
+          </p>
+          <div className={`mt-6 ${panel}`}>
+            <Suspense fallback={<LawyerDirectory listings={listings} />}>
+              <LawyerDirectoryWithSearch listings={listings} />
+            </Suspense>
+          </div>
+
+          <h2 className="mt-12 text-h3 font-semibold text-midnight">Other places to find help</h2>
           <ul className={`mt-6 ${rows}`}>
             {WHERE.map((w) => (
               <li key={w.title} className={`${rowPad} py-6`}>
@@ -80,15 +128,6 @@ export default function LawyersPage() {
             How to avoid immigration scams
           </Link>
 
-          <h2 className="mt-12 text-h3 font-semibold text-midnight">Our lawyer directory</h2>
-          <p className="mt-4 text-body text-slate">
-            <RichText text="The directory is not open yet, so a search returns no listings today. We are taking applications from lawyers now. When it opens, every attorney's state bar license is checked before they appear. Lawyers pay a flat yearly fee to be listed, and it never changes the order of results. See [how listings work](/advertising)." />
-          </p>
-          <div className={`mt-6 ${panel}`}>
-            <Suspense fallback={<LawyerSearch />}>
-              <LawyerSearchWithResult />
-            </Suspense>
-          </div>
           <div className={`mt-12 flex flex-col items-start gap-3 ${panel} sm:p-8`}>
             <h2 className="text-title text-midnight">Are you an immigration lawyer?</h2>
             <p className="text-body text-slate">

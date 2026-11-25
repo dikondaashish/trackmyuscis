@@ -28,8 +28,8 @@ const STEPS = [
     body: `We look up attorneys with their state bar and accredited representatives on the [Department of Justice roster](${DOJ_ROSTER}), then email you the result.`,
   },
   {
-    title: "Your listing goes live",
-    body: "The directory isn't open to the public yet. Approved listings appear the day it opens, and we'll email you before it does.",
+    title: "Your profile goes live",
+    body: "Once your license checks out, you get your own profile page and a place in our [Find a lawyer](/lawyers) search, by state and kind of case. We email you when it's live.",
   },
 ];
 
@@ -66,7 +66,11 @@ const FAQ = [
   },
   {
     q: "When will my listing appear?",
-    a: "When the directory opens to the public. It isn't open yet, so applying now means your listing is checked and ready on the first day. We'll email you before it opens.",
+    a: "As soon as we've checked your license. Your listing then appears on our Find a lawyer page and we email you to say it's live.",
+  },
+  {
+    q: "Can people leave reviews?",
+    a: "Yes. Signed-in TrackMyUSCIS members can rate you and write a short review. We check each one against our review rules before it appears, and we publish negative reviews too. No lawyer can pay to change or remove a review, and you may not review yourself or offer anything for a review. If a review breaks the rules, email us.",
   },
   {
     q: "Can I change or remove my listing?",
@@ -147,8 +151,8 @@ export default function JoinDirectoryPage() {
             Apply to be listed
           </h2>
           <p className="mt-3 text-body text-slate">
-            What you enter here is what people will see on your listing, apart from your bar number and email, which we use only to
-            check your license and reach you.
+            What you enter here becomes your profile page, apart from your bar number and email, which we use only to check your license
+            and reach you. Only the fields marked optional can be left empty.
           </p>
           <div className={`mt-6 ${panel} sm:p-8`}>
             <JoinForm feeLine={DIRECTORY.freeAtLaunch ? `After launch a listing is ${directoryFee}. ${NOTICE}` : `We'll email your invoice for ${directoryFee} once your license is checked.`} />

@@ -31,6 +31,20 @@ export const PRACTICE_AREAS = [
   { value: "waivers", label: "Waivers and appeals" },
 ] as const;
 
+/** How a lawyer meets people. Shown as tags on the list and the profile. */
+export const CONSULTATION_MODES = [
+  { value: "video", label: "Video call", tag: "Video consultations" },
+  { value: "phone", label: "Phone", tag: "Phone consultations" },
+  { value: "in_person", label: "In person", tag: "In-person meetings" },
+] as const;
+
+/** The first consultation: free, a set fee, or not listed (people ask the office). */
+export type ConsultationPrice = "free" | "paid" | "ask";
+
+export const EDUCATION_MAX = 4;
+export const CAREER_MAX = 5;
+export const LINE_MAX = 150;
+
 /** States and territories with their own bar, and where an office can be. */
 export const US_STATES: [code: string, name: string][] = [
   ["AL", "Alabama"], ["AK", "Alaska"], ["AZ", "Arizona"], ["AR", "Arkansas"], ["CA", "California"], ["CO", "Colorado"],
@@ -57,11 +71,22 @@ export type LawyerApplication = {
   website: string;
   barState: string;
   barNumber: string;
+  officeStreet: string;
   officeCity: string;
   officeState: string;
+  officeZip: string;
   languages: string;
   practiceAreas: string[];
-  freeConsultation: boolean;
+  consultationModes: string[];
+  consultationPrice: ConsultationPrice;
+  /** Dollars, when the price is "paid". */
+  consultationFee: string;
+  /** Year first licensed (attorneys) or accredited (representatives). Optional. */
+  licensedSince: string;
+  /** One school or degree per line. Optional. */
+  education: string;
+  /** One past role or highlight per line. Optional. */
+  career: string;
   bio: string;
   /** "I confirm this is accurate and I may submit it." */
   accurate: boolean;
@@ -72,10 +97,26 @@ export type LawyerApplication = {
 export type ApplicationErrors = Partial<Record<keyof LawyerApplication, string>>;
 
 export const BIO_MIN = 40;
-export const BIO_MAX = 400;
+export const BIO_MAX = 1500;
 
 const STATE_CODES = new Set(US_STATES.map(([code]) => code));
 const AREA_VALUES = new Set<string>(PRACTICE_AREAS.map((a) => a.value));
+const MODE_VALUES = new Set<string>(CONSULTATION_MODES.map((m) => m.value));
+
+/** Non-empty trimmed lines of a text box. */
+export const lines = (s: string) => s.split(/\r?\n/).map((l) => l.trim().replace(/\s+/g, " ")).filter(Boolean);
+
+/** "María O'Brien, San Antonio, TX" → "maria-o-brien-san-antonio-tx". */
+export function slugify(s: string) {
+  return s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100)
+    .replace(/-+$/g, "");
+}
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
 
 /** "example.com/team" → "https://example.com/team"; empty stays empty. */
@@ -96,11 +137,19 @@ export function cleanApplication(a: LawyerApplication): LawyerApplication {
     website: normalizeWebsite(a.website),
     barState: a.role === "attorney" ? a.barState.trim().toUpperCase() : "",
     barNumber: a.role === "attorney" ? a.barNumber.trim() : "",
+    officeStreet: a.officeStreet.trim().replace(/\s+/g, " "),
     officeCity: a.officeCity.trim().replace(/\s+/g, " "),
     officeState: a.officeState.trim().toUpperCase(),
+    officeZip: a.officeZip.trim(),
     languages: a.languages.trim().replace(/\s+/g, " "),
     practiceAreas: [...new Set(a.practiceAreas)].filter((v) => AREA_VALUES.has(v)),
-    bio: a.bio.trim(),
+    consultationModes: [...new Set(a.consultationModes)].filter((v) => MODE_VALUES.has(v)),
+    consultationPrice: a.consultationPrice === "free" || a.consultationPrice === "paid" ? a.consultationPrice : "ask",
+    consultationFee: a.consultationPrice === "paid" ? a.consultationFee.trim().replace(/^\$/, "").replace(/,/g, "") : "",
+    licensedSince: a.licensedSince.trim(),
+    education: lines(a.education).join("\n"),
+    career: lines(a.career).join("\n"),
+    bio: a.bio.trim().replace(/\n{3,}/g, "\n\n"),
   };
 }
 
@@ -128,10 +177,28 @@ export function validateApplication(input: LawyerApplication): ApplicationErrors
     if (!STATE_CODES.has(a.barState)) errors.barState = "Choose the state bar where you are licensed.";
     if (a.barNumber.length < 2 || a.barNumber.length > 30) errors.barNumber = "Enter your bar number, so we can check your license.";
   }
+  if (a.officeStreet && (a.officeStreet.length < 3 || a.officeStreet.length > 120)) errors.officeStreet = "Enter the street address, or leave this empty.";
   if (a.officeCity.length < 2 || a.officeCity.length > 60) errors.officeCity = "Enter the city of your office.";
   if (!STATE_CODES.has(a.officeState)) errors.officeState = "Choose the state of your office.";
+  if (a.officeZip && !/^\d{5}(-\d{4})?$/.test(a.officeZip)) errors.officeZip = "Enter a 5-digit ZIP code, or leave this empty.";
   if (a.languages.length < 2 || a.languages.length > 120) errors.languages = "List the languages you work in, like English, Spanish.";
   if (a.practiceAreas.length === 0) errors.practiceAreas = "Choose at least one kind of case.";
+  if (a.consultationModes.length === 0) errors.consultationModes = "Choose at least one way you meet people.";
+  if (a.consultationPrice === "paid") {
+    const fee = Number(a.consultationFee);
+    if (!/^\d+$/.test(a.consultationFee) || fee < 1 || fee > 5000) errors.consultationFee = "Enter the fee in dollars, like 150.";
+  }
+  if (a.licensedSince) {
+    const year = Number(a.licensedSince);
+    if (!/^\d{4}$/.test(a.licensedSince) || year < 1950 || year > new Date().getFullYear())
+      errors.licensedSince = "Enter a year, like 2012, or leave this empty.";
+  }
+  const education = lines(a.education);
+  if (education.length > EDUCATION_MAX || education.some((l) => l.length > LINE_MAX))
+    errors.education = `Use up to ${EDUCATION_MAX} lines of ${LINE_MAX} characters or fewer.`;
+  const career = lines(a.career);
+  if (career.length > CAREER_MAX || career.some((l) => l.length > LINE_MAX))
+    errors.career = `Use up to ${CAREER_MAX} lines of ${LINE_MAX} characters or fewer.`;
   if (a.bio.length < BIO_MIN) errors.bio = `Write a little more: at least ${BIO_MIN} characters.`;
   else if (a.bio.length > BIO_MAX) errors.bio = `Keep it to ${BIO_MAX} characters.`;
   if (!a.accurate) errors.accurate = "Please confirm the information is accurate.";

@@ -124,6 +124,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         body: [
           "Attorneys supply the information in their listings. We check that each attorney is licensed before the listing appears, but we do not recommend or guarantee any attorney, their fees or their results. Any agreement you make with a lawyer is between you and that lawyer.",
           "Lawyers pay a flat yearly fee to be listed, and listings are free while the directory is launching. The fee doesn't change the order of results. Our [Advertising and Lawyer Directory](/advertising) page explains how listings work.",
+          "If you write a review, it must follow the review rules on our [Advertising and Lawyer Directory](/advertising#reviews) page. You keep ownership of what you write and give us permission to show it on the Service. We may decline or remove a review that breaks the rules.",
           "If you apply to be listed, you confirm that the information you give is accurate, that you are licensed and in good standing (or accredited by the Department of Justice), and that your listing follows the advertising rules of every bar you belong to. We may decline, edit or remove a listing.",
         ],
       },
@@ -260,7 +261,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "Your choices in Settings > Preferences: whether we may email you about case updates, and whether your community profile and activity status may be shown to other users once community features launch (both off unless you turn them on).",
             "If you use Documents: the files you upload (for example a passport, green card, work permit or USCIS notice), the type, dates, one-line summary and key details read from each one (which can include your name, document numbers and date of birth), your 6-digit passcode (stored only as a secure hash), your lock settings and whether expiry reminders are on. Documents is optional; nothing is uploaded unless you choose a file.",
             "When you agree to our Terms and this policy at sign-up: which versions you agreed to and when.",
-            "If you are a lawyer or accredited representative applying to our directory: your name, firm or organization, work email, phone, website, the state bar and bar number you give, your office city and state, languages, the kinds of cases you take and the description you write. Once a listing is approved and the directory is open, those details are shown publicly, apart from your bar number and email.",
+            "If you write a review of a lawyer: your rating, what you write, whether you hired them or had a consultation, and the date. It is shown publicly with your first name and last initial, taken from your account.",
+            "If you are a lawyer or accredited representative applying to our directory: your name, firm or organization, work email, phone, website, the state bar and bar number you give, your office address, languages, the kinds of cases you take, how you hold consultations and what the first one costs, the year you were first licensed, the education and career lines you add, your photo if you upload one, and the description you write. Once a listing is approved, those details are shown publicly on our Find a lawyer page, apart from your email and bar number (we show which state bar licensed you, not the number).",
             "For each saved case: the status, description and status history USCIS returns, when it last changed and when we last checked it, and your email and privacy choices in Settings.",
           ],
           "Information collected automatically:",
@@ -295,7 +297,8 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "to run the Service and show you the results you ask for",
             "to reply when you contact us",
             "to check your saved cases with USCIS and, if case emails are on, email you when a status changes",
-            "if you apply to the lawyer directory: to check your license, publish your listing, and contact and bill you about it",
+            "if you apply to the lawyer directory: to check your license, publish your profile, and contact and bill you about it",
+            "if you write a review: to check it against our review rules and publish it on the lawyer's profile",
             "to store the documents you upload, read their type, dates and key details with AI, and, if reminders are on, email you before they expire",
             "to send the account messages you need",
             "to protect the Service, our users and us from fraud, abuse and security threats",
@@ -341,6 +344,7 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
             "Server logs: up to 90 days, unless we need them longer to investigate abuse.",
             "Emails with us: up to 24 months after the conversation ends.",
             "Lawyer directory applications and listings: while the listing is active, and up to 24 months after it is declined or removed.",
+            "Reviews: while the review is published, until you ask us to delete it or until you delete your account.",
             "Documents: until you delete them or your account. Resetting a forgotten Documents passcode deletes them too.",
             "Account information: while your account is open. When you delete it, we delete your information within 30 days, apart from backups, which are overwritten within a further 90 days, and anything the law requires us to keep.",
           ],
@@ -616,6 +620,22 @@ export const LEGAL_DOCS: Record<string, LegalDoc> = {
         heading: "Links to other services",
         body: [
           "We link to helpful services, such as HealthCare.gov. We don't earn a commission from these links today. If a link ever earns us money, we'll say so next to it.",
+        ],
+      },
+      {
+        id: "reviews",
+        heading: "Reviews",
+        body: [
+          "Signed-in members can rate a lawyer from 1 to 5 stars and write a short review. Each review shows the member's first name and last initial, whether they hired the lawyer or had a consultation, and the date. A lawyer's rating is the average of their published reviews; we don't show a rating until there is at least one.",
+          "We check every review before it appears. We publish it, positive or negative, if it follows these rules:",
+          [
+            "It describes your own experience with this lawyer or their office.",
+            "You don't work for the lawyer, aren't related to them and weren't paid or offered anything for it.",
+            "It doesn't include receipt numbers, A-Numbers, case details that could identify someone, or anyone's contact details.",
+            "It has no threats, hate, harassment or ads.",
+          ],
+          "We don't edit what reviewers write. Lawyers can't pay to add, change, hide or remove a review, and they may not review themselves or offer anything in exchange for a review. We can't confirm that every reviewer was a client, so read reviews as one person's experience.",
+          `To report a review that breaks these rules, or to change or delete your own, email ${email.support}.`,
         ],
       },
       {

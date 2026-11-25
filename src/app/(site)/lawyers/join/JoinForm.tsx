@@ -1,15 +1,28 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, ImagePlus, X } from "lucide-react";
 import { FormMessage } from "@/components/auth/FormMessage";
 import { Spinner } from "@/components/ui/Spinner";
-import { BIO_MAX, PRACTICE_AREAS, US_STATES, validateApplication, type ApplicationErrors, type LawyerApplication } from "@/lib/directory";
-import { btnPrimary, field, fieldLabel, focusRing } from "@/lib/ui";
+import {
+  BIO_MAX,
+  CAREER_MAX,
+  CONSULTATION_MODES,
+  EDUCATION_MAX,
+  PRACTICE_AREAS,
+  US_STATES,
+  validateApplication,
+  type ApplicationErrors,
+  type LawyerApplication,
+} from "@/lib/directory";
+import { LAWYER_PHOTO_SIZE } from "@/lib/lawyer-photo";
+import { btnPrimary, btnSecondary, field, fieldLabel, focusRing } from "@/lib/ui";
 import { submitLawyerApplication } from "./actions";
 
 const inlineLink = `rounded font-semibold text-blue underline-offset-2 hover:underline ${focusRing}`;
+const optional = <span className="font-normal text-slate"> (optional)</span>;
 
 const EMPTY: LawyerApplication = {
   role: "attorney",
@@ -20,21 +33,62 @@ const EMPTY: LawyerApplication = {
   website: "",
   barState: "",
   barNumber: "",
+  officeStreet: "",
   officeCity: "",
   officeState: "",
+  officeZip: "",
   languages: "English",
   practiceAreas: [],
-  freeConsultation: false,
+  consultationModes: [],
+  consultationPrice: "ask",
+  consultationFee: "",
+  licensedSince: "",
+  education: "",
+  career: "",
   bio: "",
   accurate: false,
   agreed: false,
 };
 
+type Errors = ApplicationErrors & { photo?: string };
+type Key = keyof LawyerApplication | "photo";
+
 /** Fields in page order, so the first one with a problem can take focus. */
-const ORDER: (keyof LawyerApplication)[] = [
-  "role", "fullName", "firmName", "email", "phone", "website", "barState", "barNumber",
-  "officeCity", "officeState", "languages", "practiceAreas", "bio", "accurate", "agreed",
+const ORDER: Key[] = [
+  "role", "fullName", "firmName", "email", "phone", "website", "barState", "barNumber", "licensedSince",
+  "officeStreet", "officeCity", "officeState", "officeZip", "consultationModes", "consultationFee",
+  "photo", "languages", "practiceAreas", "bio", "education", "career", "accurate", "agreed",
 ];
+
+/** Crops the middle square of a photo and shrinks it to LAWYER_PHOTO_SIZE, as a JPEG. */
+async function squarePhoto(file: File): Promise<Blob> {
+  const bitmap = await createImageBitmap(file);
+  const side = Math.min(bitmap.width, bitmap.height);
+  const out = Math.min(side, LAWYER_PHOTO_SIZE);
+  const canvas = document.createElement("canvas");
+  canvas.width = out;
+  canvas.height = out;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("no canvas");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, out, out);
+  ctx.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, out, out);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.86));
+  if (!blob) throw new Error("no blob");
+  return blob;
+}
+
+/** One group of fields with a heading, so the form reads as a few short steps. */
+function Group({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {
+  return (
+    <section className="border-t border-border pt-8 first:border-0 first:pt-0">
+      <h3 className="text-title text-midnight">{title}</h3>
+      {note && <p className="mt-1 text-small text-slate">{note}</p>}
+      <div className="mt-5 flex flex-col gap-5">{children}</div>
+    </section>
+  );
+}
 
 /**
  * The application to join the lawyer directory. Checked in the browser for quick feedback and
@@ -44,19 +98,39 @@ export function JoinForm({ feeLine }: { feeLine: string }) {
   const uid = useId();
   const id = (name: string) => `${uid}-${name}`;
   const formRef = useRef<HTMLFormElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [a, setA] = useState<LawyerApplication>(EMPTY);
+  const [photo, setPhoto] = useState<Blob | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [trap, setTrap] = useState("");
-  const [errors, setErrors] = useState<ApplicationErrors>({});
+  const [errors, setErrors] = useState<Errors>({});
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+
+  useEffect(() => () => void (preview && URL.revokeObjectURL(preview)), [preview]);
 
   const set = <K extends keyof LawyerApplication>(key: K, value: LawyerApplication[K]) => {
     setA((prev) => ({ ...prev, [key]: value }));
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
+  const toggle = (key: "practiceAreas" | "consultationModes", value: string, on: boolean) =>
+    set(key, on ? [...a[key], value] : a[key].filter((v) => v !== value));
 
-  function showErrors(found: ApplicationErrors, text: string) {
+  async function onPhoto(file: File | undefined) {
+    setErrors((prev) => ({ ...prev, photo: undefined }));
+    if (!file) return;
+    try {
+      const blob = await squarePhoto(file);
+      setPhoto(blob);
+      setPreview(URL.createObjectURL(blob));
+    } catch {
+      setErrors((prev) => ({ ...prev, photo: "We couldn't read that photo. Try a JPG or PNG." }));
+    }
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  function showErrors(found: Errors, text: string) {
     setErrors(found);
     setMessage(text);
     const first = ORDER.find((k) => found[k]);
@@ -70,7 +144,11 @@ export function JoinForm({ feeLine }: { feeLine: string }) {
     if (Object.keys(found).length > 0) return showErrors(found, "Please fix the fields marked below.");
     setBusy(true);
     try {
-      const result = await submitLawyerApplication(a, trap);
+      const body = new FormData();
+      body.set("application", JSON.stringify(a));
+      body.set("trap", trap);
+      if (photo) body.set("photo", new File([photo], "photo.jpg", { type: "image/jpeg" }));
+      const result = await submitLawyerApplication(body);
       if (result.ok) return setDone(true);
       showErrors(result.errors ?? {}, result.message);
     } catch {
@@ -89,25 +167,26 @@ export function JoinForm({ feeLine }: { feeLine: string }) {
         </p>
         <p className="mt-3 text-body text-midnight">
           Thank you. We&apos;ll check your license and email you at <strong className="font-semibold">{a.email.trim()}</strong> when
-          it&apos;s done. There is nothing to pay now. {feeLine}
+          your profile is live. There is nothing to pay now. {feeLine}
         </p>
       </div>
     );
   }
 
   const attorney = a.role === "attorney";
-  const err = (key: keyof LawyerApplication) =>
+  const err = (key: Key) =>
     errors[key] ? (
       <p id={id(`${key}-error`)} className="mt-2 text-small text-red">
         {errors[key]}
       </p>
     ) : null;
-  const aria = (key: keyof LawyerApplication) => ({
+  const aria = (key: Key) => ({
     "data-field": key,
     "aria-invalid": errors[key] ? true : undefined,
     "aria-describedby": errors[key] ? id(`${key}-error`) : undefined,
   });
-  const text = (key: "fullName" | "firmName" | "email" | "phone" | "website" | "barNumber" | "officeCity" | "languages", label: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
+  type TextKey = "fullName" | "firmName" | "email" | "phone" | "website" | "barNumber" | "officeStreet" | "officeCity" | "officeZip" | "languages" | "licensedSince" | "consultationFee";
+  const text = (key: TextKey, label: React.ReactNode, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
     <div className="min-w-0">
       <label htmlFor={id(key)} className={fieldLabel}>
         {label}
@@ -121,6 +200,32 @@ export function JoinForm({ feeLine }: { feeLine: string }) {
         className={`mt-2 ${field} disabled:opacity-60`}
         {...aria(key)}
         {...props}
+      />
+      {err(key)}
+    </div>
+  );
+  const box = (key: "bio" | "education" | "career", label: React.ReactNode, rows: number, placeholder: string, counter = false) => (
+    <div>
+      <div className="flex items-baseline justify-between gap-4">
+        <label htmlFor={id(key)} className={fieldLabel}>
+          {label}
+        </label>
+        {counter && (
+          <span className={`text-small tabular-nums ${a[key].trim().length > BIO_MAX ? "text-red" : "text-slate"}`}>
+            {a[key].trim().length} / {BIO_MAX}
+          </span>
+        )}
+      </div>
+      <textarea
+        id={id(key)}
+        name={key}
+        rows={rows}
+        value={a[key]}
+        onChange={(e) => set(key, e.target.value)}
+        disabled={busy}
+        placeholder={placeholder}
+        className={`mt-2 ${field.replace("h-11 ", "min-h-24 ")} py-3 disabled:opacity-60`}
+        {...aria(key)}
       />
       {err(key)}
     </div>
@@ -149,119 +254,175 @@ export function JoinForm({ feeLine }: { feeLine: string }) {
       {err(key)}
     </div>
   );
+  const check = (key: "practiceAreas" | "consultationModes", value: string, label: string, first: boolean) => (
+    <label key={value} className="flex min-h-11 cursor-pointer items-center gap-3 text-body text-midnight">
+      <input
+        type="checkbox"
+        name={key}
+        value={value}
+        checked={a[key].includes(value)}
+        onChange={(e) => toggle(key, value, e.target.checked)}
+        className="size-5 shrink-0 cursor-pointer accent-blue"
+        {...(first ? { "data-field": key } : {})}
+      />
+      {label}
+    </label>
+  );
 
   return (
     <form ref={formRef} onSubmit={onSubmit} noValidate className="flex flex-col gap-8">
       {message && <FormMessage tone="error">{message}</FormMessage>}
 
-      <fieldset disabled={busy}>
-        <legend className={fieldLabel}>I am</legend>
-        <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          {(
-            [
-              ["attorney", "An attorney", "Licensed by a U.S. state bar"],
-              ["accredited_representative", "An accredited representative", "Accredited by the Department of Justice"],
-            ] as const
-          ).map(([value, label, note], i) => (
-            <label
-              key={value}
-              className={`flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border bg-white p-4 transition-colors duration-200 ${a.role === value ? "border-blue" : "border-border hover:border-blue/50"}`}
-            >
-              <input
-                type="radio"
-                name="role"
-                value={value}
-                checked={a.role === value}
-                onChange={() => set("role", value)}
-                className="mt-0.5 size-5 shrink-0 cursor-pointer accent-blue"
-                {...(i === 0 ? { "data-field": "role" } : {})}
-              />
-              <span>
-                <span className="block text-body font-semibold text-midnight">{label}</span>
-                <span className="block text-small text-slate">{note}</span>
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {text("fullName", "Full name", { autoComplete: "name", required: true })}
-        {text("firmName", attorney ? "Firm name" : "Recognized organization", { autoComplete: "organization", required: true })}
-        {text("email", "Work email", { type: "email", autoComplete: "email", inputMode: "email", required: true })}
-        {text("phone", "Office phone", { type: "tel", autoComplete: "tel", inputMode: "tel", required: true })}
-        <div className="sm:col-span-2">{text("website", "Website (optional)", { autoComplete: "url", inputMode: "url", placeholder: "e.g. www.firm.com" })}</div>
-      </div>
-
-      {attorney && (
-        <div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {state("barState", "State bar")}
-            {text("barNumber", "Bar number", { required: true, autoComplete: "off" })}
+      <Group title="Who you are">
+        <fieldset disabled={busy}>
+          <legend className="sr-only">I am</legend>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {(
+              [
+                ["attorney", "An attorney", "Licensed by a U.S. state bar"],
+                ["accredited_representative", "An accredited representative", "Accredited by the Department of Justice"],
+              ] as const
+            ).map(([value, label, note], i) => (
+              <label
+                key={value}
+                className={`flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border bg-white p-4 transition-colors duration-200 ${a.role === value ? "border-blue" : "border-border hover:border-blue/50"}`}
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value={value}
+                  checked={a.role === value}
+                  onChange={() => set("role", value)}
+                  className="mt-0.5 size-5 shrink-0 cursor-pointer accent-blue"
+                  {...(i === 0 ? { "data-field": "role" } : {})}
+                />
+                <span>
+                  <span className="block text-body font-semibold text-midnight">{label}</span>
+                  <span className="block text-small text-slate">{note}</span>
+                </span>
+              </label>
+            ))}
           </div>
-          <p className="mt-2 text-small text-slate">We look you up on that state bar&apos;s website. If you have more than one license, give one in good standing.</p>
+        </fieldset>
+        <div className="grid gap-5 sm:grid-cols-2">
+          {text("fullName", "Full name", { autoComplete: "name" })}
+          {text("firmName", attorney ? "Firm name" : "Recognized organization", { autoComplete: "organization" })}
+          {text("email", "Work email", { type: "email", autoComplete: "email", inputMode: "email" })}
+          {text("phone", "Office phone", { type: "tel", autoComplete: "tel", inputMode: "tel" })}
+          <div className="sm:col-span-2">{text("website", <>Website{optional}</>, { autoComplete: "url", inputMode: "url", placeholder: "e.g. www.firm.com" })}</div>
         </div>
-      )}
+      </Group>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        {text("officeCity", "Office city", { autoComplete: "address-level2", required: true, placeholder: "e.g. Houston" })}
-        {state("officeState", "Office state")}
-        <div className="sm:col-span-2">{text("languages", "Languages you work in", { required: true, placeholder: "e.g. English, Spanish, Hindi" })}</div>
-      </div>
-
-      <fieldset disabled={busy} {...(errors.practiceAreas ? { "aria-describedby": id("practiceAreas-error") } : {})}>
-        <legend className={fieldLabel}>Cases you take</legend>
-        <div className="mt-2 grid gap-x-6 sm:grid-cols-2">
-          {PRACTICE_AREAS.map((p, i) => (
-            <label key={p.value} className="flex min-h-11 cursor-pointer items-center gap-3 text-body text-midnight">
-              <input
-                type="checkbox"
-                name="practiceAreas"
-                value={p.value}
-                checked={a.practiceAreas.includes(p.value)}
-                onChange={(e) => set("practiceAreas", e.target.checked ? [...a.practiceAreas, p.value] : a.practiceAreas.filter((v) => v !== p.value))}
-                className="size-5 shrink-0 cursor-pointer accent-blue"
-                {...(i === 0 ? { "data-field": "practiceAreas" } : {})}
-              />
-              {p.label}
-            </label>
-          ))}
+      <Group
+        title={attorney ? "Your license" : "Your accreditation"}
+        note={attorney ? "We look you up on that state bar's website. Your bar number is never shown on your profile." : "We look you up on the Department of Justice roster."}
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
+          {attorney && state("barState", "State bar")}
+          {attorney && text("barNumber", "Bar number", { autoComplete: "off" })}
+          {text("licensedSince", <>{attorney ? "Year first licensed" : "Year first accredited"}{optional}</>, { inputMode: "numeric", placeholder: "e.g. 2012", maxLength: 4 })}
         </div>
-        {err("practiceAreas")}
-        <label className="mt-2 flex min-h-11 cursor-pointer items-center gap-3 border-t border-border pt-2 text-body text-midnight">
-          <input
-            type="checkbox"
-            name="freeConsultation"
-            checked={a.freeConsultation}
-            onChange={(e) => set("freeConsultation", e.target.checked)}
-            className="size-5 shrink-0 cursor-pointer accent-blue"
-          />
-          I offer a free first consultation
-        </label>
-      </fieldset>
+      </Group>
 
-      <div>
-        <div className="flex items-baseline justify-between gap-4">
-          <label htmlFor={id("bio")} className={fieldLabel}>
-            About your practice
-          </label>
-          <span className={`text-small tabular-nums ${a.bio.trim().length > BIO_MAX ? "text-red" : "text-slate"}`}>
-            {a.bio.trim().length} / {BIO_MAX}
-          </span>
+      <Group title="Your office">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="sm:col-span-2">{text("officeStreet", <>Street address{optional}</>, { autoComplete: "street-address", placeholder: "e.g. 1200 Main St, Suite 400" })}</div>
+          {text("officeCity", "City", { autoComplete: "address-level2", placeholder: "e.g. Houston" })}
+          {state("officeState", "State")}
+          {text("officeZip", <>ZIP code{optional}</>, { autoComplete: "postal-code", inputMode: "numeric", maxLength: 10 })}
         </div>
-        <textarea
-          id={id("bio")}
-          name="bio"
-          rows={4}
-          value={a.bio}
-          onChange={(e) => set("bio", e.target.value)}
-          disabled={busy}
-          placeholder="Who you help and how. Plain facts only: no promises about results."
-          className={`mt-2 ${field.replace("h-11 ", "min-h-28 ")} py-3 disabled:opacity-60`}
-          {...aria("bio")}
-        />
-        {err("bio")}
-      </div>
+      </Group>
+
+      <Group title="Consultations" note="Shown as tags on the lawyer list, so people can see at a glance how to reach you.">
+        <fieldset disabled={busy} {...(errors.consultationModes ? { "aria-describedby": id("consultationModes-error") } : {})}>
+          <legend className={fieldLabel}>How you meet people</legend>
+          <div className="mt-1 grid gap-x-6 sm:grid-cols-3">
+            {CONSULTATION_MODES.map((m, i) => check("consultationModes", m.value, m.label, i === 0))}
+          </div>
+          {err("consultationModes")}
+        </fieldset>
+        <fieldset disabled={busy}>
+          <legend className={fieldLabel}>First consultation</legend>
+          <div className="mt-1 grid gap-x-6 sm:grid-cols-3">
+            {(
+              [
+                ["free", "Free"],
+                ["paid", "Paid"],
+                ["ask", "Don't show a price"],
+              ] as const
+            ).map(([value, label]) => (
+              <label key={value} className="flex min-h-11 cursor-pointer items-center gap-3 text-body text-midnight">
+                <input
+                  type="radio"
+                  name="consultationPrice"
+                  value={value}
+                  checked={a.consultationPrice === value}
+                  onChange={() => set("consultationPrice", value)}
+                  className="size-5 shrink-0 cursor-pointer accent-blue"
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        {a.consultationPrice === "paid" && (
+          <div className="sm:max-w-60">{text("consultationFee", "Fee in dollars", { inputMode: "numeric", placeholder: "e.g. 150" })}</div>
+        )}
+      </Group>
+
+      <Group title="Your profile" note="What people see on your profile page.">
+        <div>
+          <p className={fieldLabel}>Photo{optional}</p>
+          <div className="mt-2 flex items-center gap-4">
+            <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-ice">
+              {preview ? (
+                <Image src={preview} alt="Your profile photo" fill unoptimized className="object-cover" />
+              ) : (
+                <ImagePlus aria-hidden className="size-6 text-slate" />
+              )}
+            </span>
+            <div className="flex flex-wrap gap-2">
+              <label className={`${btnSecondary} cursor-pointer has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-blue`}>
+                {preview ? "Change photo" : "Add a photo"}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/heic"
+                  disabled={busy}
+                  onChange={(e) => onPhoto(e.target.files?.[0])}
+                  className="sr-only"
+                  data-field="photo"
+                  aria-describedby={id("photo-note")}
+                />
+              </label>
+              {preview && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPhoto(null);
+                    setPreview(null);
+                  }}
+                  className={`inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-lg px-3 text-small font-semibold text-slate hover:text-midnight ${focusRing}`}
+                >
+                  <X aria-hidden className="size-4" />
+                  Remove
+                </button>
+              )}
+            </div>
+          </div>
+          <p id={id("photo-note")} className="mt-2 text-small text-slate">A clear, recent headshot. We crop it to a square.</p>
+          {err("photo")}
+        </div>
+        {text("languages", "Languages you work in", { placeholder: "e.g. English, Spanish, Hindi" })}
+        <fieldset disabled={busy} {...(errors.practiceAreas ? { "aria-describedby": id("practiceAreas-error") } : {})}>
+          <legend className={fieldLabel}>Cases you take</legend>
+          <div className="mt-1 grid gap-x-6 sm:grid-cols-2">{PRACTICE_AREAS.map((p, i) => check("practiceAreas", p.value, p.label, i === 0))}</div>
+          {err("practiceAreas")}
+        </fieldset>
+        {box("bio", "About your practice", 5, "Who you help and how. Plain facts only: no promises about results.", true)}
+        {box("education", <>Education{optional}</>, 3, `One per line, up to ${EDUCATION_MAX}. e.g. J.D., University of Houston Law Center, 2012`)}
+        {box("career", <>Career{optional}</>, 3, `One per line, up to ${CAREER_MAX}. e.g. Founded Lopez Immigration Law, 2018`)}
+      </Group>
 
       {/* Hidden from people; simple bots fill every field. */}
       <div aria-hidden className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
@@ -271,7 +432,7 @@ export function JoinForm({ feeLine }: { feeLine: string }) {
         </label>
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 border-t border-border pt-8">
         <label className="flex min-h-11 cursor-pointer items-start gap-3 text-small text-slate">
           <input
             type="checkbox"

@@ -33,7 +33,7 @@ export function GET() {
     `- [Case tracker](${url("/sign-up")}): Free account that saves USCIS receipt numbers and shows each case's current status and history, checked about once a day.`,
     `- [Receipt number check](${url("/#track")}): Checks a USCIS receipt number's format and tells you which office issued it. No account needed.`,
     `- [Processing times](${url("/processing-times")}): The official USCIS processing time for each form, category and office, read every month, and how to read the number.`,
-    `- [Find an immigration lawyer](${url("/lawyers")}): Where to find free or low-cost immigration legal help and how to check that a lawyer or representative is real. The TrackMyUSCIS lawyer directory is not open yet.`,
+    `- [Find an immigration lawyer](${url("/lawyers")}): A directory of license-checked immigration attorneys and DOJ-accredited representatives, searchable by state or city and kind of case, plus where to find free or low-cost legal help and how to check that a lawyer is real. Attorneys are checked with their state bar and representatives on the DOJ roster before a listing appears. Each lawyer has a profile page with their first-consultation fee, how they meet clients (video, phone, in person), office address, languages, education and reviews from TrackMyUSCIS members, which are checked before they are published.`,
     `- [Case statuses explained](${url("/status-explained")}): Plain-English meaning of each common USCIS case status, what to do and what usually comes next. Each status has its own page.`,
     "",
     "## Processing times by form",

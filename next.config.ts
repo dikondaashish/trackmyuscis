@@ -15,7 +15,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "*.googleusercontent.com" },
       ...(supabaseHost
-        ? [{ protocol: "https" as const, hostname: supabaseHost, pathname: "/storage/v1/object/public/community-avatars/**" }]
+        ? [
+            { protocol: "https" as const, hostname: supabaseHost, pathname: "/storage/v1/object/public/community-avatars/**" },
+            { protocol: "https" as const, hostname: supabaseHost, pathname: "/storage/v1/object/public/lawyer-photos/**" },
+          ]
         : []),
     ],
   },

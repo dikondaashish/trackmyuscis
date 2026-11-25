@@ -21,7 +21,8 @@ export function safeNext(next: string | null | undefined): string {
     return AFTER_SIGN_IN;
   }
   const path = next.split(/[?#]/)[0];
-  const allowed = [...PROTECTED_PATHS, "/auth/reset-password"];
+  // Lawyer profiles: people sign in to write a review and come back to it.
+  const allowed = [...PROTECTED_PATHS, "/auth/reset-password", "/lawyers"];
   return allowed.some((p) => path === p || path.startsWith(`${p}/`)) ? next : AFTER_SIGN_IN;
 }
 
