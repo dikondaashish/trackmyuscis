@@ -12,7 +12,7 @@ import { PRACTICE_AREAS, US_STATES } from "@/lib/directory";
 import type { Listing } from "@/lib/directory-listings";
 import { btnPrimary, cardLink, field, fieldLabel, focusRing, rowArrow, textLink } from "@/lib/ui";
 
-const KIND_OPTIONS = [{ value: "", label: "Any kind of case" }, ...PRACTICE_AREAS.map((p) => ({ value: p.value, label: p.label }))];
+const KIND_OPTIONS = [{ value: "", label: "Any case type" }, ...PRACTICE_AREAS.map((p) => ({ value: p.value, label: p.label }))];
 const kindLabel = (value: string) => PRACTICE_AREAS.find((p) => p.value === value)?.label;
 const stateName = (code: string | null) => US_STATES.find(([c]) => c === code)?.[1] ?? code ?? "";
 
@@ -45,7 +45,7 @@ export function LawyerSearch({ location = "", kind = "" }: { location?: string; 
               className={`mt-2 ${field}`}
             />
           </div>
-          <SelectField id="lw-case" name="case" label="Kind of case" options={KIND_OPTIONS} defaultValue={kind} />
+          <SelectField id="lw-case" name="case" label="Case type" options={KIND_OPTIONS} defaultValue={kind} />
           <button type="submit" className={`${btnPrimary} @md:col-span-2 @md:justify-self-start @3xl:col-span-1`}>
             <Search aria-hidden className="size-4" />
             Find lawyers
@@ -102,14 +102,17 @@ function FreeHelp() {
 export function LawyerDirectory({ listings, location = "", kind = "" }: { listings: Listing[]; location?: string; kind?: string }) {
   if (listings.length === 0) {
     return (
-      <div className="rounded-xl bg-ice p-6">
-        <p className="text-title font-semibold text-midnight">No lawyers are listed yet</p>
-        <p className="mt-2 max-w-xl text-body text-slate">
-          The directory is new and we&apos;re checking the first lawyers now. If you need free or low-cost help today, the Department
-          of Justice keeps a list of approved legal service providers.
-        </p>
-        <FreeHelp />
-      </div>
+      <>
+        <LawyerSearch location={location} kind={kindLabel(kind) ? kind : ""} />
+        <div aria-live="polite" className="mt-6 rounded-xl bg-ice p-6">
+          <p className="text-title font-semibold text-midnight">No listings yet{location.trim() ? ` for ${location.trim()}` : ""}</p>
+          <p className="mt-2 max-w-xl text-body text-slate">
+            The directory is new and we&apos;re checking the first lawyers now. If you need free or low-cost help today, the Department
+            of Justice keeps a list of approved legal service providers.
+          </p>
+          <FreeHelp />
+        </div>
+      </>
     );
   }
 

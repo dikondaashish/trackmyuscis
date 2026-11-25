@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { LawyerDirectory, LawyerDirectoryWithSearch } from "@/components/LawyerSearch";
 import { PageIntro } from "@/components/ui/PageIntro";
@@ -81,17 +81,17 @@ export default async function LawyersPage() {
       />
       <PageIntro
         title="Find an immigration lawyer"
-        description="Search license-checked immigration lawyers, find free help, and check anyone before you pay them."
+        description="Where to find real legal help today, and how to check someone before you pay them."
         width={readContainer}
       />
       <section className={section}>
         <div className={readContainer}>
           <h2 id="directory" className="jump-target scroll-mt-28 text-h3 font-semibold text-midnight">
-            Immigration lawyers on TrackMyUSCIS
+            Our lawyer directory
           </h2>
           <p className="mt-3 text-body text-slate">
             <RichText
-              text={`We check every listing before it appears: attorneys with their state bar, accredited representatives on the [Department of Justice roster](${DOJ_ROSTER}). Lawyers ${DIRECTORY.freeAtLaunch ? `will pay a flat ${directoryFee} to be listed once the directory's launch period ends` : `pay a flat ${directoryFee} to be listed`}, and paying never changes the order. See [how listings work](/advertising).`}
+              text={`Every attorney's state bar license is checked before they appear, and accredited representatives are checked on the [Department of Justice roster](${DOJ_ROSTER}). Lawyers ${DIRECTORY.freeAtLaunch ? `are listed free while the directory launches, then pay a flat ${directoryFee}` : `pay a flat ${directoryFee} to be listed`}, and paying never changes the order. See [how listings work](/advertising). Are you a lawyer? [Apply to be listed](/lawyers/join).`}
             />
           </p>
           <div className={`mt-6 ${panel}`}>
@@ -99,21 +99,6 @@ export default async function LawyersPage() {
               <LawyerDirectoryWithSearch listings={listings} />
             </Suspense>
           </div>
-
-          <h2 className="mt-12 text-h3 font-semibold text-midnight">Other places to find help</h2>
-          <ul className={`mt-6 ${rows}`}>
-            {WHERE.map((w) => (
-              <li key={w.title} className={`${rowPad} py-6`}>
-                <h3 className="text-title font-semibold text-midnight">{w.title}</h3>
-                <p className="mt-1 text-body text-slate">
-                  <RichText text={w.body} />
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-body text-slate">
-            <RichText text={`USCIS explains the options on its [find legal services page](${USCIS_FIND_LEGAL}).`} />
-          </p>
 
           <h2 className="mt-12 text-h3 font-semibold text-midnight">Before you pay anyone</h2>
           <ul className={`mt-6 ${rows}`}>
@@ -128,16 +113,20 @@ export default async function LawyersPage() {
             How to avoid immigration scams
           </Link>
 
-          <div className={`mt-12 flex flex-col items-start gap-3 ${panel} sm:p-8`}>
-            <h2 className="text-title text-midnight">Are you an immigration lawyer?</h2>
-            <p className="text-body text-slate">
-              Attorneys and DOJ-accredited representatives can apply to be listed. It&apos;s free while the directory is launching.
-            </p>
-            <Link href="/lawyers/join" className={`mt-1 ${textLink}`}>
-              List your practice
-              <ArrowRight aria-hidden className="size-4" />
-            </Link>
-          </div>
+          <h2 className="mt-12 text-h3 font-semibold text-midnight">Where to look</h2>
+          <ul className={`mt-6 ${rows}`}>
+            {WHERE.map((w) => (
+              <li key={w.title} className={`${rowPad} py-6`}>
+                <h3 className="text-title font-semibold text-midnight">{w.title}</h3>
+                <p className="mt-1 text-body text-slate">
+                  <RichText text={w.body} />
+                </p>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 text-body text-slate">
+            <RichText text={`USCIS explains the options on its [find legal services page](${USCIS_FIND_LEGAL}).`} />
+          </p>
         </div>
       </section>
     </>
