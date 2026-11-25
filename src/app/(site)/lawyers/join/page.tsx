@@ -196,7 +196,7 @@ export default function JoinDirectoryPage() {
           <figure className="enter enter-delay relative mx-auto w-full max-w-md lg:max-w-none">
             <div aria-hidden className="absolute -inset-4 -z-0 rounded-3xl bg-ice sm:-inset-6" />
             <div className="relative">
-              <ListingCard l={EXAMPLE} preview headingLevel="h2" />
+              <ListingCard l={EXAMPLE} preview />
             </div>
             <figcaption className="relative mt-4 text-center text-small text-slate">
               <span className="mr-2 rounded-full bg-white px-2 py-0.5 text-caption font-semibold text-blue">Example</span>

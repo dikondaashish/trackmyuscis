@@ -153,7 +153,8 @@ export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;
  * card renders without links (the example on the "List your practice" page).
  */
 export function ListingCard({ l, preview = false, headingLevel = "h3" }: { l: Listing; preview?: boolean; headingLevel?: "h2" | "h3" }) {
-  const Heading = headingLevel;
+  // The example card is a picture of a listing, not a section of the page, so its name is not a heading.
+  const Heading = preview ? "p" : headingLevel;
   const areas = l.practiceAreas.map(areaLabel).filter(Boolean) as string[];
   const langs = allLanguages(l.languages);
   return (
