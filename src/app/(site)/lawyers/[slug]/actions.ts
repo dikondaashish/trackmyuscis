@@ -1,6 +1,7 @@
 "use server";
 
 import { COMPANY } from "@/lib/company";
+import { emailEnabled, sendEmail } from "@/lib/email/send";
 import { REVIEWS_PER_DAY, reviewerName, validateReview, type ReviewErrors, type ReviewInput } from "@/lib/reviews";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -62,6 +63,13 @@ export async function submitLawyerReview(slug: string, input: ReviewInput): Prom
     if (error.code === "23505") return { ok: false, message: "You've already reviewed this lawyer. Email us if you'd like to change your review." };
     console.error("Lawyer review insert failed:", error.message);
     return { ok: false, message: UNAVAILABLE };
+  }
+  // Tell ourselves a review is waiting, when email is set up.
+  if (emailEnabled()) {
+    const text = `A ${review.rating}-star review is waiting for a check: ${COMPANY.siteUrl}/admin/reviews?status=pending`;
+    await sendEmail({ to: COMPANY.email.support, subject: "New lawyer review to check", text, html: `<p>${text}</p>` }).catch((e) =>
+      console.error("Review notice email failed:", e instanceof Error ? e.message : "unknown error"),
+    );
   }
   return { ok: true };
 }

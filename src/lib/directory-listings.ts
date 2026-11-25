@@ -6,12 +6,15 @@
  * the database. Cached so the pages stay prerendered; with the "minutes" profile a change in the
  * table shows up within a minute or two of the next visit.
  */
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import type { ApplicantRole } from "@/lib/directory";
 import { lawyerPhotoUrl } from "@/lib/lawyer-photo";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type Rating = { average: number; count: number };
+
+/** Cache tag on every directory read. */
+export const LAWYERS_TAG = "lawyers";
 
 export type Listing = {
   slug: string;
@@ -120,6 +123,8 @@ function toListing(r: Row, rating: Rating | null): Listing {
 export async function listedLawyers(): Promise<Listing[]> {
   "use cache";
   cacheLife("minutes");
+  // Admin changes call updateTag(LAWYERS_TAG), so they show at once instead of within a minute.
+  cacheTag(LAWYERS_TAG);
   const admin = createAdminClient();
   if (!admin) return [];
   const { data, error } = await admin
@@ -162,6 +167,8 @@ export async function getListing(slug: string) {
 export async function lawyerReviews(slug: string): Promise<Review[]> {
   "use cache";
   cacheLife("minutes");
+  // Admin changes call updateTag(LAWYERS_TAG), so they show at once instead of within a minute.
+  cacheTag(LAWYERS_TAG);
   const admin = createAdminClient();
   if (!admin) return [];
   const { data: lawyer } = await admin.from("lawyer_applications").select("id").eq("slug", slug).eq("status", "listed").maybeSingle();

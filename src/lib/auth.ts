@@ -4,7 +4,7 @@ import { COMPANY, LEGAL_UPDATED } from "@/lib/company";
 export const AFTER_SIGN_IN = "/dashboard";
 
 /** Pages that need an account. The proxy sends signed-out visitors to sign in first. */
-export const PROTECTED_PATHS = ["/dashboard"];
+export const PROTECTED_PATHS = ["/dashboard", "/admin"];
 
 /** Sign-in pages that signed-in visitors skip. */
 export const SIGNED_OUT_ONLY = ["/sign-in", "/sign-up", "/forgot-password"];
