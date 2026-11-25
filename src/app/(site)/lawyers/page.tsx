@@ -1,11 +1,11 @@
 import { Suspense } from "react";
-import { Check } from "lucide-react";
+import { ArrowRight, Check, Scale, ShieldCheck, Star } from "lucide-react";
 import Link from "next/link";
 import { LawyerDirectory, LawyerDirectoryWithSearch } from "@/components/LawyerSearch";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { RichText } from "@/components/ui/RichText";
 import { DOJ_ROSTER, EOIR_PRO_BONO, USCIS_FIND_LEGAL } from "@/lib/content";
-import { panel, readContainer, rowPad, rows, section, textLink } from "@/lib/ui";
+import { btnPrimary, container, h2, rowPad, rows, section, textLink } from "@/lib/ui";
 import { JsonLd } from "@/components/JsonLd";
 import { abs, breadcrumbSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 import { DIRECTORY, directoryFee, PRACTICE_AREAS } from "@/lib/directory";
@@ -68,6 +68,13 @@ function listingsSchema(listings: Listing[]) {
   };
 }
 
+/** Three promises the directory keeps, shown under its heading. */
+const PROMISES = [
+  { icon: ShieldCheck, title: "Licenses checked", body: "Every lawyer is checked with their state bar or the DOJ roster before listing." },
+  { icon: Star, title: "Reviews checked", body: "Reviews come from signed-in members, and negative ones are published too." },
+  { icon: Scale, title: "Same rules for all", body: "Paying never changes the order. Results follow your search." },
+];
+
 export default async function LawyersPage() {
   const listings = await listedLawyers();
   return (
@@ -82,51 +89,97 @@ export default async function LawyersPage() {
       <PageIntro
         title="Find an immigration lawyer"
         description="Where to find real legal help today, and how to check someone before you pay them."
-        width={readContainer}
+        width={container}
       />
-      <section className={section}>
-        <div className={readContainer}>
-          <h2 id="directory" className="jump-target scroll-mt-28 text-h3 font-semibold text-midnight">
-            Our lawyer directory
-          </h2>
-          <p className="mt-3 text-body text-slate">
-            <RichText
-              text={`Every attorney's state bar license is checked before they appear, and accredited representatives are checked on the [Department of Justice roster](${DOJ_ROSTER}). Lawyers ${DIRECTORY.freeAtLaunch ? `are listed free while the directory launches, then pay a flat ${directoryFee}` : `pay a flat ${directoryFee} to be listed`}, and paying never changes the order. See [how listings work](/advertising). Are you a lawyer? [Apply to be listed](/lawyers/join).`}
-            />
-          </p>
-          <div className={`mt-6 ${panel}`}>
+
+      <section className={section} aria-labelledby="directory">
+        <div className={container}>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-end lg:gap-16">
+            <div>
+              <h2 id="directory" className={`jump-target scroll-mt-28 ${h2}`}>
+                Our lawyer directory
+              </h2>
+              <p className="mt-3 max-w-2xl text-body text-slate">
+                <RichText
+                  text={`Every attorney's state bar license is checked before they appear, and accredited representatives are checked on the [Department of Justice roster](${DOJ_ROSTER}). Lawyers ${DIRECTORY.freeAtLaunch ? `are listed free while the directory launches, then pay a flat ${directoryFee}` : `pay a flat ${directoryFee} to be listed`}, and paying never changes the order. See [how listings work](/advertising). Are you a lawyer? [Apply to be listed](/lawyers/join).`}
+                />
+              </p>
+            </div>
+            <ul className="grid gap-4 sm:grid-cols-3">
+              {PROMISES.map(({ icon: Icon, title, body }) => (
+                <li key={title} className="flex gap-3 sm:flex-col sm:gap-2">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-ice text-blue">
+                    <Icon aria-hidden className="size-4" strokeWidth={2.25} />
+                  </span>
+                  <span>
+                    <span className="block text-small font-semibold text-midnight">{title}</span>
+                    <span className="mt-0.5 block text-small text-slate">{body}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-10">
             <Suspense fallback={<LawyerDirectory listings={listings} />}>
               <LawyerDirectoryWithSearch listings={listings} />
             </Suspense>
           </div>
+        </div>
+      </section>
 
-          <h2 className="mt-12 text-h3 font-semibold text-midnight">Before you pay anyone</h2>
-          <ul className={`mt-6 ${rows}`}>
-            {CHECKS.map((c) => (
-              <li key={c} className={`flex items-start gap-3 ${rowPad} py-4 text-body text-midnight`}>
-                <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" strokeWidth={2.5} />
-                {c}
-              </li>
-            ))}
-          </ul>
-          <Link href="/scams" className={`mt-4 ${textLink}`}>
-            How to avoid immigration scams
+      <section className={`${section} bg-white`}>
+        <div className={`${container} grid gap-14 lg:grid-cols-2 lg:gap-16`}>
+          <div>
+            <h2 className={h2}>Before you pay anyone</h2>
+            <ul className={`mt-6 ${rows}`}>
+              {CHECKS.map((c) => (
+                <li key={c} className={`flex items-start gap-3 ${rowPad} py-4 text-body text-midnight`}>
+                  <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" strokeWidth={2.5} />
+                  {c}
+                </li>
+              ))}
+            </ul>
+            <Link href="/scams" className={`mt-4 ${textLink}`}>
+              How to avoid immigration scams
+            </Link>
+          </div>
+
+          <div>
+            <h2 className={h2}>Where to look</h2>
+            <ul className={`mt-6 ${rows}`}>
+              {WHERE.map((w) => (
+                <li key={w.title} className={`${rowPad} py-5`}>
+                  <h3 className="text-title text-midnight">{w.title}</h3>
+                  <p className="mt-1 text-body text-slate">
+                    <RichText text={w.body} />
+                  </p>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-body text-slate">
+              <RichText text={`USCIS explains the options on its [find legal services page](${USCIS_FIND_LEGAL}).`} />
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className={section}>
+        <div className={container}>
+          <div className="reveal flex flex-col gap-6 rounded-2xl bg-midnight px-6 py-10 sm:px-10 md:flex-row md:items-center md:justify-between lg:px-14 lg:py-12">
+          <div className="max-w-2xl">
+            <h2 className="text-h2 text-white">Are you an immigration lawyer?</h2>
+            <p className="mt-3 text-lead text-ice/80">
+              {DIRECTORY.freeAtLaunch
+                ? `Get a license-checked profile in front of people following a USCIS case. Free while the directory launches, then ${directoryFee}.`
+                : `Get a license-checked profile in front of people following a USCIS case, for a flat ${directoryFee}.`}
+            </p>
+          </div>
+          <Link href="/lawyers/join" className={`${btnPrimary} shrink-0 self-start hover:bg-white hover:text-midnight focus-visible:outline-white md:self-auto`}>
+            List your practice
+            <ArrowRight aria-hidden className="size-4" />
           </Link>
-
-          <h2 className="mt-12 text-h3 font-semibold text-midnight">Where to look</h2>
-          <ul className={`mt-6 ${rows}`}>
-            {WHERE.map((w) => (
-              <li key={w.title} className={`${rowPad} py-6`}>
-                <h3 className="text-title font-semibold text-midnight">{w.title}</h3>
-                <p className="mt-1 text-body text-slate">
-                  <RichText text={w.body} />
-                </p>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-body text-slate">
-            <RichText text={`USCIS explains the options on its [find legal services page](${USCIS_FIND_LEGAL}).`} />
-          </p>
+          </div>
         </div>
       </section>
     </>

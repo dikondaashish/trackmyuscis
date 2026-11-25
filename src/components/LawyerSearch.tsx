@@ -3,14 +3,14 @@
 import Form from "next/form";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, ArrowUpRight, MapPin, Search } from "lucide-react";
-import { LawyerPhoto, LawyerTags, RatingLine } from "@/components/lawyers/LawyerBits";
+import { ArrowUpRight, Search, SearchX } from "lucide-react";
+import { ListingCard } from "@/components/lawyers/LawyerBits";
 import { SelectField } from "@/components/ui/SelectField";
 import { COMPANY } from "@/lib/company";
 import { EOIR_PRO_BONO } from "@/lib/content";
 import { PRACTICE_AREAS, US_STATES } from "@/lib/directory";
 import type { Listing } from "@/lib/directory-listings";
-import { btnPrimary, cardLink, field, fieldLabel, focusRing, rowArrow, textLink } from "@/lib/ui";
+import { btnPrimary, field, fieldLabel, focusRing, textLink } from "@/lib/ui";
 
 const KIND_OPTIONS = [{ value: "", label: "Any case type" }, ...PRACTICE_AREAS.map((p) => ({ value: p.value, label: p.label }))];
 const kindLabel = (value: string) => PRACTICE_AREAS.find((p) => p.value === value)?.label;
@@ -56,38 +56,6 @@ export function LawyerSearch({ location = "", kind = "" }: { location?: string; 
   );
 }
 
-/** One lawyer in the list: the whole card opens their profile, where the contact details are. */
-function ListingCard({ l }: { l: Listing }) {
-  return (
-    <li>
-      <Link href={`/lawyers/${l.slug}`} className={`group flex gap-4 p-5 sm:p-6 ${cardLink}`}>
-        <LawyerPhoto l={l} size="sm" />
-        <span className="min-w-0 flex-1">
-          <span className="flex items-start justify-between gap-3">
-            <span className="min-w-0">
-              <span className="block text-title text-midnight transition-colors duration-200 group-hover:text-blue">{l.fullName}</span>
-              <span className="block text-small text-slate">{l.firmName}</span>
-            </span>
-            <ArrowRight aria-hidden className={`mt-1.5 ${rowArrow}`} />
-          </span>
-          {l.rating && (
-            <span className="mt-2 block">
-              <RatingLine rating={l.rating} />
-            </span>
-          )}
-          <span className="mt-2 flex items-start gap-1.5 text-small text-midnight">
-            <MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-slate" />
-            {l.officeCity}, {l.officeState} · {l.role === "attorney" ? "Attorney" : "Accredited representative"}
-          </span>
-          <span className="mt-3 block">
-            <LawyerTags l={l} max={4} />
-          </span>
-        </span>
-      </Link>
-    </li>
-  );
-}
-
 function FreeHelp() {
   return (
     <a href={EOIR_PRO_BONO} target="_blank" rel="noopener noreferrer" className={`mt-5 ${btnPrimary}`}>
@@ -98,19 +66,49 @@ function FreeHelp() {
   );
 }
 
+/** Nothing to show: a calm note with the official free-help list. */
+function EmptyNote({ title, children, help = true }: { title: string; children?: React.ReactNode; help?: boolean }) {
+  return (
+    <div className="rounded-xl border border-dashed border-border bg-white p-6 sm:p-8">
+      <span className="flex size-11 items-center justify-center rounded-xl bg-ice text-blue">
+        <SearchX aria-hidden className="size-5" />
+      </span>
+      <p className="mt-4 text-title text-midnight">{title}</p>
+      {children && <p className="mt-2 max-w-xl text-body text-slate">{children}</p>}
+      {help && <FreeHelp />}
+    </div>
+  );
+}
+
+function Grid({ listings }: { listings: Listing[] }) {
+  return (
+    <ul className="mt-5 grid gap-4 md:grid-cols-2">
+      {listings.map((l) => (
+        <li key={l.slug}>
+          <ListingCard l={l} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** The search and its results. Without a search, every listing shows (this is also the prerendered HTML). */
 export function LawyerDirectory({ listings, location = "", kind = "" }: { listings: Listing[]; location?: string; kind?: string }) {
+  const search = (
+    <div className="rounded-xl border border-border bg-white p-5 sm:p-6">
+      <LawyerSearch location={location} kind={kindLabel(kind) ? kind : ""} />
+    </div>
+  );
+
   if (listings.length === 0) {
     return (
       <>
-        <LawyerSearch location={location} kind={kindLabel(kind) ? kind : ""} />
-        <div aria-live="polite" className="mt-6 rounded-xl bg-ice p-6">
-          <p className="text-title font-semibold text-midnight">No listings yet{location.trim() ? ` for ${location.trim()}` : ""}</p>
-          <p className="mt-2 max-w-xl text-body text-slate">
+        {search}
+        <div aria-live="polite" className="mt-6">
+          <EmptyNote title={`No listings yet${location.trim() ? ` for ${location.trim()}` : ""}`}>
             The directory is new and we&apos;re checking the first lawyers now. If you need free or low-cost help today, the Department
             of Justice keeps a list of approved legal service providers.
-          </p>
-          <FreeHelp />
+          </EmptyNote>
         </div>
       </>
     );
@@ -126,9 +124,9 @@ export function LawyerDirectory({ listings, location = "", kind = "" }: { listin
 
   return (
     <>
-      <LawyerSearch location={location} kind={knownKind} />
+      {search}
       <div aria-live="polite" key={`${location}|${knownKind}`} className="swap mt-8">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
           <p className="text-body font-semibold text-midnight">
             {searched ? `${count(near.length)} ${what}` : `${count(listings.length)} listed`}
           </p>
@@ -140,37 +138,31 @@ export function LawyerDirectory({ listings, location = "", kind = "" }: { listin
         </div>
 
         {near.length > 0 ? (
-          <ul className="mt-4 flex flex-col gap-3">
-            {near.map((l) => (
-              <ListingCard key={l.slug} l={l} />
-            ))}
-          </ul>
+          <Grid listings={near} />
         ) : (
-          <div className="mt-4 rounded-xl bg-ice p-6">
-            <p className="text-body text-midnight">
-              {elsewhere.length > 0
-                ? `No listed lawyer has an office ${location.trim() ? `in ${location.trim()}` : "there"} yet.`
-                : `No listed lawyer ${knownKind ? `takes ${kindLabel(knownKind)!.toLowerCase()} cases` : "matches"} yet.`}
-            </p>
-            {elsewhere.length === 0 && <FreeHelp />}
+          <div className="mt-5">
+            <EmptyNote
+              help={elsewhere.length === 0}
+              title={
+                elsewhere.length > 0
+                  ? `No listed lawyer has an office ${location.trim() ? `in ${location.trim()}` : "there"} yet`
+                  : `No listed lawyer ${knownKind ? `takes ${kindLabel(knownKind)!.toLowerCase()} cases` : "matches"} yet`
+              }
+            />
           </div>
         )}
 
         {elsewhere.length > 0 && (
-          <div className="mt-10">
-            <h3 className="text-title text-midnight">Lawyers in other places</h3>
-            <p className="mt-1 text-small text-slate">
+          <div className="mt-12">
+            <h3 className="text-h3 text-midnight">Lawyers in other places</h3>
+            <p className="mt-2 max-w-2xl text-body text-slate">
               Immigration law is federal, so a lawyer licensed in any U.S. state can take your case wherever you live.
             </p>
-            <ul className="mt-4 flex flex-col gap-3">
-              {elsewhere.map((l) => (
-                <ListingCard key={l.slug} l={l} />
-              ))}
-            </ul>
+            <Grid listings={elsewhere} />
           </div>
         )}
 
-        <p className="mt-6 text-small text-slate">
+        <p className="mt-8 max-w-3xl text-small text-slate">
           Profiles are written by the lawyers and may be attorney advertising. Being listed is not a recommendation: ask about fees in
           writing and check the license yourself. To report a profile, email{" "}
           <a href={`mailto:${COMPANY.email.support}`} className={`rounded font-medium text-blue underline-offset-2 hover:underline ${focusRing}`}>
