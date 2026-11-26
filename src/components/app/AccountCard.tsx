@@ -16,11 +16,17 @@ export function Avatar({
   initials: string;
   photoUrl?: string | null;
   premium?: boolean;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "nav" | "lg" | "xl";
 }) {
   const [broken, setBroken] = useState(false);
-  const px = { sm: 28, md: 32, lg: 48, xl: 72 }[size];
-  const box = { sm: "size-7 text-caption", md: "size-8 text-caption", lg: "size-12 text-body", xl: "size-18 text-h3" }[size];
+  const px = { sm: 28, md: 32, nav: 40, lg: 48, xl: 72 }[size];
+  const box = {
+    sm: "size-7 text-caption",
+    md: "size-8 text-caption",
+    nav: "size-10 text-small font-semibold",
+    lg: "size-12 text-body",
+    xl: "size-18 text-h3",
+  }[size];
   return (
     <span aria-hidden className="relative shrink-0">
       {photoUrl && !broken ? (

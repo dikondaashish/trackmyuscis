@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { communityPhotoUrl } from "@/lib/community";
+import { accountDisplay } from "@/lib/account-display";
 
 export type Account = {
   id: string;
@@ -58,9 +59,13 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
   const firstName: string | null = profile?.first_name || meta.first_name || meta.given_name || null;
   const lastName: string | null = profile?.last_name || meta.last_name || meta.family_name || null;
   const email = profile?.email ?? user.email ?? "";
-  const name = [firstName, lastName].filter(Boolean).join(" ") || meta.full_name || null;
-  const initials =
-    ((firstName?.[0] ?? "") + (lastName?.[0] ?? "")).toUpperCase() || email.slice(0, 1).toUpperCase() || "?";
+  const { name, initials, photoUrl } = accountDisplay({
+    firstName,
+    lastName,
+    fullName: meta.full_name,
+    email,
+    photo: meta.avatar_url ?? meta.picture,
+  });
 
   return {
     id: user.id,
@@ -71,7 +76,7 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
     initials,
     username: profile?.username ?? null,
     usernameLockedUntil: lockedUntil(profile?.username_changed_at),
-    photoUrl: googlePhoto(meta.avatar_url ?? meta.picture),
+    photoUrl,
     dateOfBirth: profile?.date_of_birth ?? null,
     community: {
       name: profile?.community_name ?? null,
@@ -89,17 +94,6 @@ export const getAccount = cache(async (next = "/dashboard"): Promise<Account> =>
     plan: user.app_metadata?.plan === "premium" ? "premium" : "free",
   };
 });
-
-/** Only Google's own photo host, over https; anything else falls back to initials. */
-function googlePhoto(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" && url.hostname.endsWith(".googleusercontent.com") ? url.toString() : null;
-  } catch {
-    return null;
-  }
-}
 
 const USERNAME_COOLDOWN_DAYS = 30;
 

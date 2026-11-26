@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
-import { AccountLink } from "@/components/AccountLink";
+import { MobileAccount } from "@/components/SiteAccount";
 import { bestMatch, isCurrent, menuIsCurrent, type MenuItem, type NavEntry } from "@/lib/site";
 
 const row =
@@ -105,12 +105,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
               </li>
             ))}
           </ul>
-          <div className="mt-2 border-t border-border px-3 pt-3 pb-1">
-            <AccountLink
-              onNavigate={() => setOpen(false)}
-              className="flex h-12 w-full items-center justify-center rounded-[10px] border border-border text-body font-semibold text-midnight transition-colors duration-200 hover:border-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
-            />
-          </div>
+          <MobileAccount onNavigate={() => setOpen(false)} />
         </nav>
       </div>
     </div>
