@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Info } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
-import { OfficialSources } from "@/components/OfficialSources";
+import { SourceNote } from "@/components/ui/SourceNote";
 import { LinkRows } from "@/components/ui/LinkRows";
 import { PageIntro } from "@/components/ui/PageIntro";
 import { Prose } from "@/components/ui/Prose";
@@ -72,7 +72,7 @@ export default async function AnswerPage({ params }: PageProps<"/answers/[slug]"
                   </div>
                 </section>
               ))}
-              <OfficialSources sources={a.sources} className="mt-10 border-t border-border pt-8" />
+              <SourceNote sources={a.sources} className="mt-10" />
             </div>
 
             <p className="mt-6 flex items-start gap-2 text-small text-slate">

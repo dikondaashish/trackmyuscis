@@ -292,3 +292,42 @@ export function allFieldOfficeRows(p: PtForm, except: PtCategory) {
     .filter((c) => c.code !== except.code)
     .flatMap((c) => c.offices.filter((x) => x.name === "All Field Offices").map((x) => ({ category: c, office: x })));
 }
+
+/* ------------------------------------------------------------ time check */
+
+/** One form's times in the small shape the on-page time check needs (sent to the browser). */
+export type TimeCheckForm = {
+  slug: string;
+  code: string;
+  label: string;
+  categories: {
+    code: string;
+    name: string;
+    offices: { code: string; label: string; time: string; months: number; inquiry?: string; href?: string }[];
+  }[];
+};
+
+export function timeCheckForm(p: PtForm, only?: { category: string; office: string }): TimeCheckForm {
+  return {
+    slug: p.form.slug,
+    code: p.form.form,
+    label: p.form.label,
+    categories: p.categories
+      .filter((c) => !only || c.code === only.category)
+      .map((c) => ({
+        code: c.code,
+        name: c.name,
+        offices: [...c.offices]
+          .filter((o) => !only || o.code === only.office)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((o) => ({
+            code: o.code,
+            label: officeLabel(o),
+            time: formatTime(o),
+            months: inMonths(o),
+            inquiry: o.inquiry,
+            href: officeHref(p.form.slug, o.name),
+          })),
+      })),
+  };
+}

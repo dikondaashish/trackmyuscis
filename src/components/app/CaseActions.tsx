@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { clearPendingReceipt, readPendingReceipt } from "@/lib/pending-receipt";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Check, Copy, Pencil, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -41,6 +42,17 @@ export function AddCaseProvider({ children }: { children: React.ReactNode }) {
     setNext(null);
     setRetry(null);
     setOpen(true);
+  }, []);
+  // A number checked on the public site before signing in: open the dialog with it filled in.
+  useEffect(() => {
+    const receipt = readPendingReceipt();
+    if (!receipt) return;
+    const id = setTimeout(() => {
+      clearPendingReceipt();
+      setRetry({ receipt, label: null });
+      setOpen(true);
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
   const close = () => {
     setOpen(false);

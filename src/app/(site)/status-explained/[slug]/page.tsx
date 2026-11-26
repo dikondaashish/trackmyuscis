@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Info } from "lucide-react";
+import { ArrowRightCircle, BookOpen, FileText, Info, ListChecks, type LucideIcon } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
-import { OfficialSources } from "@/components/OfficialSources";
+import { TrackCard } from "@/components/TrackCard";
 import { LinkRows } from "@/components/ui/LinkRows";
-import { PageIntro } from "@/components/ui/PageIntro";
+import { Questions } from "@/components/ui/Questions";
+import { SourceNote } from "@/components/ui/SourceNote";
+import { ToolHero } from "@/components/ui/ToolHero";
 import { Prose } from "@/components/ui/Prose";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { breadcrumbSchema, faqSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
 import { getStatusPage, STATUS_DETAIL_PAGES, STATUS_PAGES, statusHref, statusId, STATUSES_UPDATED, TONE_LABEL } from "@/lib/statuses";
-import { btnPrimary, panel, readContainer, rowPad, rows, section } from "@/lib/ui";
+import { card, container, focusRing, panel, section } from "@/lib/ui";
+
+/** The three parts most status pages share get their own icon; any other part gets a plain one. */
+const SECTION_ICON: Record<string, LucideIcon> = {
+  "What it means": BookOpen,
+  "What to do now": ListChecks,
+  "What usually comes next": ArrowRightCircle,
+};
 
 /** Every status page is prerendered; unknown ones return a real 404. */
 export const instant = false;
@@ -39,9 +48,10 @@ export default async function StatusPage({ params }: PageProps<"/status-explaine
   if (!s || !s.short) notFound();
   const path = statusHref(s);
   const faq = s.faq ?? [];
-  // The statuses just before and after this one in a typical case, then the rest of the list.
+  // Five statuses in their usual order, with this one among them.
   const at = STATUS_PAGES.findIndex((x) => x.name === s.name);
-  const nearby = [STATUS_PAGES[at - 1], STATUS_PAGES[at + 1], STATUS_PAGES[at + 2]].filter((x) => x !== undefined);
+  const from = Math.max(0, Math.min(at - 2, STATUS_PAGES.length - 5));
+  const around = STATUS_PAGES.slice(from, from + 5);
 
   return (
     <>
@@ -55,84 +65,109 @@ export default async function StatusPage({ params }: PageProps<"/status-explaine
           ]),
         ]}
       />
-      <PageIntro title={`“${s.name}”: what it means`} back={{ href: "/status-explained", label: "All case statuses" }} width={readContainer}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <StatusBadge tone={s.tone}>{TONE_LABEL[s.tone]}</StatusBadge>
-          <p className="text-small text-slate">Updated {longDate(STATUSES_UPDATED)} · Checked against uscis.gov</p>
-        </div>
-      </PageIntro>
+      <ToolHero
+        title={`“${s.name}”: what it means`}
+        back={{ href: "/status-explained", label: "All case statuses" }}
+        meta={
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <StatusBadge tone={s.tone}>{TONE_LABEL[s.tone]}</StatusBadge>
+            <p>Updated {longDate(STATUSES_UPDATED)} · Checked against uscis.gov</p>
+          </div>
+        }
+        body={
+          <div id="short-answer" className="max-w-3xl rounded-xl border border-blue/15 bg-ice p-5 sm:p-6">
+            <h2 className="text-small font-semibold text-blue">Short answer</h2>
+            <p className="mt-2 text-lead text-midnight">{s.short}</p>
+          </div>
+        }
+        aside={
+          <nav aria-label="Where this status comes in a typical case" className={`${card} p-5 sm:p-6`}>
+            <h2 className="text-small font-semibold text-midnight">In a typical case</h2>
+            <ol className="mt-4">
+              {around.map((x, i) => {
+                const here = x.name === s.name;
+                return (
+                  <li key={x.name} className="relative flex gap-3 pb-1 last:pb-0">
+                    {i < around.length - 1 && <span aria-hidden className="absolute top-7 -bottom-3 left-[7px] w-0.5 bg-border" />}
+                    <span
+                      aria-hidden
+                      className={`relative mt-3.5 size-4 shrink-0 rounded-full border-2 ${here ? "border-blue bg-blue ring-4 ring-blue/15" : "border-border bg-white"}`}
+                    />
+                    {here ? (
+                      <p aria-current="step" className="flex min-h-11 items-center text-body font-semibold text-midnight">
+                        {x.name}
+                      </p>
+                    ) : (
+                      <Link href={statusHref(x)} className={`link-draw inline-flex min-h-11 items-center rounded text-small text-slate transition-colors duration-200 hover:text-blue ${focusRing}`}>
+                        {x.name}
+                      </Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="mt-3 text-small text-slate">The usual order. Not every case shows every status.</p>
+          </nav>
+        }
+      />
 
       <section className={section}>
-        <div className={readContainer}>
-          <article>
-            <div id="short-answer" className="rounded-xl border border-blue/15 bg-ice p-5 sm:p-6">
-              <h2 className="text-small font-semibold text-blue">Short answer</h2>
-              <p className="mt-2 text-lead text-midnight">{s.short}</p>
-            </div>
-
-            <div className={`mt-6 ${panel} sm:p-8`}>
-              {s.alsoShownAs && (
-                <p className="mb-8 text-small text-slate">
-                  USCIS also words this status as: {s.alsoShownAs.map((a) => `“${a}”`).join(", ")}. The wording on your account can
-                  differ slightly.
-                </p>
-              )}
-              {(s.sections ?? []).map((part, i) => (
-                <section key={part.heading} className={i ? "mt-10" : ""}>
-                  <h2 className="text-title font-semibold text-midnight">{part.heading}</h2>
-                  <div className="mt-3">
-                    <Prose blocks={part.body} />
-                  </div>
-                </section>
-              ))}
+        <div className={`${container} grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12`}>
+          <article className="min-w-0">
+            {s.alsoShownAs && (
+              <p className="mb-6 max-w-2xl text-small text-slate">
+                USCIS also words this status as: {s.alsoShownAs.map((a) => `“${a}”`).join(", ")}. The wording on your account can
+                differ slightly.
+              </p>
+            )}
+            <div className="grid gap-4">
+              {(s.sections ?? []).map((part) => {
+                const Icon = SECTION_ICON[part.heading] ?? FileText;
+                return (
+                  <section key={part.heading} className={`grid gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-5 ${panel}`}>
+                    <span aria-hidden className="flex size-11 items-center justify-center rounded-xl bg-ice text-blue">
+                      <Icon className="size-5" />
+                    </span>
+                    <div className="min-w-0">
+                      <h2 className="text-title font-semibold text-midnight sm:pt-2">{part.heading}</h2>
+                      <div className="mt-3 max-w-2xl">
+                        <Prose blocks={part.body} />
+                      </div>
+                    </div>
+                  </section>
+                );
+              })}
             </div>
 
             {faq.length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-h3 text-midnight">Common questions</h2>
-                <div className={`mt-5 ${rows}`}>
-                  {faq.map((q) => (
-                    <div key={q.q} className={`${rowPad} py-5`}>
-                      <h3 className="text-title font-semibold text-midnight">{q.q}</h3>
-                      <p className="mt-1 text-body text-slate">{q.a}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <>
+                <h2 className="mt-14 text-h2 text-midnight">Common questions</h2>
+                <Questions className="mt-6" items={faq} />
+              </>
             )}
 
-            <div className={`mt-12 ${panel} sm:p-8`}>
-              <OfficialSources sources={s.sources ?? []} />
-            </div>
+            {(s.related ?? []).length > 0 && (
+              <>
+                <h2 className="mt-14 text-h2 text-midnight">Read next</h2>
+                <LinkRows compact className="mt-6" items={(s.related ?? []).map((r) => ({ href: r.href, title: r.title }))} />
+              </>
+            )}
 
-            <p className="mt-6 flex items-start gap-2 text-small text-slate">
+            <SourceNote className="mt-14" sources={s.sources ?? []} />
+            <p className="mt-4 flex items-start gap-2 text-small text-slate">
               <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
               General information, not legal advice. Your official USCIS notices always come first.
             </p>
-
-            <div className={`mt-12 flex flex-col items-start gap-3 ${panel} sm:p-8`}>
-              <h2 className="text-title text-midnight">See when this status changes</h2>
-              <p className="text-body text-slate">
-                Save your receipt number in a free account. We check it with USCIS about once a day and show the latest status and
-                its history.
-              </p>
-              <Link href="/sign-up" className={`mt-1 ${btnPrimary}`}>
-                Create free account
-              </Link>
-            </div>
-
-            {(s.related ?? []).length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-h3 text-midnight">Read next</h2>
-                <LinkRows compact className="mt-5" items={(s.related ?? []).map((r) => ({ href: r.href, title: r.title }))} />
-              </div>
-            )}
-
-            <div className="mt-12">
-              <h2 className="text-h3 text-midnight">Statuses around this one</h2>
-              <LinkRows compact className="mt-5" items={nearby.map((x) => ({ href: statusHref(x), title: x.name, note: x.meaning }))} />
-            </div>
           </article>
+
+          <aside className="lg:pt-1">
+            <div className="lg:sticky lg:top-28">
+              <TrackCard
+                title="See when this status changes"
+                text="Enter your receipt number, then save it. We check it with USCIS about once a day and keep the history."
+              />
+            </div>
+          </aside>
         </div>
       </section>
     </>

@@ -5,7 +5,16 @@ import Link from "next/link";
 import { Search, X } from "lucide-react";
 import { field, fieldLabel, focusRing } from "@/lib/ui";
 
-type Row = { key: string; label: string; sub?: string; cells: string[]; /** The row's own page, when it has one. */ href?: string };
+type Row = {
+  key: string;
+  label: string;
+  sub?: string;
+  cells: string[];
+  /** The row's own page, when it has one. */
+  href?: string;
+  /** 0 to 1: this row's time against the longest in the table, drawn as a bar beside the time. */
+  share?: number;
+};
 
 /**
  * A table of official times, one row per office or category. With `filter`, a field above
@@ -101,7 +110,16 @@ export function OfficeTimes({
                 </th>
                 {r.cells.map((c, i) => (
                   <td key={i} className={`px-3 py-2.5 text-right sm:px-4 ${i === 0 ? "font-medium whitespace-nowrap text-midnight" : "min-w-20 text-slate sm:whitespace-nowrap"}`}>
-                    {c}
+                    {i === 0 && r.share !== undefined ? (
+                      <span className="inline-flex items-center justify-end gap-3">
+                        <span aria-hidden className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-border sm:block">
+                          <span className="block h-full rounded-full bg-blue/70" style={{ width: `${Math.max(3, r.share * 100)}%` }} />
+                        </span>
+                        <span className="min-w-20">{c}</span>
+                      </span>
+                    ) : (
+                      c
+                    )}
                   </td>
                 ))}
               </tr>

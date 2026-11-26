@@ -18,7 +18,7 @@ type SiteAccount = { name: string | null; email: string; initials: string; photo
 type State = { status: "loading" } | { status: "out" } | { status: "in"; account: SiteAccount };
 
 const AccountContext = createContext<State>({ status: "loading" });
-const useSiteAccount = () => useContext(AccountContext);
+export const useSiteAccount = () => useContext(AccountContext);
 
 function fromUser(user: User, profile: { first_name: string | null; last_name: string | null } | null): SiteAccount {
   const meta = user.user_metadata ?? {};

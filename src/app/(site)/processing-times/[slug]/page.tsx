@@ -1,18 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Info } from "lucide-react";
+import { ArrowRight, Info } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
 import { OfficeTimes } from "@/components/OfficeTimes";
-import { OfficialSources } from "@/components/OfficialSources";
-import { ExternalLink } from "@/components/ui/ExternalLink";
+import { TimeCheck } from "@/components/TimeCheck";
+import { TrackCard } from "@/components/TrackCard";
 import { LinkRows } from "@/components/ui/LinkRows";
-import { PageIntro } from "@/components/ui/PageIntro";
+import { Questions } from "@/components/ui/Questions";
+import { SectionTabs } from "@/components/ui/SectionTabs";
+import { SourceNote } from "@/components/ui/SourceNote";
+import { Stats, ToolHero, type Stat } from "@/components/ui/ToolHero";
 import { RichText } from "@/components/ui/RichText";
 import { officialFormUrl, USCIS_PROCESSING_TIMES } from "@/lib/content";
 import {
+  allRows,
   dependsOnLabel,
   formatTime,
+  headline,
+  inMonths,
+  rangeText,
+  rangeTextOf,
+  timeCheckForm,
   getPtForm,
   noteText,
   officeHref,
@@ -29,7 +38,9 @@ import {
 } from "@/lib/processing-times";
 import { postsForForm } from "@/lib/related";
 import { breadcrumbSchema, faqSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
-import { btnPrimary, container, focusRing, panel, rowPad, rows, section } from "@/lib/ui";
+import { card, cardLink, container, panel, rowArrow, section } from "@/lib/ui";
+
+const heading = "jump-target scroll-mt-36 text-h2 text-midnight";
 
 /** Every known form is prerendered; unknown ones return a real 404. */
 export const instant = false;
@@ -126,12 +137,29 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
   const posts = postsForForm(f.slug);
   const multiHeading = (name: string) => (p.categories.length > 1 ? name : `Form ${f.form} by office`);
 
-  const toc = [
-    { id: "times", label: ({ category: "Times by category", office: "Times by office", nothing: "The current time" } as Record<string, string>)[dependsOnLabel(p)] ?? "Times by category and office" },
-    { id: "meaning", label: "What the number means" },
-    { id: "past", label: "If you're past the time" },
-    { id: "faq", label: "Common questions" },
-    { id: "sources", label: "Official sources" },
+  const by = dependsOnLabel(p);
+  const timesLabel = ({ category: "Times by category", office: "Times by office", nothing: "The current time" } as Record<string, string>)[by] ?? "Times by category and office";
+  const tabs = [
+    { id: "check", label: "Check your case" },
+    { id: "times", label: timesLabel },
+    { id: "meaning", label: "What it means" },
+    { id: "past", label: "Past the time" },
+    { id: "faq", label: "Questions" },
+  ];
+  const all = range(p);
+  const lead = headline(p);
+  const longest = inMonths(all.slowest);
+  const share = (o: { value: number; unit: string }) => (longest > 0 ? inMonths(o) / longest : 1);
+  const offices = new Set(p.categories.flatMap((c) => c.offices.map((o) => o.name))).size;
+  const stats: Stat[] = [
+    ...(all.count > 1
+      ? [
+          { label: "Shortest", value: formatTime(all.fastest), note: p.categories.length > 1 ? all.fastest.category.name : officeName(all.fastest.name) },
+          { label: "Longest", value: formatTime(all.slowest), note: p.categories.length > 1 ? all.slowest.category.name : officeName(all.slowest.name) },
+        ]
+      : []),
+    { label: by === "office" ? "Offices listed" : "Lines listed", value: String(by === "office" ? offices : allRows(p).length), note: by === "nothing" ? "One time for every case" : `By ${by}`, href: "#times" },
+    { label: "Read from USCIS", value: shortDate(PT_CHECKED), note: PT_LATEST.published ? `USCIS updated ${PT_LATEST.published}` : undefined },
   ];
 
   return (
@@ -152,29 +180,55 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
           ]),
         ]}
       />
-      <PageIntro
+      <ToolHero
         title={`Form ${f.form} processing time`}
-        description={`How long USCIS is taking to decide Form ${f.form} (${f.label.toLowerCase()}), from the official USCIS tool.`}
+        description={`How long USCIS is taking to decide Form ${f.form} (${f.label.toLowerCase()}), read from every office it lists.`}
         back={{ href: "/processing-times", label: "All processing times" }}
+        meta={<p>Checked {longDate(PT_CHECKED)} · Official USCIS figures</p>}
+        aside={
+          <div id="short-answer" className={`${card} p-5 sm:p-6`}>
+            <p className="text-small text-slate">80% of cases finished within</p>
+            <p className="mt-1 text-display text-midnight tabular-nums">{lead ? rangeTextOf(lead.rows) : rangeText(p)}</p>
+            {lead && <p className="mt-1 text-small font-medium text-midnight">For {lead.who}</p>}
+            {all.count > 1 && (
+              <div className="mt-5">
+                <div aria-hidden className="relative h-2 rounded-full bg-border">
+                  <div
+                    className="grow-x absolute inset-y-0 right-0 origin-left rounded-full bg-blue/70"
+                    style={{ left: `${Math.min(92, share(all.fastest) * 100)}%` }}
+                  />
+                </div>
+                <div className="mt-2 flex justify-between gap-4 text-small text-slate tabular-nums">
+                  <span>{formatTime(all.fastest)}</span>
+                  <span>{formatTime(all.slowest)}</span>
+                </div>
+                <p className="mt-1 text-small text-slate">The full range across {by === "nothing" ? "all cases" : `every ${by}`}.</p>
+              </div>
+            )}
+            <p className="sr-only">{answer}</p>
+          </div>
+        }
       >
-        <p className="text-small text-slate">Checked {longDate(PT_CHECKED)} · Every office read from uscis.gov</p>
-      </PageIntro>
+        <Stats items={stats} />
+      </ToolHero>
+      <SectionTabs label={`Form ${f.form} processing time sections`} items={tabs} />
 
       <section className={section}>
-        <div className={`${container} grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12`}>
-          <div className="min-w-0 max-w-3xl">
-            <div id="short-answer" className="rounded-xl border border-blue/15 bg-ice p-5 sm:p-6">
-              <h2 className="text-small font-semibold text-blue">Short answer</h2>
-              <p className="mt-2 text-lead text-midnight">{answer}</p>
+        <div className={`${container} grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12`}>
+          <div className="min-w-0">
+            <h2 id="check" className={heading}>Check your case</h2>
+            <p className="mt-3 max-w-2xl text-body text-slate">
+              Choose the line that matches your receipt notice (Form I-797C). Add the date USCIS received your case to see
+              whether it is past USCIS&apos;s own case inquiry date.
+            </p>
+            <div className="mt-6">
+              <TimeCheck forms={[timeCheckForm(p)]} checked={longDate(PT_CHECKED)} />
             </div>
 
-            <h2 id="times" className="jump-target mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">
-              {toc[0].label}
-            </h2>
-            <p className="mt-3 text-body text-slate">
-              Find the category and office on your receipt notice (Form I-797C). The time is how long it took USCIS to finish 80% of
-              those cases. The case inquiry date is USCIS&apos;s own cutoff: if your receipt date is before it, you can ask USCIS
-              about your case.
+            <h2 id="times" className={`mt-14 ${heading}`}>{timesLabel}</h2>
+            <p className="mt-3 max-w-2xl text-body text-slate">
+              The time is how long it took USCIS to finish 80% of those cases. The case inquiry date is USCIS&apos;s own cutoff:
+              if your receipt date is before it, you can ask USCIS about your case.
             </p>
 
             {single.length > 0 && (
@@ -191,6 +245,7 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
                     label: c.name,
                     sub: singleOffices.size === 1 ? undefined : officeLabel(c.offices[0]),
                     cells: [formatTime(c.offices[0]), shortDate(c.offices[0].inquiry)],
+                    share: single.length > 1 ? share(c.offices[0]) : undefined,
                   }))}
                 />
               </div>
@@ -207,21 +262,19 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
                   head={["Office", HEAD_TIME, HEAD_INQUIRY]}
                   rows={[...c.offices]
                     .sort((a, b) => a.name.localeCompare(b.name))
-                    .map((o) => ({ key: o.code, label: officeLabel(o), cells: [formatTime(o), shortDate(o.inquiry)], href: officeHref(f.slug, o.name) }))}
+                    .map((o) => ({ key: o.code, label: officeLabel(o), cells: [formatTime(o), shortDate(o.inquiry)], href: officeHref(f.slug, o.name), share: share(o) }))}
                 />
               </div>
             ))}
             <UscisNotes p={p} />
-            <p className="mt-6 text-small text-slate">
-              <RichText
-                text={`Source: [USCIS processing times](${USCIS_PROCESSING_TIMES}), read for every office on ${longDate(PT_CHECKED)}.${PT_LATEST.published ? ` USCIS last updated them on ${PT_LATEST.published}` : ""}${PT_LATEST.period ? `, using cases completed ${PT_LATEST.period.replace(/^Processing Time Data from /, "")}.` : PT_LATEST.published ? "." : ""}`}
-              />
+            <p className="mt-6 max-w-2xl text-small text-slate">
+              Read from the USCIS processing times tool for every office on {longDate(PT_CHECKED)}.
+              {PT_LATEST.published ? ` USCIS last updated them on ${PT_LATEST.published}` : ""}
+              {PT_LATEST.period ? `, using cases completed ${PT_LATEST.period.replace(/^Processing Time Data from /, "")}.` : PT_LATEST.published ? "." : ""}
             </p>
 
-            <h2 id="meaning" className="jump-target mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">
-              What the number means
-            </h2>
-            <ul className={`mt-6 ${rows}`}>
+            <h2 id="meaning" className={`mt-14 ${heading}`}>What the number means</h2>
+            <ul className="mt-6 grid gap-4 md:grid-cols-3">
               {[
                 {
                   title: "It's the 80% mark, not a promise",
@@ -236,24 +289,22 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
                   body: "USCIS says it generally processes cases in the order it receives them, but each case is unique and some take longer.",
                 },
               ].map((t) => (
-                <li key={t.title} className={`${rowPad} py-5`}>
+                <li key={t.title} className={panel}>
                   <h3 className="text-title font-semibold text-midnight">{t.title}</h3>
-                  <p className="mt-1 text-body text-slate">{t.body}</p>
+                  <p className="mt-2 text-body text-slate">{t.body}</p>
                 </li>
               ))}
             </ul>
 
-            <h2 id="past" className="jump-target mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">
-              If you&apos;re past the time
-            </h2>
+            <h2 id="past" className={`mt-14 ${heading}`}>If you&apos;re past the time</h2>
             <ol className={`mt-6 ${panel}`}>
               {[
                 "Find the received date on your receipt notice (Form I-797C).",
-                `Compare it with the case inquiry date for your category and office above, or on the [official tool](${USCIS_PROCESSING_TIMES}). If your received date is earlier, your case is outside the normal processing time.`,
-                `If you're outside the normal time, send a case inquiry through [USCIS e-Request](${E_REQUEST}). See [how to contact USCIS about a delayed case](/answers/contact-uscis-about-delayed-case).`,
-              ].map((step, i, all) => (
+                "Enter it in [Check your case](#check). If it is earlier than the case inquiry date for your category and office, your case is outside the normal processing time.",
+                "If you're outside the normal time, you can send USCIS a case inquiry. See [how to contact USCIS about a delayed case](/answers/contact-uscis-about-delayed-case).",
+              ].map((step, i, list) => (
                 <li key={step} className="relative flex gap-5 pb-6 last:pb-0">
-                  {i < all.length - 1 && <span aria-hidden className="absolute top-9 bottom-0 left-[17px] w-0.5 bg-border" />}
+                  {i < list.length - 1 && <span aria-hidden className="absolute top-9 bottom-0 left-[17px] w-0.5 bg-border" />}
                   <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ice text-small font-semibold text-blue tabular-nums">
                     {i + 1}
                   </span>
@@ -264,81 +315,48 @@ export default async function FormProcessingTimePage({ params }: PageProps<"/pro
               ))}
             </ol>
 
-            <h2 id="faq" className="jump-target mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">
-              Common questions
-            </h2>
-            <div className={`mt-6 ${rows}`}>
-              {questions.map((q) => (
-                <div key={q.q} className={`${rowPad} py-5`}>
-                  <h3 className="text-title font-semibold text-midnight">{q.q}</h3>
-                  <p className="mt-1 text-body text-slate">{q.a}</p>
-                </div>
-              ))}
-            </div>
+            <h2 id="faq" className={`mt-14 ${heading}`}>Common questions</h2>
+            <Questions className="mt-6" items={questions} />
 
-            <OfficialSources
-              id="sources"
-              className="mt-12 scroll-mt-28"
+            {posts.length > 0 && (
+              <>
+                <h2 className="mt-14 text-h2 text-midnight">More on Form {f.form}</h2>
+                <LinkRows compact className="mt-6" items={posts.map((b) => ({ href: `/blog/${b.slug}`, title: b.title }))} />
+              </>
+            )}
+
+            <h2 className="mt-14 text-h2 text-midnight">Other processing times</h2>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+              {[{ href: `/forms/${f.slug}`, code: `Form ${f.form}`, note: "Fee, documents and steps" }, ...others.map((o) => ({ href: `/processing-times/${o.form.slug}`, code: `Form ${o.form.form}`, note: rangeText(o) }))].map((o) => (
+                <li key={o.href}>
+                  <Link href={o.href} className={`group flex items-center justify-between gap-4 p-4 sm:px-5 ${cardLink}`}>
+                    <span className="min-w-0">
+                      <span className="block text-body font-semibold text-midnight transition-colors duration-200 group-hover:text-blue">{o.code}</span>
+                      <span className="block text-small text-slate tabular-nums">{o.note}</span>
+                    </span>
+                    <ArrowRight aria-hidden className={rowArrow} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <SourceNote
+              className="mt-14"
               sources={[
                 { label: "USCIS: Check case processing times", href: USCIS_PROCESSING_TIMES },
                 { label: `USCIS: Form ${f.form}, ${f.title}`, href: officialFormUrl(f) },
                 { label: "USCIS: e-Request (case inquiries)", href: E_REQUEST },
               ]}
             />
-
-            <p className="mt-8 flex items-start gap-2 text-small text-slate">
+            <p className="mt-4 flex items-start gap-2 text-small text-slate">
               <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
               General information, not legal advice. USCIS notices and uscis.gov are the official source.
             </p>
-
-            {posts.length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-h3 font-semibold text-midnight">More on Form {f.form}</h2>
-                <LinkRows compact className="mt-5" items={posts.map((b) => ({ href: `/blog/${b.slug}`, title: b.title }))} />
-              </div>
-            )}
-
-            <div className="mt-12">
-              <h2 className="text-h3 font-semibold text-midnight">Other processing times</h2>
-              <LinkRows
-                compact
-                className="mt-5"
-                items={others.map((o) => ({ href: `/processing-times/${o.form.slug}`, title: `Form ${o.form.form}: ${o.form.label}` }))}
-              />
-            </div>
           </div>
 
-          <aside className="no-print lg:pt-1">
-            <div className="lg:sticky lg:top-28">
-              <nav aria-label="On this page" className="hidden lg:block">
-                <p className="text-small font-semibold text-midnight">On this page</p>
-                <ul className="mt-2 border-l border-border">
-                  {toc.map((item) => (
-                    <li key={item.id}>
-                      <a
-                        href={`#${item.id}`}
-                        className={`-ml-px flex min-h-11 items-center border-l border-transparent py-1 pl-4 text-small text-slate transition-colors duration-200 hover:border-blue hover:text-midnight ${focusRing}`}
-                      >
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-              <div className={`flex flex-col items-stretch gap-3 lg:mt-8 ${panel} sm:p-6`}>
-                <p className="text-title text-midnight">Have a receipt number?</p>
-                <p className="-mt-2 mb-1 text-small text-slate">Confirm it and see which USCIS office has your case.</p>
-                <Link href="/#track" className={btnPrimary}>
-                  Track Case
-                </Link>
-                <Link
-                  href={`/forms/${f.slug}`}
-                  className={`link-draw inline-flex min-h-11 items-center rounded text-small font-semibold text-blue ${focusRing}`}
-                >
-                  Form {f.form}: fee, documents and steps
-                </Link>
-                <ExternalLink href={USCIS_PROCESSING_TIMES}>Official processing times</ExternalLink>
-              </div>
+          <aside className="lg:pt-1">
+            <div className="lg:sticky lg:top-36">
+              <TrackCard title={`Waiting on Form ${f.form}?`} />
             </div>
           </aside>
         </div>

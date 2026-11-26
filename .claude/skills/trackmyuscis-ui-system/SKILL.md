@@ -15,7 +15,7 @@ Colors and the logo come from the `trackmyuscis-brand` skill. Everything about s
 2. **Remove before you style.** Prefer deleting an element over adding a border, badge, icon or colour to it.
 3. **Plain words.** Headings name the thing ("Processing times"), buttons are a verb + object ("Check time", "Find lawyers"). No slogans, all-caps labels, eyebrows or exclamation marks. Never "Learn more".
 4. **One of each.** One primary button, one secondary button, one card style, one link style, one heading scale. Extend `src/lib/ui.ts`; never invent a one-off.
-5. **Honest UI.** Never show fake data as real (example data is labelled "Example"), never promise features that aren't live, always link to the official USCIS source.
+5. **Honest UI.** Never show fake data as real (example data is labelled "Example"), never promise features that aren't live, always cite the official USCIS source (as a quiet citation, see §6a).
 
 ## 2. Font
 
@@ -84,6 +84,18 @@ Separate sections with a background change (`bg-white` ↔ `bg-cloud`, one `bg-m
 - `StatusFinder` (Case Statuses): a search field that hides non-matching statuses; every status stays in the HTML and has its own anchor id. Long pages with a side column (policies, form pages) get a sticky "On this page" list on desktop; add `jump-target` to anything linked by anchor so it is tinted on arrival. Add `no-print` to controls that make no sense on paper.
 - Site search (`/search`, `SiteSearch`, index in `src/lib/search.ts`): one field over statuses, answers, forms, guides and help, built from the content files so new entries are searchable automatically. Matching runs in the browser; the query is never put in the URL or sent anywhere (people paste receipt numbers). The page is `noindex` and not in the sitemap.
 - Search forms use `next/form` and `@container` queries so they stack in narrow cards and sit in one row in wide ones.
+
+## 6a. Tool pages are not articles, and visitors stay here
+
+Forms, case statuses and processing times are the product, so each has its own structure. Only answers, guides, blog posts and policies read as articles (`PageIntro` + one column).
+
+- **Start with `ToolHero`** (`components/ui/ToolHero.tsx`): title on the left, the page's own answer on the right (`aside`), key facts as `<Stats>` tiles underneath. Long pages add `<SectionTabs>` (sticky section bar with scroll-spy) instead of a side "On this page" list; section headings use `jump-target scroll-mt-36 text-h2`.
+- **Form page** = form profile: stat tiles (fee, time, steps, edition), "Who files it" on ice, notes as a two-column card grid, fee tiles, `<DocumentChecklist>` (ticks saved in the browser only), `<Journey>` (each step links to its status page), a time card, `<Questions>`.
+- **Processing-time pages** = data pages: the big number and range bar in the hero, `<TimeCheck>` first (pick category and office, add the received date, see whether the case is past USCIS's case inquiry date; worked out in the browser), then `OfficeTimes` tables with `share` bars. The office page shows where the office sits between the shortest and longest.
+- **Status page** = the short answer beside an "In a typical case" rail of the five statuses around it, then one icon card per section.
+- **Indexes are catalogs**: card grids with real facts on each card (fee and time on forms, range bar on times, tone and order on statuses), never a plain list of links.
+- **Keep the visitor on the site.** No button or primary action may lead to uscis.gov or any other site. Every tool page carries `<TrackCard>` (the receipt check) in its side column or at the end. A valid receipt number leads to "Track this case": the number is kept in `sessionStorage` (`lib/pending-receipt.ts`, never in a URL) and the dashboard opens "Add a case" with it filled in. When a step can only be done at USCIS, link our own answer page that explains it.
+- **Official sources are citations**: `<SourceNote>` at the end of the page (small underlined text under "Checked against"), never `ExternalLink` buttons. `OfficialSources` stays only in blog posts and the dashboard.
 
 ## 6b. Company and legal pages
 

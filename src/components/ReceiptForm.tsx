@@ -2,14 +2,25 @@
 
 import { useId, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, CircleAlert, CircleCheck } from "lucide-react";
-import { USCIS_CASE_STATUS } from "@/lib/content";
+import { ArrowRight, CircleAlert, CircleCheck } from "lucide-react";
+import { savePendingReceipt } from "@/lib/pending-receipt";
 import { checkReceipt, type ReceiptCheck } from "@/lib/receipt";
 import { btnPrimary, focusRing } from "@/lib/ui";
 
 const nextLink = `inline-flex min-h-11 items-center gap-1.5 rounded text-small font-semibold text-blue ${focusRing}`;
 
-export function ReceiptForm({ onResult }: { onResult?: (result: ReceiptCheck | null) => void }) {
+/**
+ * The receipt check. A valid number leads into saving the case here (the number rides along
+ * in this tab, so nobody types it twice). `stacked` puts the button under the field for
+ * narrow side panels.
+ */
+export function ReceiptForm({
+  onResult,
+  stacked = false,
+}: {
+  onResult?: (result: ReceiptCheck | null) => void;
+  stacked?: boolean;
+}) {
   const inputId = useId();
   const helpId = useId();
   const messageId = useId();
@@ -33,7 +44,7 @@ export function ReceiptForm({ onResult }: { onResult?: (result: ReceiptCheck | n
       <label htmlFor={inputId} className="block text-small font-semibold text-midnight">
         USCIS Receipt Number
       </label>
-      <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+      <div className={`mt-2 flex flex-col gap-3 ${stacked ? "" : "sm:flex-row"}`}>
         <input
           id={inputId}
           name="receipt"
@@ -71,29 +82,25 @@ export function ReceiptForm({ onResult }: { onResult?: (result: ReceiptCheck | n
           </p>
         )}
         {result?.ok === true && (
-          <div key={result.receipt} className="swap mt-3 rounded-[10px] bg-teal/10 px-4 py-4 text-midnight">
+          <div key={result.receipt} className="swap mt-3 rounded-xl border border-teal/20 bg-teal/10 p-4 text-midnight">
             <p className="flex items-start gap-2">
               <CircleCheck aria-hidden className="pop mt-0.5 size-4 shrink-0 text-teal" style={{ animationDelay: "200ms" }} />
               <span>
-                <span className="font-semibold">{result.receipt}</span> is a valid receipt number from{" "}
-                {result.office ?? `the ${result.prefix} office`}. Check its current status on the official USCIS
-                page.
+                <span className="font-semibold tabular-nums">{result.receipt}</span> is a valid receipt number
+                {result.office ? ` from ${result.office}` : ""}
+                {result.fiscalYear ? `, received in fiscal year ${result.fiscalYear}` : ""}.
               </span>
             </p>
+            <p className="mt-2 ml-6 text-slate">
+              Save it in a free account to see its status. We check it with USCIS about once a day and keep the history.
+            </p>
             <div className="mt-3 ml-6 flex flex-wrap items-center gap-x-6 gap-y-1">
-              <a
-                href={USCIS_CASE_STATUS}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${btnPrimary} min-h-11 px-5 text-small`}
-              >
-                Check status on uscis.gov
-                <ArrowUpRight aria-hidden className="size-4" />
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
+              <Link href="/sign-up" onClick={() => savePendingReceipt(result.receipt)} className={btnPrimary}>
+                Track this case
+                <ArrowRight aria-hidden className="size-4" />
+              </Link>
               <Link href="/status-explained" className={nextLink}>
                 What each status means
-                <ArrowRight aria-hidden className="size-4" />
               </Link>
             </div>
           </div>
