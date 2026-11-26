@@ -1,7 +1,8 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { AdminOnly } from "@/components/admin/AdminOnly";
-import { LAWYER_STATUS_LABEL, type LawyerStatus } from "@/lib/admin";
+import { LAWYER_STATUS_LABEL, recheckCutoff, type LawyerStatus } from "@/lib/admin";
+import { caseHealth } from "@/lib/admin-health";
 import { emailEnabled } from "@/lib/email/send";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { appCard, appLink, appPanel, appSectionTitle, appTitle, rowPad } from "@/lib/ui";
@@ -19,14 +20,20 @@ async function Overview() {
     if (filter) q = q.eq(filter[0], filter[1]);
     return q.then((r) => r.count ?? 0);
   };
-  const [newApps, checked, listed, pending, published, accounts, cases, recentApps, recentLog] = await Promise.all([
+  const [newApps, checked, listed, pending, published, accounts, health, recheckDue, recentApps, recentLog] = await Promise.all([
     count("lawyer_applications", ["status", "new"]),
     count("lawyer_applications", ["status", "verified"]),
     count("lawyer_applications", ["status", "listed"]),
     count("lawyer_reviews", ["status", "pending"]),
     count("lawyer_reviews", ["status", "published"]),
     count("profiles"),
-    count("cases"),
+    caseHealth(db),
+    db
+      .from("lawyer_applications")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "listed")
+      .or(`license_checked_on.is.null,license_checked_on.lt.${recheckCutoff()}`)
+      .then((r) => r.count ?? 0),
     db.from("lawyer_applications").select("id, full_name, office_city, office_state, status, created_at").order("created_at", { ascending: false }).limit(5),
     db.from("admin_audit").select("created_at, action, target_type, target_id, details").order("created_at", { ascending: false }).limit(15),
   ]);
@@ -35,6 +42,8 @@ async function Overview() {
     { n: newApps, text: `new lawyer application${newApps === 1 ? "" : "s"} to check`, href: "/admin/lawyers?status=new" },
     { n: checked, text: `checked application${checked === 1 ? "" : "s"} waiting to be listed`, href: "/admin/lawyers?status=verified" },
     { n: pending, text: `review${pending === 1 ? "" : "s"} waiting to be published`, href: "/admin/reviews?status=pending" },
+    { n: recheckDue, text: `listed lawyer${recheckDue === 1 ? "" : "s"} due for a license recheck`, href: "/admin/lawyers?status=listed&due=1" },
+    { n: health.waiting, text: `saved case${health.waiting === 1 ? "" : "s"} the checker hasn't accepted`, href: "/admin/cases?show=waiting" },
   ].filter((t) => t.n > 0);
 
   return (
@@ -45,6 +54,15 @@ async function Overview() {
         <p className="rounded-lg bg-amber/10 px-4 py-3 text-small text-amber">
           Email isn&apos;t set up in production, so you aren&apos;t told about new applications or reviews and lawyers don&apos;t get a
           &ldquo;you&apos;re live&rdquo; email. Check this page instead.
+        </p>
+      )}
+
+      {health.engineOn && health.checkerDown && (
+        <p className="rounded-lg bg-amber/10 px-4 py-3 text-small text-amber">
+          {health.probe === "no-answer" ? "The case checker didn't answer." : "The case checker hasn't checked any case in over two days."}{" "}
+          <Link href="/admin/cases" className="font-semibold underline underline-offset-2">
+            See case checks
+          </Link>
         </p>
       )}
 
@@ -71,7 +89,7 @@ async function Overview() {
           ["Applications to check", newApps + checked],
           ["Published reviews", published],
           ["Accounts", accounts],
-          ["Saved cases", cases],
+          ["Saved cases", health.total],
         ].map(([label, n]) => (
           <div key={label} className={`${appCard} p-4`}>
             <p className="text-small text-slate">{label}</p>
@@ -103,8 +121,8 @@ async function Overview() {
           <ul className="divide-y divide-border">
             {(recentLog.data ?? []).map((r, i) => (
               <li key={i} className={`flex items-center justify-between gap-3 ${rowPad} py-3 text-small`}>
-                {r.target_type === "lawyer" && r.target_id && r.action !== "lawyer.deleted" ? (
-                  <Link href={`/admin/lawyers/${r.target_id}`} className={appLink}>
+                {r.target_id && ((r.target_type === "lawyer" && r.action !== "lawyer.deleted") || r.target_type === "account") ? (
+                  <Link href={`/admin/${r.target_type === "account" ? "accounts" : "lawyers"}/${r.target_id}`} className={appLink}>
                     {r.action}
                   </Link>
                 ) : (

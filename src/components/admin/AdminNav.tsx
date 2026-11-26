@@ -8,6 +8,8 @@ const LINKS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/lawyers", label: "Lawyers" },
   { href: "/admin/reviews", label: "Reviews" },
+  { href: "/admin/cases", label: "Case checks" },
+  { href: "/admin/accounts", label: "Accounts" },
 ];
 
 /** The links, marking the current section. Used as the Suspense fallback with no path. */
