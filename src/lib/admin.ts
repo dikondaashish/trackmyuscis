@@ -50,7 +50,7 @@ export async function requireAdmin(): Promise<{ userId: string; email: string } 
 export async function audit(
   adminId: string,
   action: string,
-  target: { type: "lawyer" | "review"; id: string },
+  target: { type: "lawyer" | "review" | "account"; id: string },
   details: Record<string, unknown> = {},
 ) {
   const admin = createAdminClient();
@@ -69,5 +69,11 @@ export const LAWYER_STATUS_LABEL: Record<LawyerStatus, string> = {
   withdrawn: "Unlisted",
 };
 
-export const REVIEW_STATUSES = ["pending", "published", "rejected"] as const;
+/** A listed lawyer's license should be looked up again once this many days have passed. */
+export const RECHECK_AFTER_DAYS = 365;
+
+/** The license-check date (YYYY-MM-DD) before which a recheck is due. */
+export const recheckCutoff = (now = Date.now()) => new Date(now - RECHECK_AFTER_DAYS * 86_400_000).toISOString().slice(0, 10);
+
+export const REVIEW_STATUSES =["pending", "published", "rejected"] as const;
 export type ReviewStatus = (typeof REVIEW_STATUSES)[number];

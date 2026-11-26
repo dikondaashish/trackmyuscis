@@ -10,6 +10,7 @@ import { detectType, EXTENSION_FOR } from "@/lib/documents/file-check";
 import { emailEnabled, sendEmail } from "@/lib/email/send";
 import { LAWYER_PHOTO_BUCKET, LAWYER_PHOTO_MAX_BYTES } from "@/lib/lawyer-photo";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { syncUserCases } from "@/lib/case-engine/sync";
 
 export type AdminResult = { ok: true; message?: string } | { ok: false; message: string; errors?: ApplicationErrors };
 
@@ -228,4 +229,83 @@ export async function deleteReview(id: string): Promise<AdminResult> {
   await audit(me.userId, "review.deleted", { type: "review", id }, { status: row.status, rating: row.rating });
   updateTag(LAWYERS_TAG);
   return { ok: true };
+}
+
+export type AccountHit = { id: string; email: string | null; name: string; createdAt: string; cases: number };
+
+/** Up to 25 accounts, newest first, with how many cases each has saved. */
+async function withCaseCounts(rows: { user_id: string; email: string | null; first_name: string | null; last_name: string | null; created_at: string }[]): Promise<AccountHit[]> {
+  const db = createAdminClient()!;
+  const ids = rows.map((r) => r.user_id);
+  const { data: cases } = ids.length ? await db.from("cases").select("user_id").in("user_id", ids) : { data: [] };
+  const tally = new Map<string, number>();
+  for (const c of cases ?? []) tally.set(c.user_id as string, (tally.get(c.user_id as string) ?? 0) + 1);
+  return rows.map((r) => ({
+    id: r.user_id,
+    email: r.email,
+    name: [r.first_name, r.last_name].filter(Boolean).join(" "),
+    createdAt: r.created_at,
+    cases: tally.get(r.user_id) ?? 0,
+  }));
+}
+
+const PROFILE_COLUMNS = "user_id, email, first_name, last_name, created_at";
+
+/** The newest sign-ups, shown before anything is searched. */
+export async function newestAccounts(): Promise<AccountHit[]> {
+  if (!(await requireAdmin())) return [];
+  const { data } = await createAdminClient()!.from("profiles").select(PROFILE_COLUMNS).order("created_at", { ascending: false }).limit(20);
+  return withCaseCounts(data ?? []);
+}
+
+/**
+ * Finds accounts by part of an email, name or username, by a receipt number (whoever saved
+ * it) or by account ID. The search is sent in the request body, never in the address.
+ */
+export async function findAccounts(query: string): Promise<{ ok: true; hits: AccountHit[] } | { ok: false; message: string }> {
+  if (!(await requireAdmin())) return NOT_ALLOWED as { ok: false; message: string };
+  const q = typeof query === "string" ? query.trim().slice(0, 120) : "";
+  if (q.length < 2) return { ok: true, hits: [] };
+  const db = createAdminClient()!;
+  const receipt = q.replace(/[\s-]/g, "").toUpperCase();
+  let ids: string[] | null = null;
+  if (/^[A-Z]{3}[0-9]{10}$/.test(receipt)) {
+    const { data } = await db.from("cases").select("user_id").eq("receipt_number", receipt).limit(25);
+    ids = [...new Set((data ?? []).map((r) => r.user_id as string))];
+  } else if (UUID.test(q)) {
+    ids = [q];
+  }
+  let rows;
+  if (ids) {
+    if (ids.length === 0) return { ok: true, hits: [] };
+    ({ data: rows } = await db.from("profiles").select(PROFILE_COLUMNS).in("user_id", ids));
+  } else {
+    // Only plain characters reach the filter, so the search can't change the query.
+    const safe = q.replace(/[^\p{L}\p{N}@._+' -]/gu, "");
+    if (!safe.trim()) return { ok: true, hits: [] };
+    const like = `"%${safe}%"`;
+    ({ data: rows } = await db
+      .from("profiles")
+      .select(PROFILE_COLUMNS)
+      .or(`email.ilike.${like},first_name.ilike.${like},last_name.ilike.${like},username.ilike.${like}`)
+      .order("created_at", { ascending: false })
+      .limit(25));
+  }
+  return { ok: true, hits: await withCaseCounts(rows ?? []) };
+}
+
+/** Asks the case checker to match this account's saved cases now (register new ones, fetch statuses). */
+export async function syncAccountCases(userId: string): Promise<AdminResult> {
+  const me = await requireAdmin();
+  if (!me) return NOT_ALLOWED;
+  if (!UUID.test(userId)) return FAILED;
+  try {
+    const r = await syncUserCases(userId);
+    if (!r.synced) return { ok: false, message: "The case checker isn't set up on this server." };
+  } catch (e) {
+    console.error("Admin case sync failed:", e instanceof Error ? e.message : "unknown error");
+    return { ok: false, message: "The case checker didn't answer. Try again in a few minutes." };
+  }
+  await audit(me.userId, "account.cases_synced", { type: "account", id: userId });
+  return { ok: true, message: "Checked. The statuses below are up to date." };
 }
