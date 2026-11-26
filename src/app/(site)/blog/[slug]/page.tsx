@@ -6,12 +6,12 @@ import { ArrowLeft, ArrowRight, CheckCircle2, ChevronDown, Info, ShieldCheck } f
 import { BlogBlocks } from "@/components/blog/BlogBlocks";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { toBlogCard } from "@/lib/blog/card";
-import { CopyLink } from "@/components/blog/CopyLink";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { JsonLd } from "@/components/JsonLd";
 import { OfficialSources } from "@/components/OfficialSources";
 import { LinkRows } from "@/components/ui/LinkRows";
 import { RichText } from "@/components/ui/RichText";
+import { ShareLinks } from "@/components/ui/ShareLinks";
 import { AUTHORS, BLOG_POSTS, getPost, readingMinutes, relatedPosts } from "@/lib/blog";
 import { abs, blogPostingSchema, breadcrumbSchema, faqSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
 import { TRACK_CASE_HREF } from "@/lib/site";
@@ -107,7 +107,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
                   </p>
                 </div>
               </div>
-              <CopyLink url={abs(path)} title={p.title} />
+              <ShareLinks compact url={abs(path)} title={p.title} />
             </div>
           </div>
           <div className={`${container} pb-10 sm:pb-12`}>
@@ -205,6 +205,16 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
                 </p>
                 <OfficialSources sources={p.sources} className="mt-4" />
               </div>
+
+              <section aria-labelledby="share-title" className="mt-14 rounded-2xl border border-border bg-white p-5 sm:p-7">
+                <h2 id="share-title" className="text-title text-midnight">
+                  Share this post
+                </h2>
+                <p className="mt-1 text-body text-slate">Know someone waiting on USCIS? Send it to them.</p>
+                <div className="mt-4">
+                  <ShareLinks url={abs(path)} title={p.title} />
+                </div>
+              </section>
 
               <section aria-labelledby="next-title" className="mt-14">
                 <h2 id="next-title" className="text-h3 text-midnight">

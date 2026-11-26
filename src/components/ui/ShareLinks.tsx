@@ -41,7 +41,11 @@ const noSubscribe = () => () => {};
 
 const square = `inline-flex size-11 cursor-pointer items-center justify-center rounded-lg border border-border bg-white text-midnight transition-[border-color,color,background-color,scale] duration-200 hover:border-blue hover:bg-ice hover:text-blue active:scale-[0.96] motion-reduce:active:scale-100 ${focusRing}`;
 
-export function ShareLinks({ url, title, text }: { url: string; title: string; text?: string }) {
+/**
+ * `compact` is for a row beside other content (a post's byline): tighter gaps, and "Link copied"
+ * is announced to screen readers only, since the copy button itself turns into a check.
+ */
+export function ShareLinks({ url, title, text, compact = false }: { url: string; title: string; text?: string; compact?: boolean }) {
   const [copied, setCopied] = useState(false);
   // False on the server and during hydration, so both renders match; true afterwards where supported.
   const native = useSyncExternalStore(
@@ -83,7 +87,7 @@ export function ShareLinks({ url, title, text }: { url: string; title: string; t
 
   return (
     <div>
-      <ul className="flex flex-wrap gap-2" aria-label="Share">
+      <ul className={`flex flex-wrap ${compact ? "gap-1.5" : "gap-2"}`} aria-label="Share">
         {native && (
           <li className="lg:hidden">
             <button type="button" onClick={shareNative} className={square} aria-label="Share with an app on this device">
@@ -114,7 +118,7 @@ export function ShareLinks({ url, title, text }: { url: string; title: string; t
           </button>
         </li>
       </ul>
-      <p aria-live="polite" className="mt-2 min-h-5 text-small text-teal">
+      <p aria-live="polite" className={compact ? "sr-only" : "mt-2 min-h-5 text-small text-teal"}>
         {copied ? "Link copied" : ""}
       </p>
     </div>

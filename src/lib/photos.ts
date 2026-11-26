@@ -16,6 +16,10 @@ import guideActivelyReviewed from "@/assets/photos/guide-actively-reviewed.jpg";
 import guideAfterBiometrics from "@/assets/photos/guide-after-biometrics.jpg"; // SRFG7iwktDk, george-prentzas
 import guideI485Time from "@/assets/photos/guide-i485-time.jpg"; // _BK4gpog-G4, renel-wackett
 import statusExplained from "@/assets/photos/status-explained.jpg"; // uGcDWKN91Fs, joanna-kosinska
+import lawyersConsultation from "@/assets/photos/lawyers-consultation.jpg"; // K0c8ko3e6AA, amyhirschi
+import lawyersDocuments from "@/assets/photos/lawyers-documents.jpg"; // MhqUBTxQ3Hw, sixtynice
+import lawyersOffice from "@/assets/photos/lawyers-office.jpg"; // aoweP90-XwM, silverkblack
+import lawyersJoin from "@/assets/photos/lawyers-join.jpg"; // JaoVGh5aJ3E, amyhirschi
 
 export const PHOTOS = {
   statusExplained: {
@@ -42,6 +46,26 @@ export const PHOTOS = {
     src: guideI485Time,
     alt: "A wall clock in a patch of warm sunlight on a soft blue wall",
     focus: "45% 50%",
+  },
+  lawyersConsultation: {
+    src: lawyersConsultation,
+    alt: "Two women talking across a wooden desk in a brick-walled office, one showing a tablet",
+    focus: "50% 55%",
+  },
+  lawyersDocuments: {
+    src: lawyersDocuments,
+    alt: "Two people going over printed forms together on a grey table, one pointing at a line",
+    focus: "35% 85%",
+  },
+  lawyersOffice: {
+    src: lawyersOffice,
+    alt: "A professional in a checked blazer talking with a client at a desk in a bright office",
+    focus: "40% 50%",
+  },
+  lawyersJoin: {
+    src: lawyersJoin,
+    alt: "A woman in a suit jacket meeting a client at a desk with a laptop and notepad",
+    focus: "45% 45%",
   },
 } satisfies Record<string, PhotoAsset>;
 

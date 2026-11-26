@@ -1,14 +1,15 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Phone, Search, Share2, ShieldCheck, Star, UserRound, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronDown } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
 import { ListingCard } from "@/components/lawyers/LawyerBits";
-import { SectionIntro } from "@/components/ui/SectionIntro";
+import { Photo } from "@/components/ui/Photo";
 import { RichText } from "@/components/ui/RichText";
 import { COMPANY } from "@/lib/company";
 import { DOJ_ROSTER } from "@/lib/content";
 import { DIRECTORY, directoryFee } from "@/lib/directory";
 import { breadcrumbSchema, faqSchema, pageMetadata, webPageSchema } from "@/lib/seo";
 import type { Listing } from "@/lib/directory-listings";
+import { PHOTOS } from "@/lib/photos";
 import { btnPrimary, btnSecondary, card, container, focusRing, h2, panel, readContainer, rowPad, rows, section } from "@/lib/ui";
 import { JoinForm } from "./JoinForm";
 
@@ -109,40 +110,31 @@ const EXAMPLE: Listing = {
   rating: null,
 };
 
-const BENEFITS = [
+/** What a listing includes, in the order a lawyer would ask about it. Everything here is live today. */
+const FEATURES = [
   {
-    icon: UserRound,
     title: "Your own profile page",
-    body: "Photo, bio, cases you take, languages, consultation fee, office, education and career, on a page with its own address. Set up so search engines can read your details.",
+    body: "Photo, bio, cases you take, languages, consultation fee, office, education and career, at its own address. Built so search engines can read your details.",
   },
   {
-    icon: Search,
-    title: "Found by state and kind of case",
-    body: "People search by state, city and case type, next to the USCIS guides they read while their case is pending.",
+    title: "A place in our search",
+    body: "People find you by state, city and case type, on the site they already use to follow their USCIS case.",
   },
   {
-    icon: ShieldCheck,
-    title: "A license-checked badge",
-    body: "We check your license before you're listed and show the date, so people can see you're real before they call.",
+    title: "A license-checked mark",
+    body: "We check your license before you're listed and show the date, so people know you're real before they call.",
   },
   {
-    icon: Star,
-    title: "Reviews that carry weight",
-    body: "Signed-in members rate you, and we check every review against public rules. Nobody can buy or remove one, so good reviews mean something.",
+    title: "Reviews that mean something",
+    body: "Signed-in members rate you and we check every review against public rules. Nobody can buy or remove one.",
   },
   {
-    icon: Share2,
-    title: "Easy to share",
-    body: "Share buttons for Facebook, LinkedIn, X, WhatsApp and email, and a clean link for your website or email signature.",
-  },
-  {
-    icon: Phone,
-    title: "People contact you directly",
-    body: "Calls go to your office and clicks go to your website. No middleman, no per-lead fees and no share of your legal fees.",
+    title: "Direct contact, no middleman",
+    body: "Calls go to your office and clicks to your website. Share buttons for Facebook, LinkedIn, X, WhatsApp and email come with every profile.",
   },
 ];
 
-const INCLUDED = ["Profile page and directory listing", "License-checked badge", "Reviews from members", "Share buttons and your own link", "Update or remove it any time"];
+const INCLUDED = ["Profile page and directory listing", "License-checked mark", "Reviews from members", "Share buttons and your own link", "Changes or removal at any time"];
 
 export default function JoinDirectoryPage() {
   return (
@@ -159,7 +151,7 @@ export default function JoinDirectoryPage() {
       />
 
       <section className="border-b border-border bg-white">
-        <div className={`${container} grid items-center gap-12 pt-8 pb-14 sm:pt-10 sm:pb-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16`}>
+        <div className={`${container} grid items-center gap-10 pt-8 pb-12 sm:pt-10 sm:pb-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16`}>
           <div className="enter">
             <Link
               href="/lawyers"
@@ -168,11 +160,10 @@ export default function JoinDirectoryPage() {
               <ArrowLeft aria-hidden className="size-4" />
               Find a lawyer
             </Link>
-            <h1 className="max-w-xl text-display text-midnight">
-              List your immigration practice. <span className="text-blue">Get found by people with a USCIS case.</span>
-            </h1>
+            <h1 className="max-w-xl text-display text-midnight">List your immigration practice</h1>
             <p className="mt-4 max-w-xl text-lead text-slate">
-              A license-checked profile in our lawyer directory, for licensed immigration attorneys and DOJ-accredited representatives.
+              A license-checked profile in front of people following a USCIS case. For licensed immigration attorneys and DOJ-accredited
+              representatives.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#apply" className={btnPrimary}>
@@ -183,57 +174,72 @@ export default function JoinDirectoryPage() {
                 See pricing
               </a>
             </div>
-            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-small text-midnight">
-              {[DIRECTORY.freeAtLaunch ? "Free during launch" : `${directoryFee}, flat`, "No card to apply", "About 5 minutes"].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <Check aria-hidden className="size-4 text-teal" strokeWidth={2.5} />
-                  {t}
+            <ul className="mt-10 grid grid-cols-3 gap-6 border-t border-border pt-6">
+              {[
+                [DIRECTORY.freeAtLaunch ? "$0" : `$${DIRECTORY.annualFee}`, DIRECTORY.freeAtLaunch ? "during launch" : "a year, flat"],
+                [`$${DIRECTORY.annualFee}`, DIRECTORY.freeAtLaunch ? "a year after launch" : `${perDay}`],
+                ["5 min", "to apply, no card"],
+              ].map(([n, label]) => (
+                <li key={label}>
+                  <span className="block text-h3 text-midnight tabular-nums">{n}</span>
+                  <span className="block text-small text-slate">{label}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          <figure className="enter enter-delay relative mx-auto w-full max-w-md lg:max-w-none">
-            <div aria-hidden className="absolute -inset-4 -z-0 rounded-3xl bg-ice sm:-inset-6" />
-            <div className="relative">
-              <ListingCard l={EXAMPLE} preview />
-            </div>
-            <figcaption className="relative mt-4 text-center text-small text-slate">
-              <span className="mr-2 rounded-full bg-white px-2 py-0.5 text-caption font-semibold text-blue">Example</span>
-              How your listing looks in our search. It opens your full profile.
-            </figcaption>
-          </figure>
+          <Photo
+            photo={PHOTOS.lawyersJoin}
+            preload
+            sizes="(min-width: 1280px) 584px, (min-width: 1024px) 45vw, 100vw"
+            className="enter enter-delay aspect-[4/3] rounded-2xl lg:aspect-[5/4]"
+          />
         </div>
       </section>
 
       <section className={section} aria-labelledby="included">
-        <div className={container}>
-          <SectionIntro id="included" title="What you get" description="Everything a person needs to choose you and get in touch, on a site they already use for their case." />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {BENEFITS.map(({ icon: Icon, title, body }) => (
-              <li key={title} className={`${panel} h-full`}>
-                <span className="flex size-11 items-center justify-center rounded-xl bg-ice text-blue">
-                  <Icon aria-hidden className="size-5" />
-                </span>
-                <h3 className="mt-4 text-title text-midnight">{title}</h3>
-                <p className="mt-2 text-body text-slate">{body}</p>
-              </li>
-            ))}
-          </ul>
+        <div className={`${container} grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16`}>
+          <div>
+            <h2 id="included" className={h2}>
+              What your listing includes
+            </h2>
+            <p className="mt-3 max-w-xl text-lead text-slate">Everything a person needs to choose you and get in touch.</p>
+            <ul className="mt-8 divide-y divide-border border-y border-border">
+              {FEATURES.map((f) => (
+                <li key={f.title} className="py-5">
+                  <h3 className="text-title text-midnight">{f.title}</h3>
+                  <p className="mt-1 text-body text-slate">{f.body}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="reveal rounded-2xl border border-border bg-white p-4 sm:p-8 lg:sticky lg:top-28">
+            <p className="mb-4 flex items-center justify-between gap-3 text-small text-slate">
+              <span className="font-semibold text-midnight">Example listing</span>
+              <span>As it appears in our search</span>
+            </p>
+            <div className="rounded-xl bg-cloud p-3 sm:p-5">
+              <ListingCard l={EXAMPLE} preview />
+            </div>
+            <p className="mt-4 text-small text-slate">
+              The card opens a full profile page with your bio, background, office, reviews and a contact card that stays on screen.
+            </p>
+          </div>
         </div>
       </section>
 
       <section className={`${section} bg-white`} aria-labelledby="how">
         <div className={container}>
-          <SectionIntro id="how" title="How it works" description="Three steps, and you never pay before your license is checked." />
-          <ol className="mt-10 grid gap-8 md:grid-cols-3 md:gap-6">
-            {STEPS.map((s, i) => (
-              <li key={s.title} className="relative">
-                {i < STEPS.length - 1 && <span aria-hidden className="absolute top-5 left-14 hidden h-px w-[calc(100%-3.5rem)] bg-border md:block" />}
-                <span className="relative flex size-10 items-center justify-center rounded-full bg-blue text-small font-semibold text-white tabular-nums">{i + 1}</span>
-                <h3 className="mt-4 text-title text-midnight">{s.title}</h3>
-                <p className="mt-2 max-w-sm text-body text-slate">
-                  <RichText text={s.body} />
+          <h2 id="how" className={h2}>
+            How it works
+          </h2>
+          <p className="mt-3 max-w-2xl text-lead text-slate">Three steps, and nothing to pay before your license is checked.</p>
+          <ol className="mt-10 grid gap-10 md:grid-cols-3 md:gap-10">
+            {STEPS.map((st, i) => (
+              <li key={st.title} className="border-t-2 border-midnight pt-5">
+                <span className="block text-h1 text-blue tabular-nums">{i + 1}</span>
+                <h3 className="mt-3 text-title text-midnight">{st.title}</h3>
+                <p className="mt-2 text-body text-slate">
+                  <RichText text={st.body} />
                 </p>
               </li>
             ))}
@@ -243,32 +249,23 @@ export default function JoinDirectoryPage() {
 
       <section className={section} aria-labelledby="pricing">
         <div className={container}>
-          <SectionIntro id="pricing" title="One simple price" description="The same flat price for every lawyer. No contracts, no per-lead fees." />
-          <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-8">
-            <div className={`${card} reveal flex flex-col overflow-hidden`}>
-              <div className="border-b border-border bg-midnight p-6 sm:p-8">
-                {DIRECTORY.freeAtLaunch ? (
-                  <>
-                    <p className="text-small font-semibold text-ice/80">While the directory launches</p>
-                    <p className="mt-2 flex items-baseline gap-2 text-white">
-                      <span className="text-display tabular-nums">$0</span>
-                    </p>
-                    <p className="mt-2 text-body text-ice/80">
-                      Then ${DIRECTORY.annualFee} a year after launch, which is {perDay}.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-small font-semibold text-ice/80">Directory listing</p>
-                    <p className="mt-2 flex items-baseline gap-2 text-white">
-                      <span className="text-display tabular-nums">${DIRECTORY.annualFee}</span>
-                      <span className="text-body text-ice/80">a year</span>
-                    </p>
-                    <p className="mt-2 text-body text-ice/80">That&apos;s {perDay}, sent as one invoice by email.</p>
-                  </>
-                )}
+          <h2 id="pricing" className={`jump-target scroll-mt-28 ${h2}`}>
+            One simple price
+          </h2>
+          <p className="mt-3 max-w-2xl text-lead text-slate">The same flat price for every lawyer. No contract, no per-lead fees.</p>
+          <div className="mt-10 grid items-start gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-12">
+            <div className={`${card} reveal overflow-hidden`}>
+              <div className="bg-midnight p-6 sm:p-8">
+                <p className="text-small font-semibold text-ice/80">{DIRECTORY.freeAtLaunch ? "While the directory launches" : "Directory listing"}</p>
+                <p className="mt-2 flex items-baseline gap-2 text-white">
+                  <span className="text-display tabular-nums">{DIRECTORY.freeAtLaunch ? "$0" : `$${DIRECTORY.annualFee}`}</span>
+                  {!DIRECTORY.freeAtLaunch && <span className="text-body text-ice/80">a year</span>}
+                </p>
+                <p className="mt-2 text-body text-ice/80">
+                  {DIRECTORY.freeAtLaunch ? `Then $${DIRECTORY.annualFee} a year after launch, which is ${perDay}.` : `That's ${perDay}, sent as one invoice by email.`}
+                </p>
               </div>
-              <div className="flex flex-1 flex-col p-6 sm:p-8">
+              <div className="p-6 sm:p-8">
                 <p className="text-small font-semibold text-midnight">Included</p>
                 <ul className="mt-3 grid gap-2.5">
                   {INCLUDED.map((t) => (
@@ -285,13 +282,12 @@ export default function JoinDirectoryPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-10">
               <div>
                 <h3 className="text-title text-midnight">How billing works</h3>
-                <ul className={`mt-4 ${rows}`}>
+                <ul className="mt-3 divide-y divide-border border-y border-border">
                   {COST.map((c) => (
-                    <li key={c} className={`flex items-start gap-3 ${rowPad} py-4 text-body text-midnight`}>
-                      <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" strokeWidth={2.5} />
+                    <li key={c} className="py-4 text-body text-midnight">
                       {c}
                     </li>
                   ))}
@@ -299,18 +295,14 @@ export default function JoinDirectoryPage() {
               </div>
               <div>
                 <h3 className="text-title text-midnight">Who can be listed</h3>
-                <ul className={`mt-4 ${rows}`}>
+                <dl className="mt-3 divide-y divide-border border-y border-border">
                   {WHO.map((w, i) => (
-                    <li key={w} className={`flex items-start gap-3 ${rowPad} py-4 text-body text-midnight`}>
-                      {i < WHO.length - 1 ? (
-                        <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" strokeWidth={2.5} />
-                      ) : (
-                        <X aria-hidden className="mt-1 size-4 shrink-0 text-slate" strokeWidth={2.5} />
-                      )}
-                      {w}
-                    </li>
+                    <div key={w} className="grid gap-1 py-4 sm:grid-cols-[7.5rem_1fr] sm:gap-6">
+                      <dt className={`text-small font-semibold ${i < WHO.length - 1 ? "text-teal" : "text-slate"}`}>{i < WHO.length - 1 ? "Can be listed" : "Can't be listed"}</dt>
+                      <dd className="text-body text-midnight">{w.replace(/^Not eligible: /, "")}</dd>
+                    </div>
                   ))}
-                </ul>
+                </dl>
                 <p className="mt-3 text-small text-slate">
                   <RichText text="Being listed is not a recommendation by TrackMyUSCIS, and listings may count as attorney advertising under your bar's rules. See [how the directory works](/advertising)." />
                 </p>
