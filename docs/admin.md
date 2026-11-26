@@ -23,15 +23,19 @@ Never put an admin's email in this repo: it is public.
 
 ## Day to day
 
-- **Overview**: what's waiting, totals and the latest changes.
+- **Overview**: what's waiting, totals and the latest changes (in plain words, with the lawyer's
+  name or the account's email).
 - **Lawyers**: new applications first. Open one, look up the license (attorneys: the state bar's
   lawyer search; representatives: the DOJ roster), then **Approve and list**. Listing records
   today as the license-check date, shows the profile on the site at once and, when email is set
   up, tells the lawyer. **Reject** asks for a private reason. **Unlist** hides a live profile.
-  You can also edit the profile, replace the photo and keep private notes.
+  You can also edit the profile, replace the photo and keep private notes. The search box finds
+  any application in every status by name, firm, city, state or email (never put in the address);
+  the list says when a tab has more than the 500 rows it shows.
 - **Reviews**: publish a review if it follows the review rules on `/advertising#reviews`, even
   when it is negative; reject only rule-breakers. A red line warns when the reviewer's account
-  uses the lawyer's own email.
+  uses the lawyer's own email. **Reject** asks which rule it breaks; the reason is private and is
+  shown on the Rejected tab. A lawyer's page links to only that lawyer's reviews.
 - **Case checks**: whether the daily case checker is working. The page asks the checker itself
   when it last checked (our own copy only updates when a status changes or the person opens their
   dashboard, so it looks old even when checks run fine). A warning shows when the checker didn't

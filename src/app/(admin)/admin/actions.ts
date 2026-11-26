@@ -203,16 +203,20 @@ export async function deleteLawyer(id: string): Promise<AdminResult> {
   return { ok: true };
 }
 
-export async function setReviewStatus(id: string, status: ReviewStatus): Promise<AdminResult> {
+/** Publishes, rejects (with an optional private reason) or moves a review back to waiting. */
+export async function setReviewStatus(id: string, status: ReviewStatus, reason?: string): Promise<AdminResult> {
   const me = await requireAdmin();
   if (!me) return NOT_ALLOWED;
   if (!UUID.test(id) || !REVIEW_STATUSES.includes(status)) return FAILED;
   const db = createAdminClient()!;
-  const { data: row } = await db.from("lawyer_reviews").select("status").eq("id", id).maybeSingle();
+  const { data: row } = await db.from("lawyer_reviews").select("status, lawyer_id").eq("id", id).maybeSingle();
   if (!row) return { ok: false, message: "That review no longer exists." };
-  const { error } = await db.from("lawyer_reviews").update({ status }).eq("id", id);
+  const note = status === "rejected" && typeof reason === "string" ? reason.trim().slice(0, 1000) : "";
+  const changes: Record<string, unknown> = { status };
+  if (status === "rejected") changes.admin_note = note || null;
+  const { error } = await db.from("lawyer_reviews").update(changes).eq("id", id);
   if (error) return FAILED;
-  await audit(me.userId, `review.${status}`, { type: "review", id }, { from: row.status });
+  await audit(me.userId, `review.${status}`, { type: "review", id }, { from: row.status, lawyer_id: row.lawyer_id, ...(note ? { reason: note } : {}) });
   updateTag(LAWYERS_TAG);
   return { ok: true };
 }
@@ -222,13 +226,44 @@ export async function deleteReview(id: string): Promise<AdminResult> {
   if (!me) return NOT_ALLOWED;
   if (!UUID.test(id)) return FAILED;
   const db = createAdminClient()!;
-  const { data: row } = await db.from("lawyer_reviews").select("status, rating").eq("id", id).maybeSingle();
+  const { data: row } = await db.from("lawyer_reviews").select("status, rating, lawyer_id").eq("id", id).maybeSingle();
   if (!row) return { ok: true };
   const { error } = await db.from("lawyer_reviews").delete().eq("id", id);
   if (error) return FAILED;
-  await audit(me.userId, "review.deleted", { type: "review", id }, { status: row.status, rating: row.rating });
+  await audit(me.userId, "review.deleted", { type: "review", id }, { status: row.status, rating: row.rating, lawyer_id: row.lawyer_id });
   updateTag(LAWYERS_TAG);
   return { ok: true };
+}
+
+export type LawyerRow = {
+  id: string;
+  full_name: string;
+  firm_name: string;
+  role: string;
+  office_city: string;
+  office_state: string;
+  status: string;
+  created_at: string;
+  license_checked_on: string | null;
+};
+
+const LAWYER_ROW = "id, full_name, firm_name, role, office_city, office_state, status, created_at, license_checked_on";
+
+/** Searches every application (any status) by name, firm, city, state or email. Up to 100 results. */
+export async function findLawyers(query: string): Promise<{ ok: true; rows: LawyerRow[] } | { ok: false; message: string }> {
+  const me = await requireAdmin();
+  if (!me) return { ok: false, message: "Your admin session has ended. Reload the page and sign in again." };
+  const q = (typeof query === "string" ? query : "").replace(/[^\p{L}\p{N}@._+' -]/gu, " ").trim().slice(0, 80);
+  if (!q) return { ok: true, rows: [] };
+  const like = `%${q}%`;
+  const { data, error } = await createAdminClient()!
+    .from("lawyer_applications")
+    .select(LAWYER_ROW)
+    .or(["full_name", "firm_name", "office_city", "office_state", "email"].map((c) => `${c}.ilike.${like}`).join(","))
+    .order("full_name")
+    .limit(100);
+  if (error) return { ok: false, message: "Search didn't work. Try again." };
+  return { ok: true, rows: (data ?? []) as LawyerRow[] };
 }
 
 export type AccountHit = { id: string; email: string | null; name: string; createdAt: string; cases: number };
