@@ -56,6 +56,7 @@ export const FOOTER_GROUPS: { title: string; links: NavLink[] }[] = [
     links: [
       { href: "/about", label: "About Us" },
       { href: "/contact", label: "Contact" },
+      { href: "/lawyers/join", label: "For Lawyers" },
     ],
   },
   {
@@ -65,6 +66,10 @@ export const FOOTER_GROUPS: { title: string; links: NavLink[] }[] = [
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/cookies", label: "Cookie Policy" },
       { href: "/privacy-choices", label: "Your Privacy Choices" },
+      { href: "/disclaimer", label: "Disclaimer" },
+      { href: "/advertising", label: "Advertising" },
+      { href: "/refunds", label: "Refund Policy" },
+      { href: "/security", label: "Security" },
       { href: "/accessibility", label: "Accessibility" },
       { href: "/legal", label: "All Policies" },
     ],
