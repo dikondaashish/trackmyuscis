@@ -162,8 +162,8 @@ async function LawyerDetail({ params }: { params: PageProps<"/admin/lawyers/[id]
             <Row label="Cases">{(r.practice_areas ?? []).map(areaLabel).filter(Boolean).join(", ")}</Row>
             <Row label="Reviews">
               {reviewCount("published")} published, {reviewCount("pending")} pending ·{" "}
-              <Link href="/admin/reviews?status=pending" className={appLink}>
-                Reviews
+              <Link href={`/admin/reviews?status=${reviewCount("pending") > 0 || reviewCount("published") === 0 ? "pending" : "published"}&lawyer=${id}`} className={appLink}>
+                See their reviews
               </Link>
             </Row>
             <Row label="Page address">/lawyers/{r.slug}</Row>

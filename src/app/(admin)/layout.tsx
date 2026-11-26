@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AdminNav, AdminNavView } from "@/components/admin/AdminNav";
-import { focusRing } from "@/lib/ui";
+import { LayoutDashboard } from "lucide-react";
+import { appBtnSecondary, focusRing } from "@/lib/ui";
 
 export const metadata: Metadata = {
   title: { default: "Admin", template: "%s | Admin" },
@@ -25,9 +26,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <AdminNav />
             </Suspense>
           </div>
-          <Link href="/dashboard" className={`hidden h-9 shrink-0 items-center rounded-md px-2 text-small font-medium text-slate hover:text-midnight sm:inline-flex ${focusRing}`}>
-            Your dashboard
-          </Link>
+          <span className="hidden shrink-0 sm:block">
+            <Link href="/dashboard" className={appBtnSecondary}>
+              <LayoutDashboard aria-hidden className="size-4 text-slate" />
+              Your dashboard
+            </Link>
+          </span>
         </div>
       </header>
       <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">

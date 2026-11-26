@@ -10,20 +10,30 @@ import { deleteReview, setReviewStatus } from "../actions";
 
 export const metadata = { title: "Reviews" };
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const LABEL: Record<ReviewStatus, string> = { pending: "Waiting", published: "Published", rejected: "Rejected" };
 const when = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
 
 async function ReviewList({ searchParams }: { searchParams: PageProps<"/admin/reviews">["searchParams"] }) {
-  const raw = (await searchParams).status;
+  const sp = await searchParams;
+  const raw = sp.status;
   const status: ReviewStatus = typeof raw === "string" && (REVIEW_STATUSES as readonly string[]).includes(raw) ? (raw as ReviewStatus) : "pending";
+  const lawyerId = typeof sp.lawyer === "string" && UUID.test(sp.lawyer) ? sp.lawyer : null;
   const db = createAdminClient()!;
-  const { data, error } = await db
+  let q = db
     .from("lawyer_reviews")
-    .select("id, created_at, lawyer_id, user_id, rating, body, relationship, reviewer_name, status, lawyer_applications(full_name, slug, email)")
+    .select("id, created_at, lawyer_id, user_id, rating, body, relationship, reviewer_name, status, admin_note, lawyer_applications(full_name, slug, email)")
     .eq("status", status)
     .order("created_at", { ascending: status === "pending" })
     .limit(300);
+  if (lawyerId) q = q.eq("lawyer_id", lawyerId);
+  const [{ data, error }, lawyer] = await Promise.all([
+    q,
+    lawyerId ? db.from("lawyer_applications").select("full_name").eq("id", lawyerId).maybeSingle().then((r) => r.data) : null,
+  ]);
+  const href = (t: ReviewStatus) => `/admin/reviews?status=${t}${lawyerId ? `&lawyer=${lawyerId}` : ""}`;
   const reviews = (data ?? []) as unknown as {
     id: string;
     created_at: string;
@@ -33,6 +43,7 @@ async function ReviewList({ searchParams }: { searchParams: PageProps<"/admin/re
     body: string;
     relationship: string;
     reviewer_name: string;
+    admin_note: string | null;
     lawyer_applications: { full_name: string; slug: string; email: string } | null;
   }[];
 
@@ -44,6 +55,18 @@ async function ReviewList({ searchParams }: { searchParams: PageProps<"/admin/re
   return (
     <div className="flex flex-col gap-5">
       <h1 className={appTitle}>Reviews</h1>
+      {lawyerId && (
+        <p className="text-small text-midnight">
+          Only reviews of{" "}
+          <Link href={`/admin/lawyers/${lawyerId}`} className={`${appLink} font-semibold`}>
+            {lawyer?.full_name ?? "this lawyer"}
+          </Link>
+          {" · "}
+          <Link href={`/admin/reviews?status=${status}`} className={appLink}>
+            Show every lawyer
+          </Link>
+        </p>
+      )}
       <p className="text-small text-slate">
         Publish a review if it follows the{" "}
         <a href="/advertising#reviews" target="_blank" rel="noopener noreferrer" className={appLink}>
@@ -55,7 +78,7 @@ async function ReviewList({ searchParams }: { searchParams: PageProps<"/admin/re
         {REVIEW_STATUSES.map((t) => (
           <Link
             key={t}
-            href={`/admin/reviews?status=${t}`}
+            href={href(t)}
             aria-current={t === status ? "page" : undefined}
             className={`inline-flex h-9 items-center rounded-md border px-3 text-small font-medium ${t === status ? "border-blue bg-ice text-blue" : "border-border bg-white text-slate hover:text-midnight"} ${focusRing}`}
           >
@@ -85,9 +108,10 @@ async function ReviewList({ searchParams }: { searchParams: PageProps<"/admin/re
                 {r.reviewer_name} · {r.relationship === "client" ? "Hired them" : "Had a consultation"} · account {reviewerEmail || "unknown"}
               </p>
               {sameEmail && <p className="mt-1 text-small font-semibold text-red">The reviewer uses the lawyer&apos;s own email.</p>}
+              {status === "rejected" && <p className="mt-1 text-small text-slate">Why it was rejected: {r.admin_note ?? "no reason saved"}</p>}
               <div className="mt-3 flex flex-wrap gap-2">
                 {status !== "published" && <AdminButton action={setReviewStatus.bind(null, r.id, "published")} label="Publish" tone="primary" />}
-                {status !== "rejected" && <AdminButton action={setReviewStatus.bind(null, r.id, "rejected")} label="Reject" />}
+                {status !== "rejected" && <AdminButton action={setReviewStatus.bind(null, r.id, "rejected")} label="Reject" reason="Which rule does it break? (private, the reviewer doesn't see it)" />}
                 {status !== "pending" && <AdminButton action={setReviewStatus.bind(null, r.id, "pending")} label="Move back to waiting" />}
                 <AdminButton action={deleteReview.bind(null, r.id)} label="Delete" tone="danger" confirm="Delete this review for good? The reviewer could write a new one." />
               </div>
