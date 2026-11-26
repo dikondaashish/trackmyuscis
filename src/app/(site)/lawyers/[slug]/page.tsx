@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, Award, Briefcase, Check, ChevronRight, GraduationCap, Languages, MapPin, MessageSquareText, Phone, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Award, Check, ChevronRight, Languages, MapPin, MessageSquareText, Phone, ShieldCheck } from "lucide-react";
 import { JsonLd } from "@/components/JsonLd";
 import {
   ListingCard,
-  LawyerPhoto,
   ModeIcon,
   RatingLine,
   Stars,
-  Tag,
-  VerifiedBadge,
   allLanguages,
   areaLabel,
   consultationAmount,
@@ -119,6 +117,29 @@ function licenseSentence(l: Listing) {
 }
 
 const sectionTitle = "text-h3 text-midnight";
+
+/** One labelled fact in the Background panel: label on the left from 640px, text on the right. */
+function Fact({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className={`grid gap-1.5 ${rowPad} py-5 sm:grid-cols-[9rem_1fr] sm:gap-6 sm:px-8 sm:py-6`}>
+      <dt className="text-small font-semibold text-slate">{label}</dt>
+      <dd className="text-body text-midnight">{children}</dd>
+    </div>
+  );
+}
+
+/** The profile's headshot: a rounded square, like a firm's own bio page; initials when there is no photo. */
+function LawyerHeadshot({ l }: { l: Listing }) {
+  return (
+    <span className="relative flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-ice text-h2 font-semibold text-blue ring-1 ring-border sm:size-36">
+      {l.photoUrl ? (
+        <Image src={l.photoUrl} alt={`Photo of ${l.fullName}`} fill priority sizes="144px" className="object-cover" />
+      ) : (
+        <span aria-hidden>{initials(l.fullName)}</span>
+      )}
+    </span>
+  );
+}
 const inlineLink = `inline-flex min-h-11 items-center gap-1.5 rounded text-small font-semibold text-blue underline-offset-2 hover:underline ${focusRing}`;
 
 /** The average, the stars and how the ratings spread from 5 to 1. */
@@ -218,19 +239,17 @@ export default async function LawyerProfilePage({ params }: PageProps<"/lawyers/
           </nav>
 
           <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
-            <span className="rounded-full p-1 ring-1 ring-border">
-              <LawyerPhoto l={l} size="xl" priority />
-            </span>
+            <LawyerHeadshot l={l} />
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <VerifiedBadge role={l.role} />
-                {l.freeConsultation && <Tag tone="good">Free first consultation</Tag>}
-              </div>
-              <h1 className="mt-3 text-h1 text-midnight">{l.fullName}</h1>
+              <h1 className="text-h1 text-midnight">{l.fullName}</h1>
               <p className="mt-1 text-lead text-slate">
                 {what} at <span className="font-semibold text-midnight">{l.firmName}</span>
               </p>
               <ul className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-small text-midnight">
+                <li className="flex items-center gap-1.5 font-semibold text-teal">
+                  <ShieldCheck aria-hidden className="size-4" strokeWidth={2.25} />
+                  {l.role === "attorney" ? "License checked" : "Accreditation checked"}
+                </li>
                 <li className="flex items-center gap-1.5">
                   <MapPin aria-hidden className="size-4 text-slate" />
                   {l.officeCity}, {l.officeState}
@@ -350,12 +369,10 @@ export default async function LawyerProfilePage({ params }: PageProps<"/lawyers/
                 <h2 id="cases" className={sectionTitle}>
                   Cases {l.role === "attorney" ? "they take" : "they help with"}
                 </h2>
-                <ul className={`mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2 ${panel} sm:p-8`}>
+                <ul className={`mt-5 grid gap-x-8 sm:grid-cols-2 ${card} reveal px-5 py-2 sm:px-8 sm:py-3`}>
                   {areas.map((a) => (
-                    <li key={a} className="flex items-start gap-3 text-body text-midnight">
-                      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-teal/10 text-teal">
-                        <Check aria-hidden className="size-3" strokeWidth={3} />
-                      </span>
+                    <li key={a} className="flex items-start gap-3 border-b border-border py-3 text-body text-midnight last:border-b-0 sm:[&:nth-last-child(2):nth-child(odd)]:border-b-0">
+                      <Check aria-hidden className="mt-1 size-4 shrink-0 text-teal" strokeWidth={2.5} />
                       {a}
                     </li>
                   ))}
@@ -367,70 +384,32 @@ export default async function LawyerProfilePage({ params }: PageProps<"/lawyers/
               <h2 id="background" className={sectionTitle}>
                 Background
               </h2>
-              <div className={`mt-5 ${rows}`}>
-                <div className={`flex gap-4 ${rowPad} py-5 sm:px-8 sm:py-6`}>
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ice text-blue">
-                    <ShieldCheck aria-hidden className="size-5" />
-                  </span>
-                  <div>
-                    <h3 className="text-title text-midnight">{l.role === "attorney" ? "License" : "Accreditation"}</h3>
-                    <p className="mt-1 text-body text-slate">{licenseSentence(l)}</p>
-                  </div>
-                </div>
+              <dl className={`mt-5 ${rows}`}>
+                <Fact label={l.role === "attorney" ? "License" : "Accreditation"}>{licenseSentence(l)}</Fact>
                 {l.career.length > 0 && (
-                  <div className={`flex gap-4 ${rowPad} py-5 sm:px-8 sm:py-6`}>
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ice text-blue">
-                      <Briefcase aria-hidden className="size-5" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-title text-midnight">Experience</h3>
-                      <ol className="mt-3">
-                        {l.career.map((c, i) => (
-                          <li key={c} className="relative pb-4 pl-6 last:pb-0">
-                            {i < l.career.length - 1 && <span aria-hidden className="absolute top-3 bottom-0 left-[5px] w-px bg-border" />}
-                            <span aria-hidden className={`absolute top-[7px] left-0 size-[11px] rounded-full border-2 ${i === 0 ? "border-blue bg-blue" : "border-border bg-white"}`} />
-                            <span className="text-body text-midnight">{c}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
+                  <Fact label="Experience">
+                    <ol>
+                      {l.career.map((c, i) => (
+                        <li key={c} className="relative pb-4 pl-6 last:pb-0">
+                          {i < l.career.length - 1 && <span aria-hidden className="absolute top-3 bottom-0 left-[5px] w-px bg-border" />}
+                          <span aria-hidden className={`absolute top-[7px] left-0 size-[11px] rounded-full border-2 ${i === 0 ? "border-blue bg-blue" : "border-border bg-white"}`} />
+                          {c}
+                        </li>
+                      ))}
+                    </ol>
+                  </Fact>
                 )}
                 {l.education.length > 0 && (
-                  <div className={`flex gap-4 ${rowPad} py-5 sm:px-8 sm:py-6`}>
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ice text-blue">
-                      <GraduationCap aria-hidden className="size-5" />
-                    </span>
-                    <div>
-                      <h3 className="text-title text-midnight">Education</h3>
-                      <ul className="mt-2 space-y-1.5">
-                        {l.education.map((e) => (
-                          <li key={e} className="text-body text-midnight">
-                            {e}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+                  <Fact label="Education">
+                    <ul className="space-y-1.5">
+                      {l.education.map((e) => (
+                        <li key={e}>{e}</li>
+                      ))}
+                    </ul>
+                  </Fact>
                 )}
-                {langs.length > 0 && (
-                  <div className={`flex gap-4 ${rowPad} py-5 sm:px-8 sm:py-6`}>
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-ice text-blue">
-                      <Languages aria-hidden className="size-5" />
-                    </span>
-                    <div>
-                      <h3 className="text-title text-midnight">Languages</h3>
-                      <ul className="mt-2 flex flex-wrap gap-1.5">
-                        {langs.map((x) => (
-                          <li key={x}>
-                            <Tag>{x}</Tag>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
+                {langs.length > 0 && <Fact label="Languages">{langs.join(", ")}</Fact>}
+              </dl>
             </section>
 
             <section aria-labelledby="reviews">

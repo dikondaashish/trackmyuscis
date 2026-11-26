@@ -5,7 +5,7 @@
  */
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Building2, Languages, MapPin, Phone, ShieldCheck, Star, Video } from "lucide-react";
+import { ArrowRight, Briefcase, Building2, CalendarCheck, Languages, MapPin, Phone, ShieldCheck, Star, Video } from "lucide-react";
 import { CONSULTATION_MODES, PRACTICE_AREAS, US_STATES } from "@/lib/directory";
 import type { Listing, Rating } from "@/lib/directory-listings";
 import { initials } from "@/lib/lawyer-photo";
@@ -13,7 +13,6 @@ import { card, focusRing } from "@/lib/ui";
 
 export const stateName = (code: string | null) => US_STATES.find(([c]) => c === code)?.[1] ?? code ?? "";
 export const areaLabel = (value: string) => PRACTICE_AREAS.find((p) => p.value === value)?.label;
-export const modeTag = (value: string) => CONSULTATION_MODES.find((m) => m.value === value)?.tag;
 export const modeLabel = (value: string) => CONSULTATION_MODES.find((m) => m.value === value)?.label;
 
 /** The icon for each way of meeting. */
@@ -33,13 +32,6 @@ export const consultationPrice = (l: Pick<Listing, "freeConsultation" | "consult
 /** Just the amount: "Free", "$150", or null. */
 export const consultationAmount = (l: Pick<Listing, "freeConsultation" | "consultationFee">) =>
   l.freeConsultation ? "Free" : l.consultationFee ? `$${l.consultationFee.toLocaleString("en-US")}` : null;
-
-/** Languages other than English, from the lawyer's own list. */
-export const otherLanguages = (languages: string) =>
-  languages
-    .split(/\s*[,;/]\s*|\s+and\s+/i)
-    .map((s) => s.trim())
-    .filter((s) => s && !/^english$/i.test(s));
 
 /** Every language, as the lawyer wrote them. */
 export const allLanguages = (languages: string) =>
@@ -64,16 +56,6 @@ export function LawyerPhoto({ l, size, priority = false }: { l: Pick<Listing, "p
       ) : (
         <span aria-hidden>{initials(l.fullName)}</span>
       )}
-    </span>
-  );
-}
-
-/** "License checked" (attorneys) or "Accreditation checked" (representatives). We check every listing before it appears. */
-export function VerifiedBadge({ role }: { role: Listing["role"] }) {
-  return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-teal/10 px-2.5 py-1 text-caption font-semibold text-teal">
-      <ShieldCheck aria-hidden className="size-3.5" strokeWidth={2.25} />
-      {role === "attorney" ? "License checked" : "Accreditation checked"}
     </span>
   );
 }
@@ -114,115 +96,116 @@ export function Stars({ value, size = "size-4" }: { value: number; size?: string
   );
 }
 
-export function Tag({ children, tone = "neutral" }: { children: React.ReactNode; tone?: "neutral" | "good" }) {
+export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;
+
+/** A small teal shield after a name: the license or accreditation was checked. Its meaning is spelled out for screen readers and on hover. */
+export function VerifiedMark({ role }: { role: Listing["role"] }) {
+  const label = role === "attorney" ? "License checked by TrackMyUSCIS" : "Accreditation checked by TrackMyUSCIS";
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-caption font-semibold ${tone === "good" ? "bg-teal/10 text-teal" : "bg-ice text-blue"}`}>
-      {children}
+    <span title={label} className="inline-flex shrink-0 text-teal">
+      <ShieldCheck aria-hidden className="size-[1.05em]" strokeWidth={2.25} />
+      <span className="sr-only">{label}</span>
     </span>
   );
 }
 
-/** The tags people scan for: consultation price, how they meet, and languages besides English. */
-export function LawyerTags({ l, max = 6, languages = true }: { l: Listing; max?: number; languages?: boolean }) {
+/** "Free first consultation · Video, Phone, In person". */
+export function ConsultationLine({ l }: { l: Listing }) {
   const price = consultationPrice(l);
-  const tags: { text: string; good?: boolean }[] = [
-    ...(price ? [{ text: price, good: l.freeConsultation }] : []),
-    ...l.consultationModes.flatMap((m) => {
-      const tag = modeTag(m);
-      return tag ? [{ text: tag }] : [];
-    }),
-    ...(languages ? otherLanguages(l.languages).map((lang) => ({ text: lang })) : []),
-  ].slice(0, max);
-  if (tags.length === 0) return null;
+  const modes = l.consultationModes.map(modeLabel).filter(Boolean).join(", ");
+  if (!price && !modes) return null;
   return (
-    <ul className="flex flex-wrap gap-1.5" aria-label="Highlights">
-      {tags.map((t) => (
-        <li key={t.text}>
-          <Tag tone={t.good ? "good" : "neutral"}>{t.text}</Tag>
-        </li>
-      ))}
-    </ul>
+    <>
+      {price && <span className={l.freeConsultation ? "font-semibold text-teal" : "font-semibold text-midnight"}>{price}</span>}
+      {price && modes && <span className="text-slate"> · </span>}
+      {modes && <span>{modes}</span>}
+    </>
   );
 }
 
-export const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;
-
 /**
  * One lawyer in the directory. The name links to the profile and its hit area covers the whole
- * card; "Call" sits above it so people can phone straight from the list. With `preview`, the
- * card renders without links (the example on the "List your practice" page).
+ * card; the phone number sits above it so people can call straight from the list. With
+ * `preview`, the card renders without links (the example on the "List your practice" page).
  */
-export function ListingCard({ l, preview = false, headingLevel = "h3" }: { l: Listing; preview?: boolean; headingLevel?: "h2" | "h3" }) {
+export function ListingCard({ l, preview = false }: { l: Listing; preview?: boolean }) {
   // The example card is a picture of a listing, not a section of the page, so its name is not a heading.
-  const Heading = preview ? "p" : headingLevel;
+  const Heading = preview ? "p" : "h3";
   const areas = l.practiceAreas.map(areaLabel).filter(Boolean) as string[];
   const langs = allLanguages(l.languages);
+  const consultation = ConsultationLine({ l });
   return (
     <article
-      className={`group relative flex h-full flex-col ${card} p-5 transition-[border-color,translate,box-shadow] duration-200 sm:p-6 ${preview ? "shadow-[0_24px_48px_-24px_rgb(16_34_61/0.25)]" : "reveal hover:-translate-y-0.5 hover:border-blue/50 hover:shadow-[0_12px_32px_-16px_rgb(16_34_61/0.18)] motion-reduce:hover:translate-y-0"}`}
+      className={`group relative flex h-full flex-col ${card} transition-[border-color,translate,box-shadow] duration-200 ${preview ? "" : "reveal hover:-translate-y-0.5 hover:border-blue/40 hover:shadow-[0_16px_40px_-20px_rgb(16_34_61/0.22)] motion-reduce:hover:translate-y-0"}`}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-4 p-5 sm:p-6">
         <LawyerPhoto l={l} size="md" />
         <div className="min-w-0 flex-1">
-          <Heading className="text-title text-midnight">
+          <Heading className="flex items-center gap-1.5 text-title text-midnight">
             {preview ? (
-              l.fullName
+              <span className="truncate">{l.fullName}</span>
             ) : (
               <Link
                 href={`/lawyers/${l.slug}`}
-                className="rounded transition-colors duration-200 group-hover:text-blue after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-blue"
+                className="truncate rounded transition-colors duration-200 group-hover:text-blue after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-blue"
               >
                 {l.fullName}
               </Link>
             )}
+            <VerifiedMark role={l.role} />
           </Heading>
-          <p className="truncate text-small text-slate">{l.firmName}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-            <VerifiedBadge role={l.role} />
-            {l.rating && <RatingLine rating={l.rating} />}
-          </div>
+          <p className="truncate text-small text-slate">
+            {l.role === "attorney" ? "Attorney" : "Accredited representative"} · {l.firmName}
+          </p>
+          {l.rating && (
+            <p className="mt-1.5">
+              <RatingLine rating={l.rating} />
+            </p>
+          )}
         </div>
       </div>
 
-      <dl className="mt-4 grid gap-1.5 text-small text-midnight">
-        <div className="flex items-start gap-2">
+      <dl className="grid flex-1 content-start gap-2 border-t border-border px-5 py-4 text-small text-midnight sm:px-6">
+        <div className="flex items-start gap-2.5">
           <dt className="sr-only">Office</dt>
           <MapPin aria-hidden className="mt-0.5 size-4 shrink-0 text-slate" />
           <dd>
-            {l.officeCity}, {l.officeState} · {l.role === "attorney" ? "Attorney" : "Accredited representative"}
+            {l.officeCity}, {stateName(l.officeState)}
           </dd>
         </div>
+        {consultation && (
+          <div className="flex items-start gap-2.5">
+            <dt className="sr-only">Consultations</dt>
+            <CalendarCheck aria-hidden className="mt-0.5 size-4 shrink-0 text-slate" />
+            <dd>{consultation}</dd>
+          </div>
+        )}
         {langs.length > 0 && (
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2.5">
             <dt className="sr-only">Languages</dt>
             <Languages aria-hidden className="mt-0.5 size-4 shrink-0 text-slate" />
             <dd>{langs.join(", ")}</dd>
           </div>
         )}
+        {areas.length > 0 && (
+          <div className="flex items-start gap-2.5">
+            <dt className="sr-only">Cases</dt>
+            <Briefcase aria-hidden className="mt-0.5 size-4 shrink-0 text-slate" />
+            <dd className="line-clamp-2 text-slate">{areas.join(", ")}</dd>
+          </div>
+        )}
       </dl>
 
-      {areas.length > 0 && (
-        <p className="mt-3 line-clamp-2 text-small text-slate">
-          <span className="sr-only">Cases: </span>
-          {areas.join(" · ")}
-        </p>
-      )}
-
-      {/* Grows so the bottom row lines up across cards of different lengths. */}
-      <div className="mt-4 flex-1">
-        <LawyerTags l={l} max={4} languages={false} />
-      </div>
-
-      <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4">
+      <div className="flex items-center justify-between gap-3 border-t border-border px-5 py-2 sm:px-6">
         {preview ? (
-          <span className="inline-flex min-h-11 items-center gap-2 text-small font-semibold text-blue">
+          <span className="inline-flex min-h-11 items-center gap-2 text-small font-semibold text-blue tabular-nums">
             <Phone aria-hidden className="size-4" />
-            Call
+            Your office number
           </span>
         ) : (
           <a
             href={telHref(l.phone)}
-            className={`relative z-10 inline-flex min-h-11 items-center gap-2 rounded-lg px-1 text-small font-semibold text-blue tabular-nums transition-colors duration-200 hover:text-midnight ${focusRing}`}
+            className={`relative z-10 -ml-1 inline-flex min-h-11 items-center gap-2 rounded-lg px-1 text-small font-semibold text-blue tabular-nums transition-colors duration-200 hover:text-midnight ${focusRing}`}
           >
             <Phone aria-hidden className="size-4" />
             {l.phone}
