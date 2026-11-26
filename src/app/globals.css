@@ -80,13 +80,30 @@
 }
 
 html {
-  /* Anchor targets clear the sticky header. */
-  scroll-padding-top: 5.5rem;
+  /*
+   * Exactly the sticky header's height (64px, 76px from 1024px). Next.js scrolls a new
+   * page into view when its top sits above this line, so a larger value made every
+   * navigation jump partway down the page. Anchor breathing room is scroll-margin below.
+   */
+  scroll-padding-top: 4rem;
   font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   -webkit-text-size-adjust: 100%;
   /* No rubber-band bounce past the top or bottom of the page (trackpads, Magic Mouse). */
   overscroll-behavior-y: none;
+}
+
+@media (min-width: 64rem) {
+  html {
+    scroll-padding-top: 4.75rem;
+  }
+}
+
+/* Anchor targets land 12px below the header. In a layer so scroll-mt-* utilities still win. */
+@layer base {
+  [id] {
+    scroll-margin-top: 0.75rem;
+  }
 }
 
 body {
