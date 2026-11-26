@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
 import { MobileAccount } from "@/components/SiteAccount";
-import { bestMatch, isCurrent, menuIsCurrent, type MenuItem, type NavEntry } from "@/lib/site";
+import { NAV_ICONS } from "@/components/NavIcons";
+import { bestMatch, isCurrent, menuIsCurrent, type MenuItem, type NavEntry, type NavIcon } from "@/lib/site";
 
 const row =
   "flex min-h-11 items-center rounded-lg px-3 text-body text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue";
@@ -93,6 +94,11 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
                                 <span className="font-semibold text-midnight">{item.label}</span>
                                 <span>{item.note}</span>
                               </>
+                            ) : item.icon ? (
+                              <span className="flex items-center gap-3">
+                                <MenuIcon name={item.icon} />
+                                {item.label}
+                              </span>
                             ) : (
                               item.label
                             )}
@@ -109,5 +115,14 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
         </nav>
       </div>
     </div>
+  );
+}
+
+function MenuIcon({ name }: { name: NavIcon }) {
+  const Icon = NAV_ICONS[name];
+  return (
+    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-ice text-blue">
+      <Icon aria-hidden className="size-4" />
+    </span>
   );
 }

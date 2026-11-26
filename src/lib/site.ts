@@ -2,13 +2,19 @@
 
 export type NavLink = { href: string; label: string };
 
-/** A link inside a header menu: label plus one short line saying what the page is for. */
-export type MenuItem = NavLink & { note?: string };
+/** Icons for header menu items, by name (nav.ts is built on the server, so it can't pass components). */
+export type NavIcon = "statuses" | "times" | "alerts" | "answers" | "guides" | "blog" | "lawyers" | "scams" | "help";
+
+/** A link inside a header menu: label, one short line saying what the page is for, and an icon. */
+export type MenuItem = NavLink & { note?: string; icon?: NavIcon };
+
+/** The small card on the right of a wide menu: something new or worth a look. */
+export type MenuFeature = { label: string; title: string; href: string; cta: string };
 
 /** One header entry: a plain link, or a menu that opens a dropdown. Built in nav.ts. */
 export type NavEntry =
   | { kind: "link"; label: string; href: string }
-  | { kind: "menu"; label: string; items: MenuItem[]; columns?: 1 | 2; footer?: NavLink };
+  | { kind: "menu"; label: string; items: MenuItem[]; columns?: 1 | 2; footer?: NavLink; featured?: MenuFeature };
 
 export const TRACK_CASE_HREF = "/#track";
 

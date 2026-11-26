@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { NAV_ICONS } from "@/components/NavIcons";
 import { bestMatch, menuIsCurrent, type NavEntry } from "@/lib/site";
 
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue";
-const trigger = `inline-flex min-h-11 cursor-pointer items-center gap-1 whitespace-nowrap rounded-lg px-2.5 text-small text-slate transition-colors duration-200 hover:bg-ice hover:text-midnight data-[active=true]:font-semibold data-[active=true]:text-midnight xl:px-3 ${focus}`;
+const trigger = `inline-flex min-h-11 cursor-pointer items-center gap-1 whitespace-nowrap rounded-lg px-3 text-small font-medium text-slate transition-colors duration-200 hover:bg-cloud hover:text-midnight data-[active=true]:text-midnight ${focus}`;
 
 /**
  * Desktop header: plain links and dropdown menus. A menu opens on click or keyboard,
@@ -105,7 +106,7 @@ export function PrimaryNav({ entries }: { entries: NavEntry[] }) {
                   byHover.current = false;
                   setOpen(isOpen ? null : entry.label);
                 }}
-                className={`${trigger} ${isOpen ? "bg-ice text-midnight" : ""}`}
+                className={`${trigger} ${isOpen ? "bg-cloud text-midnight" : ""}`}
               >
                 {entry.label}
                 <ChevronDown
@@ -116,26 +117,54 @@ export function PrimaryNav({ entries }: { entries: NavEntry[] }) {
 
               <div id={panelId} hidden={!isOpen} className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2">
                 <div
-                  className={`rounded-xl border border-border bg-white p-2 shadow-[0_24px_48px_-24px_rgba(16,34,61,0.25)] ${entry.columns === 2 ? "w-[30rem]" : "w-80"}`}
+                  className={`menu-in rounded-xl border border-border bg-white p-2 shadow-[0_24px_48px_-24px_rgba(16,34,61,0.25)] ${
+                    entry.columns === 2 ? "w-[30rem]" : entry.featured ? "grid w-[38rem] grid-cols-[1fr_13rem] gap-2" : "w-80"
+                  }`}
                 >
-                  <ul className={entry.columns === 2 ? "grid grid-cols-2 gap-1" : "flex flex-col gap-1"}>
+                  <div>
+                  <ul className={entry.columns === 2 ? "grid grid-cols-2 gap-1" : "flex flex-col gap-0.5"}>
                     {entry.items.map((item) => {
                       const current = item.href === match;
+                      const Icon = item.icon ? NAV_ICONS[item.icon] : null;
                       return (
                         <li key={item.href}>
                           <Link
                             href={item.href}
                             aria-current={current ? "page" : undefined}
                             onClick={() => setOpen(null)}
-                            className={`flex min-h-11 flex-col justify-center rounded-[10px] px-3 py-2.5 transition-colors duration-200 hover:bg-cloud aria-[current=page]:bg-ice ${focus}`}
+                            className={`group flex min-h-11 items-center gap-3 rounded-[10px] px-3 py-2.5 transition-colors duration-200 hover:bg-cloud aria-[current=page]:bg-ice ${focus}`}
                           >
-                            <span className="text-small font-semibold text-midnight">{item.label}</span>
-                            {item.note && <span className="text-small text-slate">{item.note}</span>}
+                            {Icon && (
+                              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-ice text-blue transition-colors duration-200 group-hover:bg-blue group-hover:text-white group-aria-[current=page]:bg-white">
+                                <Icon aria-hidden className="size-5" />
+                              </span>
+                            )}
+                            <span className="flex min-w-0 flex-col">
+                              <span className="text-small font-semibold text-midnight">{item.label}</span>
+                              {item.note && <span className="text-small text-slate">{item.note}</span>}
+                            </span>
                           </Link>
                         </li>
                       );
                     })}
                   </ul>
+                  </div>
+                  {entry.featured && (
+                    <Link
+                      href={entry.featured.href}
+                      onClick={() => setOpen(null)}
+                      className={`group flex flex-col justify-between gap-4 rounded-[10px] bg-cloud p-4 transition-colors duration-200 hover:bg-ice ${focus}`}
+                    >
+                      <span>
+                        <span className="block text-caption font-medium text-teal">{entry.featured.label}</span>
+                        <span className="mt-1.5 line-clamp-4 text-small font-semibold text-midnight">{entry.featured.title}</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-small font-semibold text-blue">
+                        {entry.featured.cta}
+                        <ArrowRight aria-hidden className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
+                      </span>
+                    </Link>
+                  )}
                   {entry.footer && (
                     <div className="mt-2 border-t border-border pt-2">
                       <Link
