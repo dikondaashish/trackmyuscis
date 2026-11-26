@@ -30,7 +30,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
   }, [open]);
 
   return (
-    <div className="lg:hidden">
+    <div className="-mr-2.5 lg:hidden">
       <button
         ref={buttonRef}
         type="button"
@@ -38,7 +38,7 @@ export function MobileMenu({ entries }: { entries: NavEntry[] }) {
         aria-controls={panelId}
         aria-label={open ? "Close menu" : "Open menu"}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex size-10 cursor-pointer items-center justify-center rounded-[10px] text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+        className="inline-flex size-11 cursor-pointer items-center justify-center rounded-[10px] text-midnight transition-colors duration-200 hover:bg-ice focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
       >
         {open ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
       </button>

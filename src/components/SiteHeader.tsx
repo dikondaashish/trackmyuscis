@@ -4,8 +4,8 @@ import { Search } from "lucide-react";
 import { AccountLink } from "@/components/AccountLink";
 import { MobileMenu } from "@/components/MobileMenu";
 import { PrimaryNav } from "@/components/PrimaryNav";
+import { TrackCaseButton } from "@/components/TrackCaseButton";
 import { HEADER_NAV } from "@/lib/nav";
-import { TRACK_CASE_HREF } from "@/lib/site";
 
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue";
@@ -13,7 +13,7 @@ const focusRing =
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:h-19">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-5 sm:px-8 lg:h-19">
         <Link href="/" aria-label="TrackMyUSCIS home" className={`flex min-h-11 shrink-0 items-center rounded-md ${focusRing}`}>
           <Image
             src="/brand/logo-primary.svg"
@@ -21,13 +21,13 @@ export function SiteHeader() {
             width={1180}
             height={196}
             preload
-            className="h-7 w-auto sm:h-8 lg:h-9"
+            className="h-7 w-auto min-[390px]:h-8 lg:h-9"
           />
         </Link>
 
         <PrimaryNav entries={HEADER_NAV} />
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <AccountLink
             className={`hidden min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-small font-semibold text-midnight transition-colors duration-200 hover:bg-ice lg:inline-flex ${focusRing}`}
           />
@@ -38,12 +38,9 @@ export function SiteHeader() {
           >
             <Search aria-hidden className="size-5" />
           </Link>
-          <Link
-            href={TRACK_CASE_HREF}
-            className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-[10px] bg-blue px-4 text-small font-semibold text-white transition-[background-color,scale] duration-200 hover:bg-midnight active:scale-[0.98] sm:px-5 ${focusRing}`}
-          >
-            Track Case
-          </Link>
+          <TrackCaseButton
+            className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-[10px] bg-blue px-3 text-small font-semibold text-white transition-[background-color,scale] duration-200 hover:bg-midnight active:scale-[0.98] sm:px-5 ${focusRing}`}
+          />
           <MobileMenu entries={HEADER_NAV} />
         </div>
       </div>
