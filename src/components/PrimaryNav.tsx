@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -153,13 +154,24 @@ export function PrimaryNav({ entries }: { entries: NavEntry[] }) {
                     <Link
                       href={entry.featured.href}
                       onClick={() => setOpen(null)}
-                      className={`group flex flex-col justify-between gap-4 rounded-[10px] bg-cloud p-4 transition-colors duration-200 hover:bg-ice ${focus}`}
+                      className={`group flex flex-col justify-between gap-4 rounded-[10px] bg-cloud p-3 transition-colors duration-200 hover:bg-ice ${focus}`}
                     >
                       <span>
-                        <span className="block text-caption font-medium text-teal">{entry.featured.label}</span>
-                        <span className="mt-1.5 line-clamp-4 text-small font-semibold text-midnight">{entry.featured.title}</span>
+                        {entry.featured.image && (
+                          <span className="block aspect-video overflow-hidden rounded-lg bg-ice">
+                            <Image
+                              src={entry.featured.image.src}
+                              alt={entry.featured.image.alt}
+                              sizes="184px"
+                              placeholder="blur"
+                              className="size-full object-cover transition-[scale] duration-300 group-hover:scale-[1.03] motion-reduce:transition-none"
+                            />
+                          </span>
+                        )}
+                        <span className="mt-3 block px-1 text-caption font-medium text-teal">{entry.featured.label}</span>
+                        <span className="mt-1 line-clamp-3 px-1 text-small font-semibold text-midnight">{entry.featured.title}</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 text-small font-semibold text-blue">
+                      <span className="inline-flex items-center gap-1 px-1 pb-1 text-small font-semibold text-blue">
                         {entry.featured.cta}
                         <ArrowRight aria-hidden className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
                       </span>

@@ -1,3 +1,4 @@
+import processingTimesArt from "@/assets/nav/processing-times.jpg";
 import { BLOG_POSTS } from "@/lib/blog";
 import { FORMS } from "@/lib/content";
 import { PT_CHECKED } from "@/lib/processing-times";
@@ -23,6 +24,10 @@ export const HEADER_NAV: NavEntry[] = [
       title: "See how long USCIS is taking for your form",
       href: "/processing-times",
       cta: "Check times",
+      image: {
+        src: processingTimesArt,
+        alt: "A woman at her desk checks her laptop beside a wall calendar, a clock and a stack of forms",
+      },
     },
   },
   {
@@ -48,6 +53,7 @@ export const HEADER_NAV: NavEntry[] = [
       title: BLOG_POSTS[0].title,
       href: `/blog/${BLOG_POSTS[0].slug}`,
       cta: "Read post",
+      image: BLOG_POSTS[0].cover,
     },
   },
   { kind: "link", label: "Pricing", href: "/pricing" },

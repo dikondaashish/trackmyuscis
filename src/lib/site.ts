@@ -1,3 +1,5 @@
+import type { StaticImageData } from "next/image";
+
 /** Central site map: navigation, footer and the required disclaimer. Page content lives in content.ts. */
 
 export type NavLink = { href: string; label: string };
@@ -9,7 +11,7 @@ export type NavIcon = "statuses" | "times" | "alerts" | "answers" | "guides" | "
 export type MenuItem = NavLink & { note?: string; icon?: NavIcon };
 
 /** The small card on the right of a wide menu: something new or worth a look. */
-export type MenuFeature = { label: string; title: string; href: string; cta: string };
+export type MenuFeature = { label: string; title: string; href: string; cta: string; image?: { src: StaticImageData; alt: string } };
 
 /** One header entry: a plain link, or a menu that opens a dropdown. Built in nav.ts. */
 export type NavEntry =
