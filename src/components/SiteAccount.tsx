@@ -7,7 +7,6 @@ import { CircleHelp, LayoutGrid, LogOut, Settings } from "lucide-react";
 import type { User } from "@supabase/supabase-js";
 import { Avatar } from "@/components/app/AccountCard";
 import { accountDisplay } from "@/lib/account-display";
-import { TRACK_CASE_HREF } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
 
 /**
@@ -59,7 +58,7 @@ export function SiteAccountProvider({ children }: { children: React.ReactNode })
   return <AccountContext.Provider value={state}>{children}</AccountContext.Provider>;
 }
 
-/** "Sign in" for visitors (desktop). Hidden until the check finishes so it never flips in view. */
+/** The "Sign in" button for visitors (desktop). Hidden until the check finishes so it never flips in view. */
 export function SignInLink({ className }: { className: string }) {
   const state = useSiteAccount();
   const pathname = usePathname();
@@ -76,8 +75,8 @@ export function SignInLink({ className }: { className: string }) {
 }
 
 /**
- * The header's blue button: "Dashboard" once signed in, otherwise "Track Case" (hidden on
- * the homepage, where the receipt check sits right below it).
+ * The header's blue button: "Dashboard" once signed in, otherwise "Sign up". Hidden until
+ * the check finishes so a signed-in visitor never sees it flip.
  */
 export function HeaderAction({ className }: { className: string }) {
   const state = useSiteAccount();
@@ -89,10 +88,13 @@ export function HeaderAction({ className }: { className: string }) {
         Dashboard
       </Link>
     );
-  if (pathname === "/") return null;
   return (
-    <Link href={TRACK_CASE_HREF} className={className}>
-      Track Case
+    <Link
+      href="/sign-up"
+      aria-current={pathname === "/sign-up" ? "page" : undefined}
+      className={`${className} ${state.status === "loading" ? "invisible" : ""}`}
+    >
+      Sign up
     </Link>
   );
 }
@@ -203,20 +205,25 @@ export function AccountMenu() {
   );
 }
 
-/** Bottom of the phone menu: a Sign in button for visitors, the account links once signed in. */
+/** Bottom of the phone menu: Sign in and Sign up for visitors, the account links once signed in. */
 export function MobileAccount({ onNavigate }: { onNavigate: () => void }) {
   const state = useSiteAccount();
   if (state.status !== "in")
     return (
-      <div className="mt-2 border-t border-border px-3 pt-3 pb-1">
+      <div className={`mt-2 grid grid-cols-2 gap-3 border-t border-border px-3 pt-3 pb-1 ${state.status === "loading" ? "invisible" : ""}`}>
         <Link
           href="/sign-in"
           onClick={onNavigate}
-          className={`flex h-12 w-full items-center justify-center rounded-[10px] border border-border text-body font-semibold text-midnight transition-colors duration-200 hover:border-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue ${
-            state.status === "loading" ? "invisible" : ""
-          }`}
+          className="flex h-12 items-center justify-center rounded-lg border border-border bg-white text-body font-semibold text-midnight transition-colors duration-200 hover:border-blue focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
         >
           Sign in
+        </Link>
+        <Link
+          href="/sign-up"
+          onClick={onNavigate}
+          className="flex h-12 items-center justify-center rounded-lg bg-blue text-body font-semibold text-white transition-colors duration-200 hover:bg-midnight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+        >
+          Sign up
         </Link>
       </div>
     );

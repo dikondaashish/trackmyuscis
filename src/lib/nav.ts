@@ -3,10 +3,10 @@ import { BLOG_POSTS } from "@/lib/blog";
 import { FORMS } from "@/lib/content";
 import { PT_CHECKED } from "@/lib/processing-times";
 import { longDate } from "@/lib/seo";
-import type { NavEntry } from "@/lib/site";
+import { TRACK_CASE_HREF, type NavEntry } from "@/lib/site";
 
 /**
- * The header menus. The Track Case button sits beside them; About, Contact and the
+ * The header menus. Sign in and Sign up (or Dashboard) sit beside them; About, Contact and the
  * policies live in the footer. Built on the server so the form list
  * comes from content.ts without shipping the whole file to the browser.
  */
@@ -15,6 +15,7 @@ export const HEADER_NAV: NavEntry[] = [
     kind: "menu",
     label: "Track",
     items: [
+      { href: TRACK_CASE_HREF, label: "Track Case", note: "Check your receipt number and follow it", icon: "track" },
       { href: "/status-explained", label: "Case Statuses", note: "What each USCIS status means", icon: "statuses" },
       { href: "/processing-times", label: "Processing Times", note: "How long your form usually takes", icon: "times" },
       { href: "/alerts", label: "Case Alerts", note: "Email when your status changes. Coming soon", icon: "alerts" },
