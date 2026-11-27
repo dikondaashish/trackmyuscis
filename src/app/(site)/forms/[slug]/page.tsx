@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { breadcrumbSchema, faqSchema, longDate, pageMetadata, webPageSchema } from "@/lib/seo";
-import { OfficialSources } from "@/components/OfficialSources";
+import { DocumentChecklist } from "@/components/DocumentChecklist";
+import { Journey } from "@/components/Journey";
+import { TrackCard } from "@/components/TrackCard";
+import { Questions } from "@/components/ui/Questions";
+import { SectionTabs } from "@/components/ui/SectionTabs";
+import { SourceNote } from "@/components/ui/SourceNote";
+import { Stats, ToolHero, type Stat } from "@/components/ui/ToolHero";
 import { RichText } from "@/components/ui/RichText";
 import { notFound } from "next/navigation";
 import { LinkRows } from "@/components/ui/LinkRows";
-import { PageIntro } from "@/components/ui/PageIntro";
-import { ExternalLink } from "@/components/ui/ExternalLink";
 import { getAnswer } from "@/lib/answers";
 import { FORM_RELATED, FORMS, FORMS_UPDATED, getForm, getGuide, officialFormUrl, USCIS_FEE_SCHEDULE, type UscisForm } from "@/lib/content";
 import { FEE_SCHEDULE_EDITION, FORM_FACTS, FORM_FACTS_CHECKED, feeSentence } from "@/lib/form-facts";
 import { postsForForm } from "@/lib/related";
-import { btnPrimary, container, focusRing, panel, rowPad, rows, section, textLink } from "@/lib/ui";
+import { btnSecondary, container, panel, section } from "@/lib/ui";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { getPtForm, ptShortAnswer, rangeSummary } from "@/lib/processing-times";
+import { getPtForm, ptShortAnswer, rangeText } from "@/lib/processing-times";
+
+/** Section headings: they stop below the sticky header and section bar when jumped to. */
+const heading = "jump-target scroll-mt-36 text-h2 text-midnight";
 
 const titleCase = (s: string) => s.replace(/\b[a-z]/g, (c) => c.toUpperCase());
 
@@ -99,15 +106,34 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
   const pt = getPtForm(f.slug);
   const questions = faq(f);
   const posts = postsForForm(f.slug);
-  const toc = [
-    { id: "know", label: `What to know about Form ${f.form}` },
-    ...(facts ? [{ id: "fee", label: "Filing fee" }] : []),
-    ...(facts?.documents ? [{ id: "documents", label: "What to send with it" }] : []),
-    { id: "steps", label: "Steps most cases go through" },
-    ...(pt ? [{ id: "time", label: "How long it takes" }] : []),
-    ...(questions.length > 0 ? [{ id: "faq", label: "Common questions" }] : []),
-    ...(related.length + posts.length > 0 ? [{ id: "questions", label: `More on ${f.form} cases` }] : []),
-    { id: "sources", label: "Official sources" },
+  const tabs = [
+    { id: "know", label: "What to know" },
+    ...(facts ? [{ id: "fee", label: "Fee" }] : []),
+    ...(facts?.documents ? [{ id: "documents", label: "Documents" }] : []),
+    { id: "steps", label: "Steps" },
+    ...(pt ? [{ id: "time", label: "Processing time" }] : []),
+    ...(questions.length > 0 ? [{ id: "faq", label: "Questions" }] : []),
+    ...(related.length + posts.length > 0 ? [{ id: "questions", label: "Related" }] : []),
+  ];
+  // The fees most people pay (extras such as "+ $600" are in the table below).
+  const main = facts?.fees.filter((r) => /^filed (on paper|online)$/i.test(r.label));
+  const amounts = (main?.length ? main : (facts?.fees ?? [])).map((r) => r.amount).filter((a) => /^\$[\d,]+$/.test(a));
+  const dollars = (a: string) => Number(a.replace(/[^\d]/g, ""));
+  const sorted = [...amounts].sort((x, y) => dollars(x) - dollars(y));
+  const stats: Stat[] = [
+    ...(sorted.length > 0
+      ? [
+          {
+            label: "Filing fee",
+            value: sorted.length > 1 && sorted[0] !== sorted[sorted.length - 1] ? `${sorted[0]} to ${sorted[sorted.length - 1]}` : sorted[0],
+            note: feeSentence(f.slug) ? "Online or on paper" : "Depends on what you ask for",
+            href: "#fee",
+          },
+        ]
+      : []),
+    ...(pt ? [{ label: "Processing time", value: rangeText(pt), note: "80% of cases finished within", href: `/processing-times/${f.slug}` }] : []),
+    { label: "Steps after filing", value: String(f.milestones.length), note: `${f.milestones[0]} to ${f.milestones[f.milestones.length - 1].toLowerCase()}`, href: "#steps" },
+    ...(facts ? [{ label: "Form edition", value: facts.edition, note: "The edition USCIS accepts" }] : []),
   ];
 
   return (
@@ -122,139 +148,127 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
           ]),
         ]}
       />
-      <PageIntro title={`Form ${f.form}: ${f.label}`} description={f.about} back={{ href: "/forms", label: "All forms" }}>
-        <p className="text-small text-slate">Official name: {f.title}</p>
-        <p className="mt-1 text-small text-slate">Updated {longDate(updated)} · Checked against uscis.gov</p>
-      </PageIntro>
+      <ToolHero
+        title={`Form ${f.form}: ${f.label}`}
+        description={f.about}
+        back={{ href: "/forms", label: "All forms" }}
+        meta={
+          <>
+            <p>Official name: {f.title}</p>
+            <p className="mt-1">Updated {longDate(updated)} · Checked against uscis.gov</p>
+          </>
+        }
+      >
+        <Stats items={stats} />
+      </ToolHero>
+      <SectionTabs label={`Form ${f.form} sections`} items={tabs} />
+
       <section className={section}>
-        <div className={`${container} grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-12`}>
-          <div>
-            <h2 id="know" className="scroll-mt-28 text-h3 font-semibold text-midnight">What to know about Form {f.form}</h2>
-            <div className={`mt-6 ${rows}`}>
-              {facts && (
-                <div className={`${rowPad} py-6`}>
-                  <h3 className="text-title font-semibold text-midnight">Who files it</h3>
-                  <p className="mt-2 max-w-2xl text-body text-slate">{facts.who}</p>
-                </div>
-              )}
+        <div className={`${container} grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-12`}>
+          <div className="min-w-0">
+            <h2 id="know" className={heading}>What to know</h2>
+            {facts && (
+              <div className={`mt-6 ${panel} border-blue/15 bg-ice`}>
+                <h3 className="text-small font-semibold text-blue">Who files it</h3>
+                <p className="mt-2 max-w-2xl text-lead text-midnight">{facts.who}</p>
+              </div>
+            )}
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
               {f.sections.map((s) => (
-                <div key={s.heading} className={`${rowPad} py-6`}>
+                <div key={s.heading} className={panel}>
                   <h3 className="text-title font-semibold text-midnight">{s.heading}</h3>
-                  <p className="mt-2 max-w-2xl text-body text-slate">
+                  <p className="mt-2 text-body text-slate">
                     <RichText text={s.body} />
                   </p>
                 </div>
               ))}
-              {!facts && (
-                <div className={`${rowPad} py-6`}>
-                  <h3 className="text-title font-semibold text-midnight">Filing fee</h3>
-                  <p className="mt-2 max-w-2xl text-body text-slate">
-                    <RichText text={`USCIS lists the current fee for Form ${f.form} on its [Fee Schedule page](${USCIS_FEE_SCHEDULE}).`} />
-                  </p>
-                </div>
-              )}
             </div>
 
             {facts && (
               <>
-                <h2 id="fee" className="mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">Filing fee</h2>
-                <dl className={`mt-6 ${rows}`}>
+                <h2 id="fee" className={`mt-14 ${heading}`}>Filing fee</h2>
+                <dl className="mt-6 grid gap-4 sm:grid-cols-2">
                   {facts.fees.map((r) => (
-                    <div key={r.label} className={`flex items-center justify-between gap-5 ${rowPad} py-4`}>
-                      <dt className="text-body text-midnight">{r.label}</dt>
-                      <dd className="shrink-0 text-title font-semibold text-midnight tabular-nums">{r.amount}</dd>
+                    <div key={r.label} className={`flex flex-col-reverse justify-end ${panel}`}>
+                      <dt className="mt-1 text-body text-slate">{r.label}</dt>
+                      <dd className="text-h2 text-midnight tabular-nums">{r.amount}</dd>
                     </div>
                   ))}
                 </dl>
                 <p className="mt-4 max-w-2xl text-small text-slate">
-                  <RichText
-                    text={`${facts.feeNote ? `${facts.feeNote} ` : ""}Read from the [USCIS Fee Schedule](${USCIS_FEE_SCHEDULE}) (edition ${FEE_SCHEDULE_EDITION}) on ${longDate(FORM_FACTS_CHECKED)}. USCIS rejects a filing with the wrong fee, so confirm it there on the day you file.`}
-                  />
+                  {facts.feeNote ? `${facts.feeNote} ` : ""}Read from the USCIS Fee Schedule (edition {FEE_SCHEDULE_EDITION}) on{" "}
+                  {longDate(FORM_FACTS_CHECKED)}. USCIS rejects a filing with the wrong fee, so confirm it on the day you file.
                 </p>
               </>
             )}
 
             {facts?.documents && (
               <>
-                <h2 id="documents" className="mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">What to send with it</h2>
-                <div className={`mt-6 ${panel}`}>
-                  <p className="max-w-2xl text-body text-slate">{facts.documents.intro}</p>
-                  {facts.documents.items.length > 0 && (
-                    <ul className="mt-4 max-w-2xl list-disc space-y-2 pl-5 text-body text-midnight marker:text-border">
-                      {facts.documents.items.map((item) => (
-                        <li key={item} className="pl-1">
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+                <h2 id="documents" className={`mt-14 ${heading}`}>What to send with it</h2>
+                <p className="mt-3 max-w-2xl text-body text-slate">
+                  {facts.documents.intro}
+                  {facts.documents.items.length > 0 ? " Tick each one off as you gather it." : ""}
+                </p>
+                {facts.documents.items.length > 0 && (
+                  <div className="mt-6">
+                    <DocumentChecklist slug={f.slug} items={facts.documents.items} />
+                  </div>
+                )}
                 <p className="mt-4 max-w-2xl text-small text-slate">
-                  A summary, not the full list. The form instructions on uscis.gov say exactly what your case needs. The current
-                  edition of Form {f.form} is dated {facts.edition}.{facts.editionNote ? ` ${facts.editionNote}` : ""}
+                  A summary, not the full list: the form instructions say exactly what your case needs. Your ticks are saved in this
+                  browser only. The current edition of Form {f.form} is dated {facts.edition}.
+                  {facts.editionNote ? ` ${facts.editionNote}` : ""}
                 </p>
               </>
             )}
 
-            <h2 id="steps" className="mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">Steps most cases go through</h2>
-            <ol className={`mt-6 ${panel}`}>
-              {f.milestones.map((m, i) => (
-                <li key={m} className="relative flex gap-5 pb-7 last:pb-0">
-                  {i < f.milestones.length - 1 && (
-                    <span aria-hidden className="absolute top-9 bottom-0 left-[17px] w-0.5 bg-border" />
-                  )}
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ice text-small font-semibold text-blue tabular-nums">
-                    {i + 1}
-                  </span>
-                  <span className="pt-1 text-title text-midnight">{m}</span>
-                </li>
-              ))}
-            </ol>
+            <h2 id="steps" className={`mt-14 ${heading}`}>Steps most cases go through</h2>
+            <div className="mt-6">
+              <Journey steps={f.milestones} />
+            </div>
             <p className="mt-4 max-w-xl text-small text-slate">
               Every case is different. Your official USCIS notices always come first.
             </p>
 
             {pt && (
               <>
-                <h2 id="time" className="mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">How long it takes</h2>
-                <div className={`mt-6 ${panel}`}>
-                  <p className="max-w-2xl text-body text-slate">{ptShortAnswer(pt)}</p>
-                  <Link href={`/processing-times/${f.slug}`} className={`mt-3 ${textLink}`}>
-                    Form {f.form} processing time: {rangeSummary(pt)}
-                    <ArrowRight aria-hidden className="size-4 shrink-0" />
-                  </Link>
+                <h2 id="time" className={`mt-14 ${heading}`}>How long it takes</h2>
+                <div className={`mt-6 grid items-center gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-8 ${panel}`}>
+                  <div>
+                    <p className="text-small text-slate">80% of cases finished within</p>
+                    <p className="mt-1 text-h2 text-midnight tabular-nums">{rangeText(pt)}</p>
+                  </div>
+                  <div className="sm:border-l sm:border-border sm:pl-8">
+                    <p className="text-body text-slate">{ptShortAnswer(pt)}</p>
+                    <Link href={`/processing-times/${f.slug}`} className={`mt-4 ${btnSecondary}`}>
+                      Check your office and date
+                      <ArrowRight aria-hidden className="size-4 shrink-0" />
+                    </Link>
+                  </div>
                 </div>
               </>
             )}
 
             {questions.length > 0 && (
               <>
-                <h2 id="faq" className="mt-12 scroll-mt-28 text-h3 font-semibold text-midnight">Common questions</h2>
-                <div className={`mt-6 ${rows}`}>
-                  {questions.map((q) => (
-                    <div key={q.q} className={`${rowPad} py-5`}>
-                      <h3 className="text-title font-semibold text-midnight">{q.q}</h3>
-                      <p className="mt-1 max-w-2xl text-body text-slate">{q.a}</p>
-                    </div>
-                  ))}
-                </div>
+                <h2 id="faq" className={`mt-14 ${heading}`}>Common questions</h2>
+                <Questions className="mt-6" items={questions} />
               </>
             )}
 
             {related.length + posts.length > 0 && (
-              <div className="mt-12">
-                <h2 id="questions" className="scroll-mt-28 text-h3 font-semibold text-midnight">More on {f.form} cases</h2>
+              <>
+                <h2 id="questions" className={`mt-14 ${heading}`}>More on {f.form} cases</h2>
                 <LinkRows
                   compact
                   className="mt-6"
                   items={[...posts.map((b) => ({ href: `/blog/${b.slug}`, title: b.title })), ...related.map((r) => ({ href: r.path, title: r.title }))]}
                 />
-              </div>
+              </>
             )}
 
-            <OfficialSources
-              id="sources"
-              className="mt-12 scroll-mt-28"
+            <SourceNote
+              className="mt-14"
               sources={[
                 { label: `USCIS: Form ${f.form}, ${f.title}`, href: officialFormUrl(f) },
                 ...(facts ? [{ label: "USCIS: Fee Schedule (Form G-1055)", href: USCIS_FEE_SCHEDULE }] : []),
@@ -264,39 +278,12 @@ export default async function FormPage({ params }: PageProps<"/forms/[slug]">) {
             />
           </div>
 
-          <aside className="no-print lg:pt-1">
-            <div className="lg:sticky lg:top-28">
-              <nav aria-label="On this page" className="hidden lg:block">
-                <p className="text-small font-semibold text-midnight">On this page</p>
-                <ul className="mt-2 border-l border-border">
-                  {toc.map((item) => (
-                    <li key={item.id}>
-                      <a
-                        href={`#${item.id}`}
-                        className={`-ml-px flex min-h-11 items-center border-l border-transparent py-1 pl-4 text-small text-slate transition-colors duration-200 hover:border-blue hover:text-midnight ${focusRing}`}
-                      >
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-              <div className={`flex flex-col items-stretch gap-3 lg:mt-8 ${panel} sm:p-6`}>
-                <p className="text-title text-midnight">Have a receipt number?</p>
-                <p className="-mt-2 mb-1 text-small text-slate">Confirm it and see which USCIS office has your case.</p>
-                <Link href="/#track" className={btnPrimary}>
-                  Track Case
-                </Link>
-                {getPtForm(f.slug) && (
-                  <Link
-                    href={`/processing-times/${f.slug}`}
-                    className={`link-draw inline-flex min-h-11 items-center rounded text-small font-semibold text-blue ${focusRing}`}
-                  >
-                    Form {f.form} processing time
-                  </Link>
-                )}
-                <ExternalLink href={officialFormUrl(f)}>{f.form} on uscis.gov</ExternalLink>
-              </div>
+          <aside className="lg:pt-1">
+            <div className="lg:sticky lg:top-36">
+              <TrackCard
+                title={`Filed Form ${f.form}?`}
+                text="Enter your receipt number to see which office has it, then save it to follow its status."
+              />
             </div>
           </aside>
         </div>

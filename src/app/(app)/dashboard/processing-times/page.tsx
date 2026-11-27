@@ -1,8 +1,8 @@
-import { ArrowUpRight } from "lucide-react";
-import { GuidePage, guideSectionTitle } from "@/components/app/Guide";
-import { PROCESSING_STEPS, PROCESSING_TIPS, USCIS_PROCESSING_TIMES } from "@/lib/content";
+import { GuideLinks, GuidePage, guideSectionTitle } from "@/components/app/Guide";
+import { PROCESSING_TIPS } from "@/lib/content";
+import { PT_FORMS, rangeSummary } from "@/lib/processing-times";
 import { pageMetadata } from "@/lib/seo";
-import { appBtnPrimary, appCard } from "@/lib/ui";
+import { appCard } from "@/lib/ui";
 
 // The public /processing-times page is the indexed one.
 export const metadata = pageMetadata({
@@ -16,25 +16,15 @@ export default function DashboardProcessingTimesPage() {
   return (
     <GuidePage
       title="USCIS processing times"
-      description="USCIS publishes how long each form is taking at each office. Here is how to find yours and what the number means."
+      description="The official time for each form. Open one to find your office and check your own dates."
     >
-      <a href={USCIS_PROCESSING_TIMES} target="_blank" rel="noopener noreferrer" className={appBtnPrimary}>
-        Open official processing times
-        <ArrowUpRight aria-hidden className="size-3.5" />
-        <span className="sr-only">(opens uscis.gov in a new tab)</span>
-      </a>
-
-      <h2 className={`mt-8 ${guideSectionTitle}`}>How to check</h2>
-      <ol className={`mt-2.5 ${appCard} divide-y divide-border overflow-hidden`}>
-        {PROCESSING_STEPS.map((step, i) => (
-          <li key={step} className="flex items-center gap-3 px-4 py-3">
-            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-ice text-caption font-semibold text-blue tabular-nums">
-              {i + 1}
-            </span>
-            <span className="text-small text-midnight">{step}</span>
-          </li>
-        ))}
-      </ol>
+      <GuideLinks
+        items={PT_FORMS.map((p) => ({
+          href: `/processing-times/${p.form.slug}`,
+          title: `${p.form.form} · ${p.form.label}`,
+          note: rangeSummary(p),
+        }))}
+      />
 
       <h2 className={`mt-8 ${guideSectionTitle}`}>How to read the number</h2>
       <ul className={`mt-2.5 ${appCard} divide-y divide-border overflow-hidden`}>

@@ -5,7 +5,7 @@ import { Search, X } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import Link from "next/link";
 import { statusId, TONE_LABEL, type Tone } from "@/lib/statuses";
-import { appCard, appField, field, fieldLabel, focusRing, rowPad, rows } from "@/lib/ui";
+import { appCard, appField, cardLink, field, fieldLabel, focusRing } from "@/lib/ui";
 
 /**
  * Every status stays in the page (for search engines and screen readers); typing only
@@ -33,7 +33,7 @@ export function StatusFinder({
 
   return (
     <>
-      <div className="no-print">
+      <div className={`no-print ${compact ? "" : "max-w-xl"}`}>
         <label htmlFor={inputId} className={fieldLabel}>
           Find your status
         </label>
@@ -73,35 +73,50 @@ export function StatusFinder({
         </p>
       </div>
 
-      <dl className={`${compact ? `mt-4 ${appCard} divide-y divide-border overflow-hidden` : `mt-8 ${rows}`} ${shown === 0 ? "hidden" : ""}`}>
-        {statuses.map((s) => (
-          <div
-            key={s.name}
-            id={statusId(s.name)}
-            hidden={!matches(s)}
-            className={`grid scroll-mt-28 target:bg-ice sm:grid-cols-[1fr_1.3fr] ${
-              compact ? "gap-1.5 px-4 py-3.5 sm:gap-6" : `gap-3 ${rowPad} py-6 sm:gap-8`
-            }`}
-          >
-            <dt>
-              {s.href ? (
-                <Link
-                  href={s.href}
-                  className={`link-draw -my-2 inline-flex min-h-11 items-center rounded font-semibold text-blue ${compact ? "text-small" : "text-title"} ${focusRing}`}
-                >
-                  {s.name}
-                </Link>
-              ) : (
-                <span className={`block font-semibold text-midnight ${compact ? "text-small" : "text-title"}`}>{s.name}</span>
-              )}
-              <span className={`block ${compact ? "mt-1" : "mt-2"}`}>
-                <StatusBadge tone={s.tone}>{TONE_LABEL[s.tone]}</StatusBadge>
-              </span>
-            </dt>
-            <dd className={`text-slate ${compact ? "text-small" : "text-body"}`}>{s.meaning}</dd>
-          </div>
-        ))}
-      </dl>
+      {compact ? (
+        <dl className={`mt-4 ${appCard} divide-y divide-border overflow-hidden ${shown === 0 ? "hidden" : ""}`}>
+          {statuses.map((s) => (
+            <div
+              key={s.name}
+              id={statusId(s.name)}
+              hidden={!matches(s)}
+              className="grid scroll-mt-28 gap-1.5 px-4 py-3.5 target:bg-ice sm:grid-cols-[1fr_1.3fr] sm:gap-6"
+            >
+              <dt>
+                {s.href ? (
+                  <Link href={s.href} className={`link-draw -my-2 inline-flex min-h-11 items-center rounded text-small font-semibold text-blue ${focusRing}`}>
+                    {s.name}
+                  </Link>
+                ) : (
+                  <span className="block text-small font-semibold text-midnight">{s.name}</span>
+                )}
+                <span className="mt-1 block">
+                  <StatusBadge tone={s.tone}>{TONE_LABEL[s.tone]}</StatusBadge>
+                </span>
+              </dt>
+              <dd className="text-small text-slate">{s.meaning}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        /* The public page: one card per status, in the order a case usually shows them. */
+        <ol className={`mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3 ${shown === 0 ? "hidden" : ""}`}>
+          {statuses.map((s, i) => (
+            <li key={s.name} id={statusId(s.name)} hidden={!matches(s)} className="scroll-mt-28">
+              <Link href={s.href ?? `#${statusId(s.name)}`} className={`group flex h-full flex-col p-5 sm:p-6 ${cardLink}`}>
+                <span className="flex items-center justify-between gap-3">
+                  <StatusBadge tone={s.tone}>{TONE_LABEL[s.tone]}</StatusBadge>
+                  <span aria-hidden className="text-small text-slate tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </span>
+                <span className="mt-4 block text-title text-midnight transition-colors duration-200 group-hover:text-blue">{s.name}</span>
+                <span className="mt-2 block text-body text-slate">{s.meaning}</span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
     </>
   );
 }

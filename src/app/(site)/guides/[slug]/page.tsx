@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { articleSchema, breadcrumbSchema, CONTENT_UPDATED, longDate, pageMetadata } from "@/lib/seo";
-import { OfficialSources } from "@/components/OfficialSources";
+import { SourceNote } from "@/components/ui/SourceNote";
 import { notFound } from "next/navigation";
 import { Info } from "lucide-react";
 import { LinkRows } from "@/components/ui/LinkRows";
@@ -51,7 +51,7 @@ export default async function GuidePage({ params }: PageProps<"/guides/[slug]">)
                   <p className="mt-3 text-lead text-slate">{s.body}</p>
                 </div>
               ))}
-              <OfficialSources sources={g.sources} className="mt-10 border-t border-border pt-8" />
+              <SourceNote sources={g.sources} className="mt-10" />
             </div>
             <p className="mt-6 flex items-start gap-2 text-small text-slate">
               <Info aria-hidden className="mt-0.5 size-4 shrink-0" />
