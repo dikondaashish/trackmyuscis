@@ -5,7 +5,7 @@ import type { StaticImageData } from "next/image";
 export type NavLink = { href: string; label: string };
 
 /** Icons for header menu items, by name (nav.ts is built on the server, so it can't pass components). */
-export type NavIcon = "statuses" | "times" | "alerts" | "answers" | "guides" | "blog" | "lawyers" | "scams" | "help";
+export type NavIcon = "track" | "statuses" | "times" | "alerts" | "answers" | "guides" | "blog" | "lawyers" | "scams" | "help";
 
 /** A link inside a header menu: label, one short line saying what the page is for, and an icon. */
 export type MenuItem = NavLink & { note?: string; icon?: NavIcon };

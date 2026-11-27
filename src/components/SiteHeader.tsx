@@ -11,7 +11,7 @@ const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-
 
 /**
  * 64px bar: logo left, menus centred on the page (a three-column grid from 1024px),
- * search, account and the one blue button right.
+ * search, then Sign in and Sign up (or Dashboard and the account) right.
  */
 export function SiteHeader() {
   return (
@@ -38,10 +38,10 @@ export function SiteHeader() {
           <div className="flex items-center gap-1.5 justify-self-end sm:gap-2">
             <QuickSearch />
             <SignInLink
-              className={`hidden min-h-11 items-center whitespace-nowrap rounded-lg px-3 text-small font-medium text-slate transition-colors duration-200 hover:text-midnight lg:inline-flex ${focusRing}`}
+              className={`hidden min-h-11 items-center whitespace-nowrap rounded-lg border border-border bg-white px-4 text-small font-semibold text-midnight transition-[border-color,scale] duration-200 hover:border-blue active:scale-[0.98] lg:inline-flex ${focusRing}`}
             />
             <HeaderAction
-              className={`inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-[10px] bg-blue px-3 text-small font-semibold text-white transition-[background-color,scale] duration-200 hover:bg-midnight active:scale-[0.98] sm:px-4 ${focusRing}`}
+              className={`inline-flex min-h-11 items-center gap-2 whitespace-nowrap rounded-lg bg-blue px-3 text-small font-semibold text-white transition-[background-color,scale] duration-200 hover:bg-midnight active:scale-[0.98] sm:px-4 ${focusRing}`}
             />
             <AccountMenu />
             <MobileMenu entries={HEADER_NAV} />
