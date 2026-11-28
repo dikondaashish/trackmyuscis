@@ -29,6 +29,7 @@ TrackMyUSCIS itself had 1 impression in Search Console (new property, data since
 | [January 2027 Visa Bulletin](/blog/january-2027-visa-bulletin) (published early, 2026-11-24) | visa bulletin january 2027, january visa bulletin, january visa bulletin predictions, when is january visa bulletin coming out |
 | [OPT processing time 2026](/blog/opt-processing-time-2026) | opt processing time, opt ead processing time, how long does opt take |
 | [STEM OPT extension 2026](/blog/stem-opt-extension-2026) | stem opt processing time, stem opt extension, 180 day rule |
+| [STEM OPT pending near 180 days](/blog/stem-opt-pending-180-days) (2026-11-28) | stem opt pending 180 days, stem opt pending more than 180 days, unemployment days while stem opt pending |
 | [OPT premium processing 2026](/blog/opt-premium-processing-2026) | opt premium processing, opt premium processing fee, 1780 |
 | [OPT 90-day unemployment rule](/blog/opt-unemployment-90-days) | 90 day unemployment rule opt, opt unemployment days, stem 150 days |
 | [Proposed $70,000 OPT fee](/blog/proposed-opt-fee-2026) | opt fee 70000, opt fee proposed rule |

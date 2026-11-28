@@ -6,6 +6,7 @@ import type { Block, BlogPost, BlogTopic } from "./types";
 import { decemberVisaBulletin2026 } from "./posts/december-2026-visa-bulletin";
 import { januaryVisaBulletin2027 } from "./posts/january-2027-visa-bulletin";
 import { optProcessingTime2026 } from "./posts/opt-processing-time-2026";
+import { stemOptPending180Days } from "./posts/stem-opt-pending-180-days";
 import { stemOptExtension2026 } from "./posts/stem-opt-extension-2026";
 import { optPremiumProcessing2026 } from "./posts/opt-premium-processing-2026";
 import { optUnemployment90Days } from "./posts/opt-unemployment-90-days";
@@ -26,6 +27,7 @@ export { AUTHORS, type AuthorId } from "./authors";
 
 /** Newest first; posts published the same day keep this list's order (the first is featured). */
 export const BLOG_POSTS: BlogPost[] = [
+  stemOptPending180Days,
   decemberVisaBulletin2026,
   januaryVisaBulletin2027,
   optProcessingTime2026,
