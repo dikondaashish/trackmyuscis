@@ -80,5 +80,18 @@ export const OPT_SRC = {
     label: "Federal Register: Modernizing H-1B requirements, final rule (December 18, 2024), including cap-gap",
     href: "https://www.federalregister.gov/documents/2024/12/18/2024-29354/modernizing-h-1b-requirements-providing-flexibility-in-the-f-1-program-and-program-improvements",
   },
+  stemPendingRegulation: {
+    label: "eCFR: 8 CFR 274a.12(b)(6)(iv), work authorization while a STEM OPT extension is pending",
+    href: "https://www.ecfr.gov/current/title-8/chapter-I/subchapter-B/part-274a/subpart-B/section-274a.12",
+  },
+  sevpStem: {
+    label: "Study in the States (DHS): F-1 STEM OPT extension in SEVIS",
+    href: "https://studyinthestates.dhs.gov/sevis-help-hub/student-records/fm-student-employment/f-1-stem-optional-practical-training-opt-extension",
+  },
+  m274Students: {
+    label: "USCIS: Handbook for Employers (M-274), 7.4.2 F-1 and M-1 nonimmigrant students",
+    href: "https://www.uscis.gov/i-9-central/form-i-9-resources/handbook-for-employers-m-274/70-evidence-of-employment-authorization-for-certain-categories/74-exchange-visitors-and-students/742-f-1-and-m-1-nonimmigrant-students",
+  },
+  expedite: { label: "USCIS: Expedite requests", href: "https://www.uscis.gov/forms/filing-guidance/expedite-requests" },
   caseInquiry: { label: "USCIS: e-Request self-service tools", href: "https://egov.uscis.gov/e-request/Intro.do" },
 };
