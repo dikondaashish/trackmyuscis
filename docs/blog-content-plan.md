@@ -30,6 +30,9 @@ TrackMyUSCIS itself had 1 impression in Search Console (new property, data since
 | [OPT processing time 2026](/blog/opt-processing-time-2026) | opt processing time, opt ead processing time, how long does opt take |
 | [STEM OPT extension 2026](/blog/stem-opt-extension-2026) | stem opt processing time, stem opt extension, 180 day rule |
 | [STEM OPT pending near 180 days](/blog/stem-opt-pending-180-days) (2026-11-28) | stem opt pending 180 days, stem opt pending more than 180 days, unemployment days while stem opt pending |
+| [USCIS phone number: reach a live person](/blog/uscis-phone-number-live-person) (2026-11-28) | uscis phone number, uscis customer service, uscis live person, uscis tier 2, emma chat |
+| [USCIS expedite request](/blog/uscis-expedite-request) (2026-11-28) | uscis expedite request, expedite criteria, expedite ead |
+| [New Card Is Being Produced](/blog/new-card-is-being-produced) (2026-11-28) | new card is being produced, card was mailed to me, how long from card produced to delivery |
 | [OPT premium processing 2026](/blog/opt-premium-processing-2026) | opt premium processing, opt premium processing fee, 1780 |
 | [OPT 90-day unemployment rule](/blog/opt-unemployment-90-days) | 90 day unemployment rule opt, opt unemployment days, stem 150 days |
 | [Proposed $70,000 OPT fee](/blog/proposed-opt-fee-2026) | opt fee 70000, opt fee proposed rule |
@@ -49,6 +52,21 @@ TrackMyUSCIS itself had 1 impression in Search Console (new property, data since
 OPT processing time 188K, case status guide 76K, I-140 tracking 67K, OPT premium fee 48K, STEM OPT processing time 42K, 90-day unemployment 40K, OPT premium timeline 37K, EAD pending delays 36K, travel on OPT 22K, is my degree STEM eligible 21K, H-4 EAD status 18.5K, OPT denied 17K, Real ID for students 17K, 60-day grace period 16.6K, E-Verify number vs EIN 16K, second master's OPT 15K, OPT biometrics 15K, start work before EAD 14K, Spanish visa bulletin 13.6K, renewing F-1 visa on OPT 12K.
 
 Official numbers read on 2026-11-24: I-765 (c)(3) 6 months, I-765 (c)(26) standalone H-4 18.5 months (80% of cases, Service Center Operations).
+
+## What Search Console showed on 2026-11-28 (TrackMyUSCIS, first 9 days)
+
+36 clicks, 2.34K impressions, average position 27. The site already sits near page one for case-help searches, which are also the searches people with an active case make:
+
+- Receipt prefixes: "msc number meaning" 9, "ioe meaning" 35, "wac is which service center" 40 (answer page exists; improve it rather than add a post).
+- Contacting USCIS: "uscis case status contact number" and variants 9 to 11 (now a post).
+- After biometrics: "after biometrics what next" 11, "what happens after biometrics appointment" 23 (guide exists; 1K to 10K searches and rising, worth expanding).
+- Cards: "how long from card produced to delivery uscis" 8 (now a post).
+- Tracking by form: "i140 status" 7, "i751 tracker" 15, "eb2 niw tracking" 16, "how to check naturalization status" 10. One status-check post per form works (I-140 exists).
+- Field office times: "n400 processing time san jose" 9 to 27, "los angeles" 10, "seattle field office processing time" 38.
+
+Keyword Planner volumes checked the same day (US, monthly): uscis phone number and uscis customer service 10K to 100K; h1b case status 10K to 100K; what happens after biometrics appointment, uscis expedite request, uscis emma chat, uscis infopass appointment 1K to 10K; ioe receipt number, new card is being produced, card was mailed to me, case was approved, fingerprint fee was received, interview was scheduled, we have taken an action on your case, oath ceremony will be scheduled, rfe response time, i-751 status, n-400 case status, i-130 case status 100 to 1K each.
+
+**Easy next posts from this data:** I-751 status check, N-400 case status check, I-130 case status check, H-1B case status check (same shape as the I-140 post); USCIS in-person appointment (the old InfoPass); RFE response time; N-400 processing time by field office.
 
 ## Next, in priority order
 
